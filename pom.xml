@@ -59,6 +59,32 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.22.0</version>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <configuration>
+                        <configLocation>checkstyle-config/checkstyle-checker.xml</configLocation>
+                        <consoleOutput>true</consoleOutput>
+                        <encoding>UTF-8</encoding>
+                        <failOnViolation>true</failOnViolation>
+                        <failsOnError>true</failsOnError>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <violationSeverity>warning</violationSeverity>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <configuration>
+                                <failsOnError>true</failsOnError>
+                            </configuration>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <id>verify</id>
+                            <phase>verify</phase>
+                        </execution>
+                    </executions>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <version>3.1.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

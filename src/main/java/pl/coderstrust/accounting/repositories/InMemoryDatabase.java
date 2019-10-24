@@ -1,4 +1,4 @@
-package pl.coderstrust.accounting.repository;
+package pl.coderstrust.accounting.repositories;
 
 
 import java.util.ArrayList;

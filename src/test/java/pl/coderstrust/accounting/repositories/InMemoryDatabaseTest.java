@@ -1,4 +1,4 @@
-package pl.coderstrust.accounting.repository;
+package pl.coderstrust.accounting.repositories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

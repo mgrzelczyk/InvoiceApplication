@@ -30,7 +30,6 @@ class InMemoryDatabaseTest {
             new Company(),
             invoiceEntries);
         inMemory = new InMemoryDatabase();
-
     }
 
     @Test
@@ -41,7 +40,6 @@ class InMemoryDatabaseTest {
 
         assertNull(invoice1);
         assertTrue(invoiceExist);
-
     }
 
     @Test
@@ -50,7 +48,6 @@ class InMemoryDatabaseTest {
         Invoice invoiceById = inMemory.findInvoiceById((long) 1);
 
         assertEquals(invoice, invoiceById);
-
     }
 
     @Test
@@ -77,7 +74,6 @@ class InMemoryDatabaseTest {
 
         assertTrue(result);
         assertEquals(localInvoices, invoices);
-
     }
 
     @Test
@@ -91,6 +87,6 @@ class InMemoryDatabaseTest {
 
         assertFalse(contains);
         assertEquals(invoice, deleted);
-
     }
+
 }

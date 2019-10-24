@@ -52,7 +52,7 @@
                 <version>0.8.2</version>
                 <configuration>
                     <excludes>
-                        <exclude>pl/coderstrust/model/*.class</exclude>
+                        <exclude>pl/coderstrust/accounting/model/*.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>

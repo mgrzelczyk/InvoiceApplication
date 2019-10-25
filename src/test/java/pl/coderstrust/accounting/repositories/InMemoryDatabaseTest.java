@@ -46,11 +46,11 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldSaveInvoice() {
-        Invoice invoice1 = inMemory.saveInvoice(invoice);
+        Invoice savedInvoice = inMemory.saveInvoice(invoice);
         ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
         boolean invoiceExist = invoices.contains(invoice);
 
-        assertNull(invoice1);
+        assertNull(savedInvoice);
         assertTrue(invoiceExist);
     }
 

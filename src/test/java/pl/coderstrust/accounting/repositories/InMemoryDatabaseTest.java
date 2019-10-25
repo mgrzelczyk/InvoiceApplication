@@ -88,4 +88,5 @@ class InMemoryDatabaseTest {
         assertFalse(contains);
         assertEquals(invoice, deleted);
     }
+
 }

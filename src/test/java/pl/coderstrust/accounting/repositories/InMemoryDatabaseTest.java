@@ -26,7 +26,7 @@ class InMemoryDatabaseTest {
 
     private Invoice invoice;
     private InMemoryDatabase inMemory;
-    private Invoice invoiceSecond; 
+    private Invoice invoiceSecond;
 
     @BeforeEach
     void setUp() {

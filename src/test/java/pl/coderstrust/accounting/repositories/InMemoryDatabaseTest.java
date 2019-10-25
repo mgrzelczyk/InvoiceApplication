@@ -7,7 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.coderstrust.accounting.model.Company;
@@ -30,6 +34,14 @@ class InMemoryDatabaseTest {
             new Company(),
             invoiceEntries);
         inMemory = new InMemoryDatabase();
+    }
+
+    @Test
+
+    void shouldCreateInvoice() {
+        Invoice createInvoice = new Invoice();
+        inMemory.invoiceMap = new ConcurrentHashMap<>();
+        assertTrue
     }
 
     @Test

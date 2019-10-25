@@ -15,7 +15,12 @@ import pl.coderstrust.accounting.model.Invoice;
 public class InMemoryDatabase implements Database {
 
     private AtomicLong counter = new AtomicLong(0);
-    private Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
+    public Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
+    Invoice invoice = new Invoice();
+
+    Invoice createInvoice(){
+        return invoice;
+    }
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {

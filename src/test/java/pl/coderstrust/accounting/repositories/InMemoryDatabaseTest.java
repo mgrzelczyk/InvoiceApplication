@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ class InMemoryDatabaseTest {
         LocalDateTime date = LocalDateTime.of(2020, 1, 1, 1, 1, 1);
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
         invoice = new Invoice(
-            (long) 1,
+            2L,
             date,
             new Company(),
             new Company(),
@@ -118,7 +119,7 @@ class InMemoryDatabaseTest {
         inMemory.saveInvoice(invoice);
         inMemory.saveInvoice(invoice2);
         ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
-        if (invoices.contains(invoice) && invoices.contains(invoice2)) {
+        if (invoices.containsAll((Collection<?>) invoice) && invoices.containsAll((Collection<?>) invoice2)) {
             result = true;
         }
 

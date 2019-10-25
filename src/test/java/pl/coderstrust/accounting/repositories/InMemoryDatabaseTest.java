@@ -26,6 +26,7 @@ class InMemoryDatabaseTest {
 
     private Invoice invoice;
     private InMemoryDatabase inMemory;
+    private Invoice invoiceSecond; 
 
     @BeforeEach
     void setUp() {
@@ -105,7 +106,7 @@ class InMemoryDatabaseTest {
     void shouldFindAllnvoices() {
         LocalDateTime date = LocalDateTime.of(2020, 2, 3, 4, 1, 1);
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-        Invoice invoice2 = new Invoice(
+        invoiceSecond = new Invoice(
             (long) 2,
             date,
             new Company(),
@@ -114,12 +115,12 @@ class InMemoryDatabaseTest {
         boolean result = false;
         ArrayList<Invoice> localInvoices = new ArrayList<>();
         localInvoices.add(invoice);
-        localInvoices.add(invoice2);
+        localInvoices.add(invoiceSecond);
 
         inMemory.saveInvoice(invoice);
-        inMemory.saveInvoice(invoice2);
+        inMemory.saveInvoice(invoiceSecond);
         ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
-        if (invoices.containsAll((Collection<?>) invoice) && invoices.containsAll((Collection<?>) invoice2)) {
+        if (invoices.containsAll((Collection<?>) invoice) && invoices.containsAll((Collection<?>) invoiceSecond)) {
             result = true;
         }
 

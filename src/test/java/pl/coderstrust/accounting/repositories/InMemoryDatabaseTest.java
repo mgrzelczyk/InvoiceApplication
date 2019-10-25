@@ -49,9 +49,12 @@ class InMemoryDatabaseTest {
         Invoice savedInvoice = inMemory.saveInvoice(invoice);
         ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
         boolean invoiceExist = invoices.contains(invoice);
+        Long expectedId = 1l;
+        Long resultIt = savedInvoice.getId();
 
         assertNull(savedInvoice);
         assertTrue(invoiceExist);
+        assertEquals(expectedId, resultIt);
     }
 
     @Test

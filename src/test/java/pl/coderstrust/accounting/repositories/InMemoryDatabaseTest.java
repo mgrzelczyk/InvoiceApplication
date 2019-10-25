@@ -39,9 +39,9 @@ class InMemoryDatabaseTest {
     @Test
 
     void shouldCreateInvoice() {
-        Invoice createInvoice = new Invoice();
-        inMemory.invoiceMap = new ConcurrentHashMap<>();
-        assertTrue
+        Invoice expected = new Invoice();
+        Invoice result = inMemory.invoice;
+        assertEquals(expected, result);
     }
 
     @Test

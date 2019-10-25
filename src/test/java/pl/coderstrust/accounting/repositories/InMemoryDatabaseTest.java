@@ -5,7 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,13 +52,45 @@ class InMemoryDatabaseTest {
         Invoice savedInvoice = inMemory.saveInvoice(invoice);
         ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
         boolean invoiceExist = invoices.contains(invoice);
+        Invoice expectedInvoice = new Invoice(2l, null, null, null, null);
+        Invoice resultInvoice = new Invoice();
+        resultInvoice.setId(2l);
+        resultInvoice.setDate(null);
+        resultInvoice.setBuyer(null);
+        resultInvoice.setSeller(null);
+        resultInvoice.setEntries(null);
         Long expectedId = 1l;
         Long resultIt = savedInvoice.getId();
+
 
         assertNull(savedInvoice);
         assertTrue(invoiceExist);
         assertEquals(expectedId, resultIt);
+        assertEquals(expectedInvoice, resultInvoice);
     }
+
+    @Test
+    void shouldReturnSimpleInvoice() {
+        Invoice expectedInvoice = new Invoice(2l, null, null, null, null);
+        Invoice resultInvoice = new Invoice();
+        resultInvoice.setId(2l);
+        resultInvoice.setDate(null);
+        resultInvoice.setBuyer(null);
+        resultInvoice.setSeller(null);
+        resultInvoice.setEntries(null);
+
+        assertEquals(expectedInvoice, resultInvoice);
+    }
+
+    @Test
+    void shouldGetIdInvoice() {
+        Invoice savedInvoice = inMemory.saveInvoice(invoice);
+        Long expectedId = 1l;
+        Long resultIt = savedInvoice.getId();
+
+        assertEquals(expectedId, resultIt);
+    }
+
 
     @Test
     void shouldFindInvoiceById() {

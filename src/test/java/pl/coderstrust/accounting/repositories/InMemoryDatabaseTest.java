@@ -27,7 +27,7 @@ class InMemoryDatabaseTest {
         invoice = new Invoice();
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
         Random random = new Random();
-        invoice.setId((long) 1);
+        invoice.setId(1L);
         invoice.setDate(LocalDateTime.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
@@ -85,7 +85,7 @@ class InMemoryDatabaseTest {
         Invoice secondInvoice = new Invoice();
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
         Random random = new Random();
-        secondInvoice.setId((long) 2);
+        secondInvoice.setId(2L);
         secondInvoice.setDate(LocalDateTime.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,

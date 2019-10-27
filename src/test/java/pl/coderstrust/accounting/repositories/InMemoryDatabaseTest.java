@@ -42,8 +42,8 @@ class InMemoryDatabaseTest {
     @Test
     void shouldCreateInvoice() {
         Invoice expected = testInvoices.get(0);
-        Invoice result = inMemory.saveInvoice(expected);
-        Invoice object = inMemory.findInvoiceById(1L);
+        Invoice result = inMemory.save(expected);
+        Invoice object = inMemory.findById(1L);
 
         assertNull(result);
         assertEquals(expected, object);
@@ -52,8 +52,8 @@ class InMemoryDatabaseTest {
     @Test
     void shouldReturnSimpleInvoice() {
         Invoice expected = testInvoices.get(0);
-        inMemory.saveInvoice(expected);
-        Invoice object = inMemory.findInvoiceById(1L);
+        inMemory.save(expected);
+        Invoice object = inMemory.findById(1L);
         Long objectId = object.getId();
         Long expectedId = expected.getId();
 
@@ -65,8 +65,8 @@ class InMemoryDatabaseTest {
     void shouldFindObjectById() {
         Invoice expected = testInvoices.get(0);
         expected.setId(22L);
-        inMemory.saveInvoice(expected);
-        Invoice object = inMemory.findInvoiceById((long) 1);
+        inMemory.save(expected);
+        Invoice object = inMemory.findById((long) 1);
         Long expectedId = expected.getId();
         Long objectId = object.getId();
 
@@ -74,7 +74,7 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void shouldFindAllnvoices() {
+    void shouldFindAllInvoices() {
         Invoice example = new Invoice();
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
         Random random = new Random();
@@ -90,22 +90,21 @@ class InMemoryDatabaseTest {
         example.setSeller(new Company());
         example.setEntries(invoiceEntries);
         testInvoices.add(example);
-        int counter = 0;
 
         for (Invoice invoice : testInvoices) {
-            inMemory.saveInvoice(invoice);
+            inMemory.save(invoice);
         }
-        List<Invoice> allObjects = inMemory.findAllnvoices();
+        List<Invoice> allObjects = inMemory.findAll();
 
         assertEquals(testInvoices, allObjects);
     }
 
     @Test
     void shouldDeleteByInvoice() {
-        inMemory.saveInvoice(testInvoices.get(0));
-        Invoice deleted = inMemory.deleteByInvoice((long) 1);
+        inMemory.save(testInvoices.get(0));
+        Invoice deleted = inMemory.deleteById((long) 1);
         System.out.println(deleted);
-        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
+        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAll();
 
         boolean contains = invoices.contains(testInvoices.get(0));
 

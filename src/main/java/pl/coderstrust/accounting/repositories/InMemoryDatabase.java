@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import pl.coderstrust.accounting.infrastructure.Database;
 import pl.coderstrust.accounting.model.Invoice;
@@ -14,13 +13,8 @@ import pl.coderstrust.accounting.model.Invoice;
 
 public class InMemoryDatabase implements Database {
 
+    private Map<Long, Invoice> invoiceMap = new HashMap<>();
     private AtomicLong counter = new AtomicLong(0);
-    public Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
-    Invoice invoice = new Invoice();
-
-    Invoice createInvoice(){
-        return invoice;
-    }
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {

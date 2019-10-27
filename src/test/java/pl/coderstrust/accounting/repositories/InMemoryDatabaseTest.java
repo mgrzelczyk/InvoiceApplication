@@ -29,7 +29,7 @@ class InMemoryDatabaseTest {
         example.setDate(LocalDateTime.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
-            random.nextInt(30) + 1,
+            random.nextInt(25) + 1,
             random.nextInt(12),
             random.nextInt(59) + 1,
             random.nextInt(59) + 1));
@@ -82,7 +82,7 @@ class InMemoryDatabaseTest {
         example.setDate(LocalDateTime.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
-            random.nextInt(30) + 1,
+            random.nextInt(25) + 1,
             random.nextInt(12),
             random.nextInt(59) + 1,
             random.nextInt(59) + 1));

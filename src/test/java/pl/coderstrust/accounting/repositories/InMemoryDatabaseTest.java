@@ -110,7 +110,7 @@ class InMemoryDatabaseTest {
     @Test
     void shouldDeleteByInvoice() {
         inMemory.saveInvoice(testInvoices.get(0));
-        Invoice deleted = inMemory.deleteByInvoice((long) 1);
+        Invoice deleted = inMemory.deleteById((long) 1);
         System.out.println(deleted);
         ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
 

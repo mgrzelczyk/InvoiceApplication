@@ -17,17 +17,17 @@ public class InMemoryDatabase implements InvoiceDatabase {
     private AtomicLong counter = new AtomicLong(0);
 
     @Override
-    public Invoice save(Invoice invoice) {
+    public Invoice saveInvoice(Invoice invoice) {
         return invoiceMap.put(counter.incrementAndGet(), invoice);
     }
 
     @Override
-    public Invoice findById(Long id) {
+    public Invoice findInvoiceById(Long id) {
         return invoiceMap.get(id);
     }
 
     @Override
-    public List<Invoice> findAll() {
+    public List<Invoice> findAllnvoices() {
         Collection<Invoice> values = invoiceMap.values();
         return new ArrayList<>(values);
     }

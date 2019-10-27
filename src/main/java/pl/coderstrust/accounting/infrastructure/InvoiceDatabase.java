@@ -5,11 +5,11 @@ import pl.coderstrust.accounting.model.Invoice;
 
 public interface InvoiceDatabase {
 
-    Invoice save(Invoice invoice);
+    Invoice saveInvoice(Invoice invoice);
 
-    Invoice findById(Long id);
+    Invoice findInvoiceById(Long id);
 
-    List<Invoice> findAll();
+    List<Invoice> findAllnvoices();
 
     Invoice deleteById(Long id);
 

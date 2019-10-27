@@ -2,6 +2,7 @@ package pl.coderstrust.accounting.repositories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalDateTime;
@@ -18,47 +19,53 @@ class InMemoryDatabaseTest {
 
     private static List<Invoice> testInvoices = new ArrayList<>();
     private InMemoryDatabase inMemory;
+    private Invoice invoice;
 
     @BeforeEach()
     void createDataForTest() {
         inMemory = new InMemoryDatabase();
-        Invoice example = new Invoice();
+        invoice = new Invoice();
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
         Random random = new Random();
-        example.setId((long) 1);
-        example.setDate(LocalDateTime.of(
+        invoice.setId((long) 1);
+        invoice.setDate(LocalDateTime.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
             random.nextInt(25) + 1,
             random.nextInt(12),
             random.nextInt(59) + 1,
             random.nextInt(59) + 1));
-        example.setBuyer(new Company());
-        example.setSeller(new Company());
-        example.setEntries(invoiceEntries);
-        testInvoices.add(example);
+        invoice.setBuyer(new Company());
+        invoice.setSeller(new Company());
+        invoice.setEntries(invoiceEntries);
+        testInvoices.add(invoice);
+    }
+
+    @Test
+    void shouldCheckInvoice() {
+        assertNotNull(invoice);
     }
 
     @Test
     void shouldCreateInvoice() {
         Invoice expected = testInvoices.get(0);
         Invoice result = inMemory.saveInvoice(expected);
-        Invoice object = inMemory.findInvoiceById(1L);
+        Invoice found = inMemory.findInvoiceById(1L);
 
         assertNull(result);
-        assertEquals(expected, object);
+        assertEquals(expected, found);
     }
 
     @Test
     void shouldReturnSimpleInvoice() {
         Invoice expected = testInvoices.get(0);
         inMemory.saveInvoice(expected);
-        Invoice object = inMemory.findInvoiceById(1L);
-        Long objectId = object.getId();
+        Invoice found = inMemory.findInvoiceById(1L);
+        Long foundId = found.getId();
         Long expectedId = expected.getId();
 
-        assertEquals(expectedId, objectId);
-        assertEquals(expected, object);
+        assertEquals(expectedId, foundId);
+        assertEquals(expected, found);
     }
 
     @Test
@@ -66,34 +73,34 @@ class InMemoryDatabaseTest {
         Invoice expected = testInvoices.get(0);
         expected.setId(22L);
         inMemory.saveInvoice(expected);
-        Invoice object = inMemory.findInvoiceById((long) 1);
+        Invoice found = inMemory.findInvoiceById((long) 1);
         Long expectedId = expected.getId();
-        Long objectId = object.getId();
+        Long foundId = found.getId();
 
-        assertEquals(expectedId, objectId);
+        assertEquals(expectedId, foundId);
     }
 
     @Test
     void shouldFindAllnvoices() {
-        Invoice example = new Invoice();
+        Invoice secondInvoice = new Invoice();
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
         Random random = new Random();
-        example.setId((long) 2);
-        example.setDate(LocalDateTime.of(
+        secondInvoice.setId((long) 2);
+        secondInvoice.setDate(LocalDateTime.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
             random.nextInt(25) + 1,
             random.nextInt(12),
             random.nextInt(59) + 1,
             random.nextInt(59) + 1));
-        example.setBuyer(new Company());
-        example.setSeller(new Company());
-        example.setEntries(invoiceEntries);
-        testInvoices.add(example);
+        secondInvoice.setBuyer(new Company());
+        secondInvoice.setSeller(new Company());
+        secondInvoice.setEntries(invoiceEntries);
+        testInvoices.add(secondInvoice);
         int counter = 0;
 
-        for (Invoice invoice : testInvoices) {
-            inMemory.saveInvoice(invoice);
+        for (Invoice inv : testInvoices) {
+            inMemory.saveInvoice(inv);
         }
         List<Invoice> allObjects = inMemory.findAllnvoices();
 

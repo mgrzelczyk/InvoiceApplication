@@ -1,16 +1,16 @@
 package pl.coderstrust.accounting.repositories;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.stereotype.Repository;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
-
+@Repository
 public class InMemoryDatabase implements InvoiceDatabase {
 
     private Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();

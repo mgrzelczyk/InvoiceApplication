@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+//import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.model.InvoiceEntry;
@@ -21,7 +22,7 @@ class InMemoryDatabaseTest {
     private InMemoryDatabase inMemory;
     private Invoice invoice;
 
-    @BeforeEach()
+    @Before
     void createDataForTest() {
         inMemory = new InMemoryDatabase();
         invoice = new Invoice();

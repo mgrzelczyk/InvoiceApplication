@@ -1,39 +1,36 @@
 package pl.coderstrust.accounting.repositories;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Repository;
-import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
+import pl.coderstrust.accounting.services.InvoiceBook;
 
 @Repository
-public class InMemoryDatabase implements InvoiceDatabase {
+public class InMemoryDatabase {
 
     private Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
     private AtomicLong counter = new AtomicLong(0);
+    private Logger log = Logger.getLogger(InvoiceBook.class.getName());
 
-    @Override
     public Invoice saveInvoice(Invoice invoice) {
-        return invoiceMap.put(counter.incrementAndGet(), invoice);
+        Long id = counter.incrementAndGet();
+        log.info(id + "");
+        return invoiceMap.put(id, invoice);
     }
 
-    @Override
     public Invoice findInvoiceById(Long id) {
         return invoiceMap.get(id);
     }
 
-    @Override
-    public List<Invoice> findAllnvoices() {
-        Collection<Invoice> values = invoiceMap.values();
-        return new ArrayList<>(values);
+    public Collection<Invoice> findAllnvoices() {
+        return (Collection<Invoice>) invoiceMap;
     }
 
-    @Override
-    public Invoice deleteById(Long id) {
+    public Invoice deleteInvoiceById(Long id) {
         return invoiceMap.remove(id);
     }
 

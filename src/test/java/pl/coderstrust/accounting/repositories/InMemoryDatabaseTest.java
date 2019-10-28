@@ -3,14 +3,13 @@ package pl.coderstrust.accounting.repositories;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import org.junit.Before;
-//import org.junit.jupiter.api.Test;
 import org.junit.Test;
 import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
@@ -50,10 +49,9 @@ class InMemoryDatabaseTest {
     @Test
     void shouldCreateInvoice() {
         Invoice expected = testInvoices.get(0);
-        Invoice result = inMemory.saveInvoice(expected);
+        inMemory.saveInvoice(expected);
         Invoice found = inMemory.findInvoiceById(1L);
 
-        assertNull(result);
         assertEquals(expected, found);
     }
 
@@ -103,7 +101,8 @@ class InMemoryDatabaseTest {
         for (Invoice inv : testInvoices) {
             inMemory.saveInvoice(inv);
         }
-        List<Invoice> allObjects = inMemory.findAllnvoices();
+        Collection<Invoice> allObjects = inMemory.findAllnvoices();
+        List<Invoice> allInvoices = new ArrayList<>(allObjects);
 
         assertEquals(testInvoices, allObjects);
     }
@@ -111,7 +110,7 @@ class InMemoryDatabaseTest {
     @Test
     void shouldDeleteByInvoice() {
         inMemory.saveInvoice(testInvoices.get(0));
-        Invoice deleted = inMemory.deleteById((long) 1);
+        Invoice deleted = inMemory.deleteInvoiceById(1L);
         System.out.println(deleted);
         ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
 

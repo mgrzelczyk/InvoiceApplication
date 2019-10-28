@@ -13,4 +13,6 @@ public interface InvoiceDatabase {
 
     Invoice deleteById(Long id);
 
+    Invoice editInvoice(Invoice invoice);
+
 }

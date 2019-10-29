@@ -19,20 +19,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.repositories.InMemoryDatabase;
 
-
 @ExtendWith(MockitoExtension.class)
 class InvoiceBookTest {
 
-    private Invoice invoiceExpected;
-
     @Mock
     InMemoryDatabase inMemoryDatabase;
-
+    private Invoice invoiceExpected;
     @InjectMocks
     private InvoiceBook invoiceBook;
 
     @BeforeEach
-    private void setUp() {
+    void setUp() {
         invoiceExpected = new Invoice();
         invoiceExpected.setId(1L);
     }
@@ -52,7 +49,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    private void shouldSaveInvoice() throws NullPointerException {
+    void shouldSaveInvoice() throws NullPointerException {
         when(inMemoryDatabase.saveInvoice(invoiceExpected)).thenReturn(invoiceExpected);
 
         Invoice invoiceFound = invoiceBook.saveInvoice(invoiceExpected);
@@ -61,7 +58,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    private void shouldFindInvoiceById() throws NullPointerException {
+    void shouldFindInvoiceById() throws NullPointerException {
         when(inMemoryDatabase.findInvoiceById(2L)).thenReturn(invoiceExpected);
 
         Invoice invoiceFound = invoiceBook.findInvoiceById(2L);
@@ -70,7 +67,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    private void shouldFindId() throws NullPointerException {
+    void shouldFindId() throws NullPointerException {
         when(inMemoryDatabase.findInvoiceById(2L)).thenReturn(invoiceExpected);
 
         Invoice invoiceFound = invoiceBook.findInvoiceById(2L);
@@ -79,7 +76,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    private void shouldFindAllnvoicesListSize3() throws NullPointerException {
+    void shouldFindAllnvoicesListSize3() throws NullPointerException {
         Map<Long, Invoice> invoices = prepareInvoiceData();
 
         when(inMemoryDatabase.findAllnvoices()).thenReturn(invoices);
@@ -90,7 +87,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    private void shouldFindAllInvoiceInRepository() throws NullPointerException {
+    void shouldFindAllInvoiceInRepository() throws NullPointerException {
         Map<Long, Invoice> invoices = prepareInvoiceData();
         List<Invoice> invoicesExpected = new ArrayList<>(invoices.values());
 
@@ -102,7 +99,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    private void shouldDeleteById() throws NullPointerException {
+    void shouldDeleteById() throws NullPointerException {
         when(inMemoryDatabase.deleteInvoiceById(invoiceExpected.getId())).thenReturn(
             invoiceExpected);
 
@@ -112,7 +109,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    private void shouldEditInvoice() throws NullPointerException {
+    void shouldEditInvoice() throws NullPointerException {
         Invoice editedInvoiceExpected = new Invoice();
         editedInvoiceExpected.setId(1L);
         editedInvoiceExpected.setDate(LocalDateTime.now());

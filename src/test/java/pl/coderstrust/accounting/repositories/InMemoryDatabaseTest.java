@@ -73,7 +73,7 @@ class InMemoryDatabaseTest {
         Invoice expected = testInvoices.get(0);
         expected.setId(22L);
         inMemory.saveInvoice(expected);
-        Invoice found = inMemory.findInvoiceById((long) 1);
+        Invoice found = inMemory.findInvoiceById(1L);
         Long expectedId = expected.getId();
         Long foundId = found.getId();
 

@@ -23,27 +23,27 @@ public class InvoiceController {
     }
 
     @RequestMapping(value = "/invoice/", method = RequestMethod.GET)
-    public ResponseEntity<Invoice> findAllInvoices(){
+    public ResponseEntity<Invoice> findAllInvoices() {
         return null;
     }
 
     @RequestMapping(value = "/invoice/{id}", method = RequestMethod.GET)
-    public ResponseEntity<List<Invoice>> findInvoiceById(@PathVariable("id") Long id){
+    public ResponseEntity<List<Invoice>> findInvoiceById(@PathVariable("id") Long id) {
         return null;
     }
 
     @RequestMapping(value = "/invoice/", method = RequestMethod.POST)
-    public ResponseEntity<Void> createInvoice(@RequestBody Invoice invoice){
+    public ResponseEntity<Void> createInvoice(@RequestBody Invoice invoice) {
         return null;
     }
 
     @RequestMapping(value = "/invoice/", method = RequestMethod.PUT)
-    public ResponseEntity<Invoice> editInvoiceById(@RequestBody Invoice invoice){
+    public ResponseEntity<Invoice> editInvoiceById(@RequestBody Invoice invoice) {
         return null;
     }
 
     @RequestMapping(value = "/invoice/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Invoice> deleteInvoiceById(@PathVariable("id") Long id){
+    public ResponseEntity<Invoice> deleteInvoiceById(@PathVariable("id") Long id) {
         return null;
     }
 

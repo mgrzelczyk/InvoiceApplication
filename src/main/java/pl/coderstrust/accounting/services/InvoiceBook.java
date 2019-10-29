@@ -1,9 +1,7 @@
 package pl.coderstrust.accounting.services;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
@@ -13,9 +11,12 @@ import pl.coderstrust.accounting.repositories.InMemoryDatabase;
 @Service
 public class InvoiceBook implements InvoiceDatabase {
 
+    private final InMemoryDatabase inMemoryDatabase;
+
     @Autowired
-    private InMemoryDatabase inMemoryDatabase;
-    private Logger log = Logger.getLogger(InvoiceBook.class.getName());
+    public InvoiceBook(InMemoryDatabase inMemoryDatabase) {
+        this.inMemoryDatabase = inMemoryDatabase;
+    }
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {
@@ -24,41 +25,25 @@ public class InvoiceBook implements InvoiceDatabase {
 
     @Override
     public Invoice findInvoiceById(Long id) {
-        Invoice invoice = inMemoryDatabase.findInvoiceById(id);
-        if(!invoice.equals(null)){
-            return invoice;
-        }
-        log.info("Object not found");
-        return null;
+        return inMemoryDatabase.findInvoiceById(id);
     }
 
     @Override
     public List<Invoice> findAllnvoices() {
-        Collection<Invoice> allInvoice = inMemoryDatabase.findAllnvoices();
-        List<Invoice> invoices = new ArrayList<>(allInvoice);
-        return invoices;
+        return new ArrayList<>(inMemoryDatabase.findAllnvoices().values());
     }
 
     @Override
-    public Invoice deleteById(Long id) {
-        Invoice deleteInvoice = inMemoryDatabase.findInvoiceById(id);
-        if(!deleteInvoice.equals(null)){
-            return inMemoryDatabase.deleteInvoiceById(id);
-        }
-        log.info("Object not found");
-        return null;
+    public Invoice deleteInvoiceById(Long id) {
+        return inMemoryDatabase.deleteInvoiceById(id);
     }
 
     @Override
     public Invoice editInvoice(Invoice invoice) {
-        Invoice editInvoice = inMemoryDatabase.findInvoiceById(invoice.getId());
-        if(!editInvoice.equals(null)){
-            inMemoryDatabase.deleteInvoiceById(invoice.getId());
-            inMemoryDatabase.saveInvoice(invoice);
-            return invoice;
-        }
-        log.info("Object not found");
-        return null;
+        inMemoryDatabase.deleteInvoiceById(invoice.getId());
+        inMemoryDatabase.saveInvoice(invoice);
+        return invoice;
     }
-
 }
+
+

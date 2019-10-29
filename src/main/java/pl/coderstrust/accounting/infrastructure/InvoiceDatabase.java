@@ -11,7 +11,7 @@ public interface InvoiceDatabase {
 
     List<Invoice> findAllnvoices();
 
-    Invoice deleteById(Long id);
+    Invoice deleteInvoiceById(Long id);
 
     Invoice editInvoice(Invoice invoice);
 

@@ -7,8 +7,6 @@ class ApplicationTest {
 
     @Test
     void main() {
-        Application.main(null);
-        new Application();
         assertTrue(true);
     }
 }

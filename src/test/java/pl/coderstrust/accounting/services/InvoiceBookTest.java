@@ -1,8 +1,8 @@
 package pl.coderstrust.accounting.services;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -10,18 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.repositories.InMemoryDatabase;
 
 
-@RunWith(MockitoJUnitRunner.class)
-public class InvoiceBookTest {
+@ExtendWith(MockitoExtension.class)
+class InvoiceBookTest {
 
     private Invoice invoiceExpected;
 
@@ -31,8 +31,8 @@ public class InvoiceBookTest {
     @InjectMocks
     private InvoiceBook invoiceBook;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    private void setUp() {
         invoiceExpected = new Invoice();
         invoiceExpected.setId(1L);
     }
@@ -52,7 +52,7 @@ public class InvoiceBookTest {
     }
 
     @Test
-    public void shouldSaveInvoice() throws NullPointerException {
+    private void shouldSaveInvoice() throws NullPointerException {
         when(inMemoryDatabase.saveInvoice(invoiceExpected)).thenReturn(invoiceExpected);
 
         Invoice invoiceFound = invoiceBook.saveInvoice(invoiceExpected);
@@ -61,7 +61,7 @@ public class InvoiceBookTest {
     }
 
     @Test
-    public void shouldFindInvoiceById() throws NullPointerException {
+    private void shouldFindInvoiceById() throws NullPointerException {
         when(inMemoryDatabase.findInvoiceById(2L)).thenReturn(invoiceExpected);
 
         Invoice invoiceFound = invoiceBook.findInvoiceById(2L);
@@ -70,7 +70,7 @@ public class InvoiceBookTest {
     }
 
     @Test
-    public void shouldFindId() throws NullPointerException {
+    private void shouldFindId() throws NullPointerException {
         when(inMemoryDatabase.findInvoiceById(2L)).thenReturn(invoiceExpected);
 
         Invoice invoiceFound = invoiceBook.findInvoiceById(2L);
@@ -79,7 +79,7 @@ public class InvoiceBookTest {
     }
 
     @Test
-    public void shouldFindAllnvoicesListSize3() throws NullPointerException {
+    private void shouldFindAllnvoicesListSize3() throws NullPointerException {
         Map<Long, Invoice> invoices = prepareInvoiceData();
 
         when(inMemoryDatabase.findAllnvoices()).thenReturn(invoices);
@@ -90,7 +90,7 @@ public class InvoiceBookTest {
     }
 
     @Test
-    public void shouldFindAllInvoiceInRepository() throws NullPointerException {
+    private void shouldFindAllInvoiceInRepository() throws NullPointerException {
         Map<Long, Invoice> invoices = prepareInvoiceData();
         List<Invoice> invoicesExpected = new ArrayList<>(invoices.values());
 
@@ -102,7 +102,7 @@ public class InvoiceBookTest {
     }
 
     @Test
-    public void shouldDeleteById() throws NullPointerException {
+    private void shouldDeleteById() throws NullPointerException {
         when(inMemoryDatabase.deleteInvoiceById(invoiceExpected.getId())).thenReturn(
             invoiceExpected);
 
@@ -112,7 +112,7 @@ public class InvoiceBookTest {
     }
 
     @Test
-    public void shouldEditInvoice() throws NullPointerException {
+    private void shouldEditInvoice() throws NullPointerException {
         Invoice editedInvoiceExpected = new Invoice();
         editedInvoiceExpected.setId(1L);
         editedInvoiceExpected.setDate(LocalDateTime.now());

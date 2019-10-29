@@ -12,6 +12,7 @@
     <junit.jupiter.version>5.3.1</junit.jupiter.version>
     <junit.platform.version>1.3.1</junit.platform.version>
     <spring.test.version>2.2.0.RELEASE</spring.test.version>
+    <junit.vintage.engine>5.5.1</junit.vintage.engine>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -31,6 +32,18 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <version>${spring.test.version}</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>${junit.vintage.engine}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

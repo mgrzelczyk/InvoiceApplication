@@ -18,12 +18,12 @@ import pl.coderstrust.accounting.model.InvoiceEntry;
 class InMemoryDatabaseTest {
 
     private static List<Invoice> testInvoices = new ArrayList<>();
+    private final Random random = new Random();
     private InMemoryDatabase inMemory;
     private Invoice invoice;
 
     @BeforeEach
     void createDataForTest() {
-        Random random = new Random();
         inMemory = new InMemoryDatabase();
         invoice = new Invoice();
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();

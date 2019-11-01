@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
@@ -34,7 +33,7 @@ class InvoiceBookTest {
     @InjectMocks
     private InvoiceBook invoiceBook;
 
-    private Invoice prepareInoice(){
+    private Invoice prepareInoice() {
         Random random = new Random();
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
         Company buyer = new Company(1L, "123123123", "Wrocław 66-666", "Firmex z.o.o");
@@ -54,7 +53,7 @@ class InvoiceBookTest {
         return invoice;
     }
 
-    private Company prepareSaller(){
+    private Company prepareSaller() {
         return new Company(2L, "42342312", "Warszawa 66-666", "Zippo z.o.o");
     }
 
@@ -99,38 +98,33 @@ class InvoiceBookTest {
 
         assertEquals(expected, invoiceSave);
     }
-///////////////////////////////////////////////////////
+
     @Test
     @DisplayName("Save invoice with id where invoice with this same id exists")
     void shouldUpdateInvoiceWithIdWhereInvoiceWithThisSameIdExists() throws NullPointerException {
-        Invoice existed = prepareInoice();
         Invoice invoice = prepareInoice();
         Invoice expected = prepareInoice();
-        existed.setSeller(prepareSaller());
 
-        when(inMemoryDatabase.saveInvoice(existed)).thenReturn(existed);
+        when(inMemoryDatabase.saveInvoice(invoice)).thenReturn(expected);
 
-        inMemoryDatabase.saveInvoice(existed);
+        Invoice invoiceFound = inMemoryDatabase.saveInvoice(invoice);
 
-        Invoice invoice2 = inMemoryDatabase.saveInvoice(invoice);
-
-
-
+        assertEquals(expected, invoiceFound);
     }
-/////////////////////////////////////////////////////////////
+
     @Test
     @DisplayName("save invoice with id but not exist in db")
     void shouldThrowExceptionWhenSavedInvoiceDoesntExistInDatabase() throws NullPointerException {
         Invoice invoice = prepareInoice();
 
         when(inMemoryDatabase.saveInvoice(invoice)).thenReturn(invoice);
-        when(inMemoryDatabase.findInvoiceById(invoice.getId())).thenThrow(NullPointerException.class);
+        when(inMemoryDatabase.findInvoiceById(invoice.getId()))
+            .thenThrow(NullPointerException.class);
 
         Invoice invoiceSave = invoiceBook.saveInvoice(invoice);
 
-        assertThrows(NullPointerException.class, () ->{
-            invoiceBook.findInvoiceById(invoiceSave.getId());
-        });
+        assertThrows(NullPointerException.class,
+            () -> invoiceBook.findInvoiceById(invoiceSave.getId()));
     }
 
     @Test
@@ -140,9 +134,13 @@ class InvoiceBookTest {
 
         when(inMemoryDatabase.saveInvoice(invoice)).thenThrow(NullPointerException.class);
 
-        assertThrows(NullPointerException.class, () -> {
-            invoiceBook.saveInvoice(invoice);
-        });
+        assertThrows(NullPointerException.class, () -> invoiceBook.saveInvoice(invoice));
+    }
+
+    @Test
+    @DisplayName("save null invoice and return null")
+    void shouldNotSaveInvoiceAndReturnNull() throws NullPointerException {
+        assertNull(invoiceBook.saveInvoice(null));
     }
 
     @Test
@@ -175,9 +173,7 @@ class InvoiceBookTest {
     void shouldThrowExceptionWhenInvoiceDoesntExist() throws NullPointerException {
         when(inMemoryDatabase.findInvoiceById(1L)).thenThrow(NullPointerException.class);
 
-        assertThrows(NullPointerException.class, () -> {
-            invoiceBook.findInvoiceById(1L);
-        });
+        assertThrows(NullPointerException.class, () -> invoiceBook.findInvoiceById(1L));
     }
 
     @Test
@@ -219,6 +215,16 @@ class InvoiceBookTest {
     }
 
     @Test
+    @DisplayName("Not find all invoices")
+    void shouldNotFindAllInvoiceInRepository() throws NullPointerException {
+        Map<Long, Invoice> invoices = new ConcurrentHashMap<>();
+
+        when(inMemoryDatabase.findAllnvoices()).thenReturn(invoices);
+
+        assertNull(invoiceBook.findAllnvoices());
+    }
+
+    @Test
     @DisplayName("Delete by id")
     void shouldDeleteById() throws NullPointerException {
         Invoice invoice = prepareInoice();
@@ -250,11 +256,11 @@ class InvoiceBookTest {
     void shouldThrowExceptionWhenDeleteInvoiceNotExist() throws NullPointerException {
         Invoice invoice = prepareInoice();
 
-        when(inMemoryDatabase.findInvoiceById(invoice.getId())).thenThrow(NullPointerException.class);
+        when(inMemoryDatabase.findInvoiceById(invoice.getId()))
+            .thenThrow(NullPointerException.class);
 
-        assertThrows(NullPointerException.class, () -> {
-            invoiceBook.deleteInvoiceById(invoice.getId());
-        });
+        assertThrows(NullPointerException.class,
+            () -> invoiceBook.deleteInvoiceById(invoice.getId()));
     }
 
     @Test
@@ -262,21 +268,15 @@ class InvoiceBookTest {
     void shouldEditInvoice() throws NullPointerException {
         Invoice invoice = prepareInoice();
         Invoice toEdit = prepareInoice();
+        Invoice expected = prepareInoice();
         toEdit.setSeller(prepareSaller());
 
+        when(inMemoryDatabase.findInvoiceById(toEdit.getId())).thenReturn(invoice);
+        when(inMemoryDatabase.saveInvoice(toEdit)).thenReturn(expected);
 
-        Invoice expected = prepareInoice();
+        Invoice invoiceEdit = invoiceBook.editInvoice(toEdit);
 
-        when(inMemoryDatabase.findInvoiceById(toEdit.getId()))
-            .thenReturn(invoice);
-
-        when(inMemoryDatabase.saveInvoice(toEdit)).thenReturn(toEdit);
-
-        //Invoice dfgdfg = invoiceBook.editInvoice(toEdit);
-
-        //Invoice invoiceAfterEdit = invoiceBook.editInvoice(expected);
-
-        //assertEquals(expected, invoiceAfterEdit);
+        assertEquals(expected, invoiceEdit);
     }
 
     @Test
@@ -287,9 +287,17 @@ class InvoiceBookTest {
         when(inMemoryDatabase.findInvoiceById(toEdit.getId()))
             .thenThrow(new NullPointerException("Invoice doesn't exist"));
 
-        assertThrows(NullPointerException.class, () -> {
-            invoiceBook.editInvoice(toEdit);
-        });
+        assertThrows(NullPointerException.class, () -> invoiceBook.editInvoice(toEdit));
+    }
+
+    @Test
+    @DisplayName("Edit null invoice return null")
+    void shouldNotEditAndReturnNull() throws NullPointerException {
+        Invoice invoice = prepareInoice();
+
+        when(inMemoryDatabase.findInvoiceById(invoice.getId())).thenReturn(null);
+
+        assertNull(invoiceBook.editInvoice(invoice));
     }
 
 }

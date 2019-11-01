@@ -16,25 +16,44 @@ public class InvoiceBook {
     }
 
     public Invoice saveInvoice(Invoice invoice) {
-        return invoiceDatabase.saveInvoice(invoice);
+        if (invoice != null) {
+            return invoiceDatabase.saveInvoice(invoice);
+        }
+        return null;
     }
 
     public Invoice findInvoiceById(Long id) {
-        return invoiceDatabase.findInvoiceById(id);
+        Invoice invoiceFound = invoiceDatabase.findInvoiceById(id);
+        if (invoiceFound != null) {
+            return invoiceFound;
+        }
+        return null;
     }
 
     public List<Invoice> findAllnvoices() {
-        return new ArrayList<>(invoiceDatabase.findAllnvoices().values());
+        ArrayList<Invoice> invoices = new ArrayList<>(invoiceDatabase.findAllnvoices().values());
+        if (!invoices.isEmpty()) {
+            return invoices;
+        }
+        return null;
     }
 
     public Invoice deleteInvoiceById(Long id) {
-        return invoiceDatabase.deleteInvoiceById(id);
+        Invoice invoiceFound = invoiceDatabase.findInvoiceById(id);
+        if (invoiceFound != null) {
+            return invoiceDatabase.deleteInvoiceById(id);
+        }
+        return null;
     }
 
     public Invoice editInvoice(Invoice invoice) {
-        invoiceDatabase.deleteInvoiceById(invoice.getId());
-        invoiceDatabase.saveInvoice(invoice);
-        return invoice;
+        Invoice invoiceFound = invoiceDatabase.findInvoiceById(invoice.getId());
+        if (invoiceFound != null) {
+            invoiceDatabase.deleteInvoiceById(invoice.getId());
+            invoiceDatabase.saveInvoice(invoice);
+            return invoice;
+        }
+        return null;
     }
 
 }

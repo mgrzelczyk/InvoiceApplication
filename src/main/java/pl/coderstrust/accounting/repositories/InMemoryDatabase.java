@@ -3,11 +3,9 @@ package pl.coderstrust.accounting.repositories;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.stereotype.Repository;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
-@Repository
 public class InMemoryDatabase implements InvoiceDatabase {
 
     private Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
@@ -15,8 +13,7 @@ public class InMemoryDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {
-        Long id = counter.incrementAndGet();
-        return invoiceMap.put(id, invoice);
+        return invoiceMap.put(counter.incrementAndGet(), invoice);
     }
 
     @Override

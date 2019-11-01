@@ -3,6 +3,7 @@ package pl.coderstrust.accounting.services;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -58,12 +59,28 @@ class InvoiceBookTest {
     }
 
     @Test
+    void shouldSaveInvoiceButReturnNull() throws NullPointerException {
+        Invoice invoiceFound = invoiceBook.saveInvoice(null);
+
+        assertNull(invoiceFound);
+    }
+
+    @Test
     void shouldFindInvoiceById() throws NullPointerException {
         when(inMemoryDatabase.findInvoiceById(2L)).thenReturn(invoiceExpected);
 
         Invoice invoiceFound = invoiceBook.findInvoiceById(2L);
 
         assertEquals(invoiceExpected, invoiceFound);
+    }
+
+    @Test
+    void shouldDontFindInvoiceById() throws NullPointerException {
+        when(inMemoryDatabase.findInvoiceById(2L)).thenReturn(null);
+
+        Invoice invoiceFound = invoiceBook.findInvoiceById(2L);
+
+        assertNull(invoiceFound);
     }
 
     @Test
@@ -100,6 +117,7 @@ class InvoiceBookTest {
 
     @Test
     void shouldDeleteById() throws NullPointerException {
+        when(inMemoryDatabase.findInvoiceById(invoiceExpected.getId())).thenReturn(invoiceExpected);
         when(inMemoryDatabase.deleteInvoiceById(invoiceExpected.getId())).thenReturn(
             invoiceExpected);
 
@@ -109,17 +127,42 @@ class InvoiceBookTest {
     }
 
     @Test
+    void shouldDontFindObjectForDeleteById() throws NullPointerException {
+        when(inMemoryDatabase.findInvoiceById(invoiceExpected.getId())).thenReturn(null);
+
+        Invoice deletedInvoice = invoiceBook.deleteInvoiceById(invoiceExpected.getId());
+
+        assertNull(deletedInvoice);
+    }
+
+    @Test
     void shouldEditInvoice() throws NullPointerException {
         Invoice editedInvoiceExpected = new Invoice();
         editedInvoiceExpected.setId(1L);
         editedInvoiceExpected.setDate(LocalDateTime.now());
 
+        when(inMemoryDatabase.findInvoiceById(editedInvoiceExpected.getId()))
+            .thenReturn(editedInvoiceExpected);
         when(inMemoryDatabase.deleteInvoiceById(1L)).thenReturn(null);
         when(inMemoryDatabase.saveInvoice(editedInvoiceExpected)).thenReturn(editedInvoiceExpected);
 
         Invoice invoiceAfterEdit = invoiceBook.editInvoice(editedInvoiceExpected);
 
         assertEquals(editedInvoiceExpected, invoiceAfterEdit);
+    }
+
+    @Test
+    void shouldDontFindInvoiceForEditInvoice() throws NullPointerException {
+        Invoice editedInvoiceExpected = new Invoice();
+        editedInvoiceExpected.setId(1L);
+        editedInvoiceExpected.setDate(LocalDateTime.now());
+
+        when(inMemoryDatabase.findInvoiceById(editedInvoiceExpected.getId()))
+            .thenReturn(null);
+
+        Invoice invoiceAfterEdit = invoiceBook.editInvoice(editedInvoiceExpected);
+
+        assertNull(invoiceAfterEdit);
     }
 
 }

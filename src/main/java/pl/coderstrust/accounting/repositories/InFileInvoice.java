@@ -22,8 +22,6 @@ class InFileInvoice extends Invoice {
 
     InFileInvoice(Invoice invoice, boolean deleted){
         this(invoice.getId(), invoice.getDate(), invoice.getBuyer(), invoice.getSeller(), invoice.getEntries(), deleted);
-        //TODO: listy Invoice Entry, obiekty powinny być kopiowane; nowa lista ma przepiswać Invoice lub immutable!
-        // extends może dawać błąd przy ObjectMapper;
     }
 
     boolean isDeleted() {

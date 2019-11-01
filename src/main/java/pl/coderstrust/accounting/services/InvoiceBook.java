@@ -49,9 +49,7 @@ public class InvoiceBook {
     public Invoice editInvoice(Invoice invoice) {
         Invoice invoiceFound = invoiceDatabase.findInvoiceById(invoice.getId());
         if (invoiceFound != null) {
-            invoiceDatabase.deleteInvoiceById(invoice.getId());
-            invoiceDatabase.saveInvoice(invoice);
-            return invoice;
+            return invoiceDatabase.saveInvoice(invoice);
         }
         return null;
     }

@@ -9,10 +9,7 @@ import pl.coderstrust.accounting.repositories.InMemoryDatabase;
 public class RepositoryConfiguration {
 
     @Bean
-    @ConditionalOnProperty(
-        prefix = "repository.enable",
-        name = "filedatabase",
-        havingValue = "true")
+    @ConditionalOnProperty(name = "database", havingValue = "in-memory")
     public InMemoryDatabase inMemoryDatabase() {
         return new InMemoryDatabase();
     }

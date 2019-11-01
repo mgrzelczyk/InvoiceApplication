@@ -10,7 +10,7 @@ public interface InvoiceDatabase {
 
     Invoice findInvoiceById(Long id) throws IOException;
 
-    List<String> findAllnvoices();
+    List<Invoice> findAllnvoices();
 
     Invoice deleteByInvoice(Long id) throws IOException;
 

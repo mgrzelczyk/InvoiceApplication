@@ -7,6 +7,7 @@ import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.model.InvoiceEntry;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,30 +20,29 @@ class InFileDatabaseTest {
     private Invoice invoiceSecond;
     private String DATABASE_FILE_NAME = "database.db";
 
-//    @BeforeEach
-//    void setUp() {
-//        LocalDateTime date = LocalDateTime.of(2020, 1, 1, 1, 1, 1);
-//        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-//        invoice = new Invoice(
-//            2L,
-//            date,
-//            new Company(),
-//            new Company(),
-//            invoiceEntries);
-//        inFileDatabase = new InFileDatabase();
-//    }
+    @BeforeEach
+    void setUp() {
+        LocalDateTime date = LocalDateTime.of(2020, 1, 1, 1, 1, 1);
+        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
+        invoice = new Invoice(
+            2L,
+            date,
+            new Company(),
+            new Company(),
+            invoiceEntries);
+    }
 
-//    @Test
-//    void shouldCreateInvoice() {
-//        Invoice expected = new Invoice(null, null, null, null, null);
-//        Invoice result = inFileDatabase.invoice;
-//        assertEquals(expected, result);
-//    }
+    @Test
+    void shouldCreateInvoice() throws IOException {
+        Invoice expected = new Invoice(null, null, null, null, null);
+        Invoice result = inFileDatabase.findInvoiceById(null);
+        assertEquals(expected, result);
+    }
 
     @Test
     void shouldSaveInvoice() {
         Invoice savedInvoice = inFileDatabase.saveInvoice(invoice);
-        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inFileDatabase.findAllnvoices();
+        List<String> invoices = inFileDatabase.findAllnvoices();;
         boolean invoiceExist = invoices.contains(invoice);
         Invoice expectedInvoice = new Invoice(2l, null, null, null, null);
         Invoice resultInvoice = new Invoice();
@@ -85,7 +85,7 @@ class InFileDatabaseTest {
 
 
     @Test
-    void shouldFindInvoiceById() {
+    void shouldFindInvoiceById() throws IOException {
         inFileDatabase.saveInvoice(this.invoice);
         Invoice invoiceById = inFileDatabase.findInvoiceById((long) 1);
 
@@ -109,7 +109,7 @@ class InFileDatabaseTest {
 
         inFileDatabase.saveInvoice(invoice);
         inFileDatabase.saveInvoice(invoiceSecond);
-        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inFileDatabase.findAllnvoices();
+        List<String> invoices = inFileDatabase.findAllnvoices();;
         if (invoices.containsAll((Collection<?>) invoice) && invoices.containsAll((Collection<?>) invoiceSecond)) {
             result = true;
         }
@@ -118,11 +118,11 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldDeleteByInvoice() {
+    void shouldDeleteByInvoice() throws IOException {
         inFileDatabase.saveInvoice(invoice);
         Invoice deleted = inFileDatabase.deleteByInvoice((long) 1);
         System.out.println(deleted);
-        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inFileDatabase.findAllnvoices();
+        List<String> invoices = inFileDatabase.findAllnvoices();
 
         boolean contains = invoices.contains(this.invoice);
 

@@ -2,7 +2,7 @@ package pl.coderstrust.accounting.repositories;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pl.coderstrust.accounting.infrastructure.Database;
+import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class InFileDatabase implements Database {
+public class InFileDatabase implements InvoiceDatabase {
 
     private AtomicLong counter = new AtomicLong(0);
     private final FileHelper fileHelper;
@@ -63,7 +63,6 @@ public class InFileDatabase implements Database {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            // TODO: Update 2. update invoice którego nie ma w bazie; błąd wyświetlić
         }
         return invoice;
     }
@@ -104,7 +103,7 @@ public class InFileDatabase implements Database {
     }
 
     @Override
-    public List<String> findAllnvoices() {
+    public List<Invoice> findAllnvoices() {
         List<String> invoicesList = new ArrayList<>();
         ((ArrayList<String>) invoicesList).clone();
         try {

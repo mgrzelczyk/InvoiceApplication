@@ -3,18 +3,20 @@ package pl.coderstrust.accounting.repositories;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
+import pl.coderstrust.accounting.infrastructure.Database;
 import pl.coderstrust.accounting.model.Invoice;
 
 
-public class InMemoryDatabase implements InvoiceDatabase {
+public class InMemoryDatabase implements Database {
 
-    private Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
     private AtomicLong counter = new AtomicLong(0);
+    public Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
+    Invoice invoice = new Invoice();
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {
@@ -33,7 +35,7 @@ public class InMemoryDatabase implements InvoiceDatabase {
     }
 
     @Override
-    public Invoice deleteById(Long id) {
+    public Invoice deleteByInvoice(Long id) {
         return invoiceMap.remove(id);
     }
 

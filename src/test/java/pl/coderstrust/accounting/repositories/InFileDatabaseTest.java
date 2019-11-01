@@ -1,57 +1,48 @@
 package pl.coderstrust.accounting.repositories;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.model.InvoiceEntry;
 
-class InMemoryDatabaseTest {
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+class InFileDatabaseTest {
 
     private Invoice invoice;
-    private InMemoryDatabase inMemory;
+    private InFileDatabase inFileDatabase;
     private Invoice invoiceSecond;
+    private String DATABASE_FILE_NAME = "database.db";
 
-    @BeforeEach
-    void setUp() {
-        LocalDateTime date = LocalDateTime.of(2020, 1, 1, 1, 1, 1);
-        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-        invoice = new Invoice(
-            2L,
-            date,
-            new Company(),
-            new Company(),
-            invoiceEntries);
-        inMemory = new InMemoryDatabase();
-    }
+//    @BeforeEach
+//    void setUp() {
+//        LocalDateTime date = LocalDateTime.of(2020, 1, 1, 1, 1, 1);
+//        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
+//        invoice = new Invoice(
+//            2L,
+//            date,
+//            new Company(),
+//            new Company(),
+//            invoiceEntries);
+//        inFileDatabase = new InFileDatabase();
+//    }
 
-    @Test
-    void shouldCreateInvoice() {
-        Invoice expected = new Invoice();
-        Invoice result = inMemory.invoice;
-        assertEquals(expected, result);
-    }
+//    @Test
+//    void shouldCreateInvoice() {
+//        Invoice expected = new Invoice(null, null, null, null, null);
+//        Invoice result = inFileDatabase.invoice;
+//        assertEquals(expected, result);
+//    }
 
     @Test
     void shouldSaveInvoice() {
-        Invoice savedInvoice = inMemory.saveInvoice(invoice);
-        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
+        Invoice savedInvoice = inFileDatabase.saveInvoice(invoice);
+        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inFileDatabase.findAllnvoices();
         boolean invoiceExist = invoices.contains(invoice);
         Invoice expectedInvoice = new Invoice(2l, null, null, null, null);
         Invoice resultInvoice = new Invoice();
@@ -85,7 +76,7 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldGetIdInvoice() {
-        Invoice savedInvoice = inMemory.saveInvoice(invoice);
+        Invoice savedInvoice = inFileDatabase.saveInvoice(invoice);
         Long expectedId = 1l;
         Long resultIt = savedInvoice.getId();
 
@@ -95,8 +86,8 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldFindInvoiceById() {
-        inMemory.saveInvoice(this.invoice);
-        Invoice invoiceById = inMemory.findInvoiceById((long) 1);
+        inFileDatabase.saveInvoice(this.invoice);
+        Invoice invoiceById = inFileDatabase.findInvoiceById((long) 1);
 
         assertEquals(invoice, invoiceById);
     }
@@ -106,7 +97,7 @@ class InMemoryDatabaseTest {
         LocalDateTime date = LocalDateTime.of(2020, 2, 3, 4, 1, 1);
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
         invoiceSecond = new Invoice(
-            (long) 2,
+            2L,
             date,
             new Company(),
             new Company(),
@@ -116,28 +107,26 @@ class InMemoryDatabaseTest {
         localInvoices.add(invoice);
         localInvoices.add(invoiceSecond);
 
-        inMemory.saveInvoice(invoice);
-        inMemory.saveInvoice(invoiceSecond);
-        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
+        inFileDatabase.saveInvoice(invoice);
+        inFileDatabase.saveInvoice(invoiceSecond);
+        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inFileDatabase.findAllnvoices();
         if (invoices.containsAll((Collection<?>) invoice) && invoices.containsAll((Collection<?>) invoiceSecond)) {
             result = true;
         }
-
         assertTrue(result);
         assertEquals(localInvoices, invoices);
     }
 
     @Test
     void shouldDeleteByInvoice() {
-        inMemory.saveInvoice(invoice);
-        Invoice deleted = inMemory.deleteByInvoice((long) 1);
+        inFileDatabase.saveInvoice(invoice);
+        Invoice deleted = inFileDatabase.deleteByInvoice((long) 1);
         System.out.println(deleted);
-        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inMemory.findAllnvoices();
+        ArrayList<Invoice> invoices = (ArrayList<Invoice>) inFileDatabase.findAllnvoices();
 
         boolean contains = invoices.contains(this.invoice);
 
         assertFalse(contains);
         assertEquals(invoice, deleted);
     }
-
 }

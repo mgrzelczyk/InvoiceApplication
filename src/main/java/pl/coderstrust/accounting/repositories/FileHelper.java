@@ -1,0 +1,49 @@
+package pl.coderstrust.accounting.repositories;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
+
+public class FileHelper {
+
+    private final String DATABASE_FILE_NAME;
+
+    public FileHelper(String DATABASE_FILE_NAME) {
+        if (DATABASE_FILE_NAME == null) {
+            throw new IllegalArgumentException("File database cannot be null.");
+        }
+        this.DATABASE_FILE_NAME = DATABASE_FILE_NAME;
+    }
+
+    public List<String> readLinesFromFile() throws IOException {
+        List<String> result = new ArrayList<>();
+        try (Scanner scanner = new Scanner(new File(DATABASE_FILE_NAME))) {
+            while (scanner.hasNextLine()) {
+                result.add(scanner.nextLine());
+            }
+        }
+        return result;
+    }
+
+    public void writeLinesToFile(List<String> lines) throws IOException {
+        if (lines == null) {
+            throw new IllegalArgumentException("Lines cannot be null.");
+        }
+        try (FileWriter writer = new FileWriter(DATABASE_FILE_NAME)) {
+            for (String str: lines) {
+                writer.write(str);
+            }
+        }
+    }
+
+    public void writeLineToFile(String line) throws IOException {
+        if (line == null) {
+            throw new IllegalArgumentException("Line cannot be null.");
+        }
+        this.writeLinesToFile(Collections.singletonList(line));
+    }
+}

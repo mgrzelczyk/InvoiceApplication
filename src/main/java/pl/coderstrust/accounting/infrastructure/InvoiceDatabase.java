@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import pl.coderstrust.accounting.model.Invoice;
 
-public interface Database {
+public interface InvoiceDatabase {
 
     Invoice saveInvoice(Invoice invoice);
 

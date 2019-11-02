@@ -111,7 +111,7 @@ public class InFileDatabase implements InvoiceDatabase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return invoicesList;
+        return null;
     }
 
     @Override

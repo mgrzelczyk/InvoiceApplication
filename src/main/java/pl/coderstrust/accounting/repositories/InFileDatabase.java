@@ -18,6 +18,7 @@ public class InFileDatabase implements InvoiceDatabase {
     private AtomicLong counter = new AtomicLong(0);
     private final FileHelper fileHelper;
     private final ObjectMapper objectMapper;
+    private Object Invoice;
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) {
         this.fileHelper = fileHelper;
@@ -111,7 +112,7 @@ public class InFileDatabase implements InvoiceDatabase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return (List<pl.coderstrust.accounting.model.Invoice>) Invoice;
     }
 
     @Override

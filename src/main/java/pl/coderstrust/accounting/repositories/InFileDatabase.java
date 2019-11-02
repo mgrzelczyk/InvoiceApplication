@@ -41,24 +41,24 @@ public class InFileDatabase implements InvoiceDatabase {
                 Map<Long, InFileInvoice> database = new HashMap<>();
                 Map<Long, InFileInvoice> databaseCopy = new HashMap<>(database);
                 inFileInvoices.forEach(inFileInvoice -> databaseCopy.put(inFileInvoice.getId(), inFileInvoice));
-                Long lastID = Collections.max(databaseCopy.keySet());
+                Long lastId = Collections.max(databaseCopy.keySet());
                 InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
-                inFileInvoice.setId(lastID + 1L);
+                inFileInvoice.setId(lastId + 1L);
                 String inFilenvoiceJSON = objectMapper.writeValueAsString(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJSON);
-                inFileInvoice.setId(getLastId(lastID));
-                String inFilenvoiceJSONLastID = objectMapper.writeValueAsString(inFileInvoice);
-                fileHelper.writeLineToFile(inFilenvoiceJSONLastID);
+                inFileInvoice.setId(getLastId(lastId));
+                String inFilenvoiceJsonLastId = objectMapper.writeValueAsString(inFileInvoice);
+                fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         } else {
             InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
-            String inFilenvoiceJSON = null;
+            String inFilenvoiceJson = null;
             try {
-                inFilenvoiceJSON = objectMapper.writeValueAsString(inFileInvoice);
-                fileHelper.writeLineToFile(inFilenvoiceJSON);
+                inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
+                fileHelper.writeLineToFile(inFilenvoiceJson);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -76,8 +76,8 @@ public class InFileDatabase implements InvoiceDatabase {
         Map<Long, InFileInvoice> database = new HashMap<>();
         Map<Long, InFileInvoice> databaseCopy = new HashMap<>(database);
 
-        Long lastID = Collections.max(databaseCopy.keySet());
-        inFileInvoice.setId(lastID);
+        Long lastId = Collections.max(databaseCopy.keySet());
+        inFileInvoice.setId(lastId);
         return id;
     }
 
@@ -124,9 +124,9 @@ public class InFileDatabase implements InvoiceDatabase {
 
         fileHelper.readLinesFromFile();
         findInvoiceById(id);
-        Long lastID = Collections.max(databaseCopy.keySet());
+        Long lastId = Collections.max(databaseCopy.keySet());
         InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
-        inFileInvoice.setId(lastID);
+        inFileInvoice.setId(lastId);
         new InFileInvoice(invoice, true);
         saveInvoice(inFileInvoice);
         return invoice;

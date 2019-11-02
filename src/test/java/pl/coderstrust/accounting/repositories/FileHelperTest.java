@@ -1,11 +1,9 @@
 package pl.coderstrust.accounting.repositories;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
-import java.util.Collections;
 
 class FileHelperTest {
 
@@ -16,8 +14,6 @@ class FileHelperTest {
     void setup() {
         fileHelper = new FileHelper(DATABASE_FILE_HELPER);
     }
-
-
 
     @Test
     void readLinesFromFileShouldThrowExceptionForNullFilePath() {
@@ -42,5 +38,4 @@ class FileHelperTest {
                 fileHelper.writeLinesToFile(null);
             });
     }
-
 }

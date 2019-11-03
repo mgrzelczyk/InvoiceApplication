@@ -76,8 +76,8 @@ public class InFileDatabase implements InvoiceDatabase {
         Map<Long, InFileInvoice> database = new HashMap<>();
         Map<Long, InFileInvoice> databaseCopy = new HashMap<>(database);
 
-        Long lastId = Collections.max(databaseCopy.keySet());
-        inFileInvoice.setId(lastId);
+        Long lastID = Collections.max(databaseCopy.keySet());
+        inFileInvoice.setId(lastID);
         return id;
     }
 
@@ -124,10 +124,10 @@ public class InFileDatabase implements InvoiceDatabase {
 
         fileHelper.readLinesFromFile();
         findInvoiceById(id);
-        Long lastId = Collections.max(databaseCopy.keySet());
+        Long lastID = Collections.max(databaseCopy.keySet());
         InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
-        inFileInvoice.setId(lastId);
-        new InFileInvoice(invoice, true);
+        inFileInvoice.setId(lastID);
+        inFileInvoice.setDeleted(true);
         saveInvoice(inFileInvoice);
         return invoice;
     }

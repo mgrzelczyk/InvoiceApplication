@@ -9,7 +9,7 @@ public interface InvoiceDatabase {
 
     Invoice findInvoiceById(Long id);
 
-    Map<Long, Invoice> findAllnvoices();
+    Map<Long, Invoice> findAllInvoices();
 
     Invoice deleteInvoiceById(Long id);
 

@@ -30,8 +30,8 @@ public class InvoiceBook {
         return null;
     }
 
-    public List<Invoice> findAllnvoices() {
-        ArrayList<Invoice> invoices = new ArrayList<>(invoiceDatabase.findAllnvoices().values());
+    public List<Invoice> findAllInvoices() {
+        ArrayList<Invoice> invoices = new ArrayList<>(invoiceDatabase.findAllInvoices().values());
         if (!invoices.isEmpty()) {
             return invoices;
         }

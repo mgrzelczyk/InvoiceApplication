@@ -103,7 +103,7 @@ class InMemoryDatabaseTest {
             inMemory.saveInvoice(inv);
         }
 
-        List<Invoice> allInvoices = new ArrayList<>(inMemory.findAllnvoices().values());
+        List<Invoice> allInvoices = new ArrayList<>(inMemory.findAllInvoices().values());
 
         assertEquals(testInvoices, allInvoices);
     }
@@ -113,7 +113,7 @@ class InMemoryDatabaseTest {
         inMemory.saveInvoice(testInvoices.get(0));
         Invoice deleted = inMemory.deleteInvoiceById(1L);
 
-        List<Invoice> allInvoices = new ArrayList<>(inMemory.findAllnvoices().values());
+        List<Invoice> allInvoices = new ArrayList<>(inMemory.findAllInvoices().values());
         boolean contains = allInvoices.contains(testInvoices.get(0));
 
         assertFalse(contains);

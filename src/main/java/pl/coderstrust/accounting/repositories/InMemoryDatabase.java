@@ -22,7 +22,7 @@ public class InMemoryDatabase implements InvoiceDatabase {
     }
 
     @Override
-    public Map<Long, Invoice> findAllnvoices() {
+    public Map<Long, Invoice> findAllInvoices() {
         return invoiceMap;
     }
 

@@ -37,7 +37,7 @@ class InvoiceBookTest {
         Random random = new Random();
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
         Company buyer = new Company(1L, "123123123", "Wrocław 66-666", "Firmex z.o.o");
-        Company saller = new Company(2L, "987567888", "Gdynia 66-666", "Szczupak z.o.o");
+        Company seller = new Company(2L, "987567888", "Gdynia 66-666", "Szczupak z.o.o");
         Invoice invoice = new Invoice();
         invoice.setId(9L);
         invoice.setDate(LocalDateTime.of(
@@ -48,7 +48,7 @@ class InvoiceBookTest {
             random.nextInt(59) + 1,
             random.nextInt(59) + 1));
         invoice.setBuyer(buyer);
-        invoice.setSeller(saller);
+        invoice.setSeller(seller);
         invoice.setEntries(invoiceEntries);
         return invoice;
     }
@@ -194,9 +194,9 @@ class InvoiceBookTest {
     void shouldFindAllnvoicesListSize3() throws NullPointerException {
         Map<Long, Invoice> invoices = prepareInvoiceData();
 
-        when(inMemoryDatabase.findAllnvoices()).thenReturn(invoices);
+        when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
 
-        List<Invoice> allInvoices = invoiceBook.findAllnvoices();
+        List<Invoice> allInvoices = invoiceBook.findAllInvoices();
 
         assertThat(allInvoices, hasSize(3));
     }
@@ -207,9 +207,9 @@ class InvoiceBookTest {
         Map<Long, Invoice> invoices = prepareInvoiceData();
         List<Invoice> invoicesExpected = new ArrayList<>(invoices.values());
 
-        when(inMemoryDatabase.findAllnvoices()).thenReturn(invoices);
+        when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
 
-        List<Invoice> allInvoices = invoiceBook.findAllnvoices();
+        List<Invoice> allInvoices = invoiceBook.findAllInvoices();
 
         assertEquals(invoicesExpected, allInvoices);
     }
@@ -219,9 +219,9 @@ class InvoiceBookTest {
     void shouldNotFindAllInvoiceInRepository() throws NullPointerException {
         Map<Long, Invoice> invoices = new ConcurrentHashMap<>();
 
-        when(inMemoryDatabase.findAllnvoices()).thenReturn(invoices);
+        when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
 
-        assertNull(invoiceBook.findAllnvoices());
+        assertNull(invoiceBook.findAllInvoices());
     }
 
     @Test

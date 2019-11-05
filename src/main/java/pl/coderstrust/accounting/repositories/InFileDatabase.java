@@ -42,6 +42,7 @@ public class InFileDatabase implements InvoiceDatabase {
                 Map<Long, InFileInvoice> databaseCopy = new HashMap<>(database);
                 inFileInvoices.forEach(inFileInvoice -> databaseCopy.put(inFileInvoice.getId(), inFileInvoice));
                 Long lastId = Collections.max(databaseCopy.keySet());
+
                 InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
                 inFileInvoice.setId(lastId + 1L);
                 String inFilenvoiceJSON = objectMapper.writeValueAsString(inFileInvoice);
@@ -70,15 +71,20 @@ public class InFileDatabase implements InvoiceDatabase {
 
     public Long getLastId(Long id) throws IOException {
         List<String> strings = fileHelper.readLinesFromFile();
-        Invoice invoice = new Invoice();
-        InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
+        if (strings == null) {
+            throw new IllegalArgumentException("List is empty.");
+        }
+        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
+        inFileInvoices.clone();
+        for (int i = 0; i < strings.size(); i++) {
+            inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+        }
 
         Map<Long, InFileInvoice> database = new HashMap<>();
         Map<Long, InFileInvoice> databaseCopy = new HashMap<>(database);
+        inFileInvoices.forEach(inFileInvoice -> databaseCopy.put(inFileInvoice.getId(), inFileInvoice));
 
-        Long lastID = Collections.max(databaseCopy.keySet());
-        inFileInvoice.setId(lastID);
-        return id;
+        return Collections.max(databaseCopy.keySet());
     }
 
     @Override

@@ -2,7 +2,6 @@ package pl.coderstrust.accounting.services;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,44 +30,6 @@ class InvoiceBookTest {
 
     @InjectMocks
     private InvoiceBook invoiceBook;
-
-    private Invoice prepareInvoice() {
-        Random random = new Random();
-        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-        Company buyer = new Company(1L, "123123123", "Wrocław 66-666", "Firmex z.o.o");
-        Company seller = new Company(2L, "987567888", "Gdynia 66-666", "Szczupak z.o.o");
-        Invoice invoice = new Invoice();
-        invoice.setId(9L);
-        invoice.setDate(LocalDateTime.of(
-            random.nextInt(120) + 1900,
-            random.nextInt(12) + 1,
-            random.nextInt(25) + 1,
-            random.nextInt(12),
-            random.nextInt(59) + 1,
-            random.nextInt(59) + 1));
-        invoice.setBuyer(buyer);
-        invoice.setSeller(seller);
-        invoice.setEntries(invoiceEntries);
-        return invoice;
-    }
-
-    private Company prepareSeller() {
-        return new Company(2L, "42342312", "Warszawa 66-666", "Zippo z.o.o");
-    }
-
-    private List<Invoice> prepareInvoiceData() {
-        List<Invoice> invoices = new ArrayList<>();
-        Invoice invoice1 = new Invoice();
-        invoice1.setId(12L);
-        invoices.add(invoice1);
-        Invoice invoice2 = new Invoice();
-        invoice2.setId(13L);
-        invoices.add(invoice2);
-        Invoice invoice3 = new Invoice();
-        invoice3.setId(14L);
-        invoices.add(invoice3);
-        return invoices;
-    }
 
     @Test
     @DisplayName("Save invoice")
@@ -163,7 +124,7 @@ class InvoiceBookTest {
     @Test
     @DisplayName("Find 3 invoices")
     void shouldFindAllInvoicesListSize3() throws NullPointerException {
-        List<Invoice> invoices = prepareInvoiceData();
+        List<Invoice> invoices = prepareInvoices();
 
         when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
 
@@ -175,7 +136,7 @@ class InvoiceBookTest {
     @Test
     @DisplayName("Find all invoices")
     void shouldFindAllInvoiceInRepository() throws NullPointerException {
-        List<Invoice> invoices = prepareInvoiceData();
+        List<Invoice> invoices = prepareInvoices();
         List<Invoice> invoicesExpected = new ArrayList<>(invoices);
 
         when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
@@ -234,61 +195,43 @@ class InvoiceBookTest {
             invoiceBook.deleteInvoiceById(invoice.getId()));
     }
 
-    @Test
-    @DisplayName("Edit invoice")
-    void shouldEditInvoice() throws NullPointerException {
-        Invoice invoice = prepareInvoice();
-        invoice.setId(null);
-        Invoice modifiedInvoice = new Invoice();
+    private Invoice prepareInvoice() {
         Random random = new Random();
-        Company buyer = new Company(323L, "123223", "Kraków 66-666", "Palma z.o.o");
-        Company seller = new Company(342L, "9844333888", "Berlin 66-666", "Szczupak z.o.o");
-        modifiedInvoice.setId(invoice.getId());
-        modifiedInvoice.setDate(LocalDateTime.of(
+        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
+        Company buyer = prepareCompany("Wrocław 66-666", "TurboMarek z.o.o");
+        Company seller = prepareCompany("Gdynia 66-666", "Szczupak z.o.o");
+        Invoice invoice = new Invoice();
+        invoice.setDate(LocalDateTime.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
             random.nextInt(25) + 1,
             random.nextInt(12),
             random.nextInt(59) + 1,
             random.nextInt(59) + 1));
-        modifiedInvoice.setBuyer(buyer);
-        modifiedInvoice.setSeller(seller);
+        invoice.setBuyer(buyer);
+        invoice.setSeller(seller);
+        invoice.setEntries(invoiceEntries);
+        return invoice;
+    }
 
+    private Company prepareCompany(String city, String company) {
+        Random random = new Random();
+        return new Company(
+            (long) (random.nextInt(10000) + 1),
+            (random.nextInt(999999999) + 9999999) + "",
+            city,
+            company);
+    }
+
+    private List<Invoice> prepareInvoices() {
         List<Invoice> invoices = new ArrayList<>();
-
-        when(inMemoryDatabase.saveInvoice(invoice)).thenReturn(invoice);
-        Invoice savedInvoice = invoiceBook.saveInvoice(invoice);
-
-        when(inMemoryDatabase.saveInvoice(modifiedInvoice)).thenReturn(modifiedInvoice);
-        Invoice newInvoice = invoiceBook.saveInvoice(modifiedInvoice);
-        invoices.add(newInvoice);
-
-        when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
-        List<Invoice> savedInvoices = invoiceBook.findAllInvoices();
-
-        assertThat(savedInvoices.size(), is(1));
-        assertEquals(savedInvoice.getId(), newInvoice.getId());
-    }
-
-    @Test
-    @DisplayName("Throw exception when Edit not find invoice")
-    void shouldThrowExceptionWhenNotFindInvoiceForEditInvoice() throws NullPointerException {
-        Invoice toEdit = prepareInvoice();
-
-        when(inMemoryDatabase.findInvoiceById(toEdit.getId()))
-            .thenThrow(new NullPointerException("Invoice doesn't exist"));
-
-        assertThrows(NullPointerException.class, () -> invoiceBook.editInvoice(toEdit));
-    }
-
-    @Test
-    @DisplayName("Edit null invoice return null")
-    void shouldNotEditAndReturnNull() throws NullPointerException {
-        Invoice invoice = prepareInvoice();
-
-        when(inMemoryDatabase.findInvoiceById(invoice.getId())).thenReturn(null);
-
-        assertNull(invoiceBook.editInvoice(invoice));
+        Invoice invoice1 = prepareInvoice();
+        invoices.add(invoice1);
+        Invoice invoice2 = prepareInvoice();
+        invoices.add(invoice2);
+        Invoice invoice3 = prepareInvoice();
+        invoices.add(invoice3);
+        return invoices;
     }
 
 }

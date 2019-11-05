@@ -46,14 +46,4 @@ public class InvoiceBook {
         return null;
     }
 
-    public Invoice editInvoice(Invoice invoice) {
-        Invoice invoiceFound = invoiceDatabase.findInvoiceById(invoice.getId());
-        if (invoiceFound != null) {
-            return invoiceDatabase.saveInvoice(invoice);
-        }
-        return null;
-    }
-
 }
-
-

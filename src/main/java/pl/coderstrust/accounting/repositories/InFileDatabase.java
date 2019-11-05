@@ -89,15 +89,21 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice findInvoiceById(Long id) throws IOException {
-        Map<Long, InFileInvoice> database = new HashMap<>();
-        Map<Long, InFileInvoice> databaseCopy = new HashMap<>(database);
         Invoice invoice = new Invoice();
+        InFileInvoice inFileInvoice = new InFileInvoice();
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         } else {
-            fileHelper.readLinesFromFile();
+            ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
+            inFileInvoices.clone();
+            List<String> strings = fileHelper.readLinesFromFile();
+            for (int i = 0; i < strings.size(); i++) {
+                inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+            }
+            Map<Long, InFileInvoice> database = new HashMap<>();
+            Map<Long, InFileInvoice> databaseCopy = new HashMap<>();
             databaseCopy.get(id);
-            fileHelper.writeLinesToFile((List<String>) databaseCopy);
+            fileHelper.writeLineToFile(databaseCopy.toString());
             if (databaseCopy.containsKey(id)) {
                 return invoice;
             }

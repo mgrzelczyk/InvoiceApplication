@@ -1,6 +1,6 @@
 package pl.coderstrust.accounting.infrastructure;
 
-import java.util.Map;
+import java.util.List;
 import pl.coderstrust.accounting.model.Invoice;
 
 public interface InvoiceDatabase {
@@ -9,7 +9,7 @@ public interface InvoiceDatabase {
 
     Invoice findInvoiceById(Long id);
 
-    Map<Long, Invoice> findAllInvoices();
+    List<Invoice> findAllInvoices();
 
     Invoice deleteInvoiceById(Long id);
 

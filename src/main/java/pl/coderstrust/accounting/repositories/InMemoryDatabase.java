@@ -1,5 +1,8 @@
 package pl.coderstrust.accounting.repositories;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -22,8 +25,9 @@ public class InMemoryDatabase implements InvoiceDatabase {
     }
 
     @Override
-    public Map<Long, Invoice> findAllInvoices() {
-        return invoiceMap;
+    public List<Invoice> findAllInvoices() {
+        Collection<Invoice> values = invoiceMap.values();
+        return new ArrayList<>(values);
     }
 
     @Override

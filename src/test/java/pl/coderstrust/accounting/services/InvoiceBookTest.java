@@ -2,6 +2,7 @@ package pl.coderstrust.accounting.services;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,9 +11,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,22 +56,22 @@ class InvoiceBookTest {
         return new Company(2L, "42342312", "Warszawa 66-666", "Zippo z.o.o");
     }
 
-    private Map<Long, Invoice> prepareInvoiceData() {
-        Map<Long, Invoice> invoices = new ConcurrentHashMap<>();
+    private List<Invoice> prepareInvoiceData() {
+        List<Invoice> invoices = new ArrayList<>();
         Invoice invoice1 = new Invoice();
         invoice1.setId(12L);
-        invoices.put(1L, invoice1);
+        invoices.add(invoice1);
         Invoice invoice2 = new Invoice();
         invoice2.setId(13L);
-        invoices.put(2L, invoice2);
+        invoices.add(invoice2);
         Invoice invoice3 = new Invoice();
         invoice3.setId(14L);
-        invoices.put(3L, invoice3);
+        invoices.add(invoice3);
         return invoices;
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Save invoice")
+    @DisplayName("Save invoice")
     void shouldSaveInvoice() throws NullPointerException {
         Invoice invoice = prepareInvoice();
         Invoice expected = prepareInvoice();
@@ -85,35 +84,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Save invoice with null id")
-    void shouldSaveInvoiceWithNullId() throws NullPointerException {
-        Invoice invoice = prepareInvoice();
-        Invoice expected = prepareInvoice();
-        invoice.setId(null);
-        expected.setId(null);
-
-        when(inMemoryDatabase.saveInvoice(invoice)).thenReturn(expected);
-
-        Invoice invoiceSave = invoiceBook.saveInvoice(invoice);
-
-        assertEquals(expected, invoiceSave);
-    }
-
-    @Test
-    @DisplayName("InvoiceBookTest - Save invoice with id where invoice with this same id exists")
-    void shouldUpdateInvoiceWithIdWhereInvoiceWithThisSameIdExists() throws NullPointerException {
-        Invoice invoice = prepareInvoice();
-        Invoice expected = prepareInvoice();
-
-        when(inMemoryDatabase.saveInvoice(invoice)).thenReturn(expected);
-
-        Invoice invoiceFound = inMemoryDatabase.saveInvoice(invoice);
-
-        assertEquals(expected, invoiceFound);
-    }
-
-    @Test
-    @DisplayName("InvoiceBookTest - Save invoice with id but not exist in db")
+    @DisplayName("Save invoice with id but not exist in db")
     void shouldThrowExceptionWhenSavedInvoiceDoesntExistInDatabase() throws NullPointerException {
         Invoice invoice = prepareInvoice();
 
@@ -128,7 +99,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Throw exception when save doesnt work")
+    @DisplayName("Throw exception when save doesnt work")
     void shouldSaveInvoiceAndReturnNull() throws NullPointerException {
         Invoice invoice = prepareInvoice();
 
@@ -138,13 +109,13 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Save null invoice and return null")
+    @DisplayName("Save null invoice and return null")
     void shouldNotSaveInvoiceAndReturnNull() throws NullPointerException {
         assertNull(invoiceBook.saveInvoice(null));
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Find invoice by id")
+    @DisplayName("Find invoice by id")
     void shouldFindInvoiceById() throws NullPointerException {
         Invoice expected = prepareInvoice();
         Invoice invoice = prepareInvoice();
@@ -157,7 +128,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Not Find invoice by id")
+    @DisplayName("Not Find invoice by id")
     void shouldNotFindInvoiceById() throws NullPointerException {
         Invoice invoice = prepareInvoice();
 
@@ -169,7 +140,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Throw exception when invoice doesnt exist")
+    @DisplayName("Throw exception when invoice doesnt exist")
     void shouldThrowExceptionWhenInvoiceDoesntExist() throws NullPointerException {
         when(inMemoryDatabase.findInvoiceById(1L)).thenThrow(NullPointerException.class);
 
@@ -177,7 +148,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Find id invoice")
+    @DisplayName("Find id invoice")
     void shouldFindInvoiceId() throws NullPointerException {
         Invoice invoice = prepareInvoice();
         Invoice expected = prepareInvoice();
@@ -190,9 +161,9 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Find 3 invoices")
-    void shouldFindAllnvoicesListSize3() throws NullPointerException {
-        Map<Long, Invoice> invoices = prepareInvoiceData();
+    @DisplayName("Find 3 invoices")
+    void shouldFindAllInvoicesListSize3() throws NullPointerException {
+        List<Invoice> invoices = prepareInvoiceData();
 
         when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
 
@@ -202,10 +173,10 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Find all invoices")
+    @DisplayName("Find all invoices")
     void shouldFindAllInvoiceInRepository() throws NullPointerException {
-        Map<Long, Invoice> invoices = prepareInvoiceData();
-        List<Invoice> invoicesExpected = new ArrayList<>(invoices.values());
+        List<Invoice> invoices = prepareInvoiceData();
+        List<Invoice> invoicesExpected = new ArrayList<>(invoices);
 
         when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
 
@@ -215,9 +186,9 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Not find all invoices")
+    @DisplayName("Not find all invoices")
     void shouldNotFindAllInvoiceInRepository() throws NullPointerException {
-        Map<Long, Invoice> invoices = new ConcurrentHashMap<>();
+        List<Invoice> invoices = new ArrayList<>();
 
         when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
 
@@ -225,7 +196,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Delete by id")
+    @DisplayName("Delete by id")
     void shouldDeleteById() throws NullPointerException {
         Invoice invoice = prepareInvoice();
         Invoice expected = prepareInvoice();
@@ -240,7 +211,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Delete by id, not find invoice")
+    @DisplayName("Delete by id, not find invoice")
     void shouldNotFindObjectForDeleteById() throws NullPointerException {
         Invoice invoice = prepareInvoice();
 
@@ -252,7 +223,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Throw exception when delete by id doesnt work")
+    @DisplayName("Throw exception when delete by id doesnt work")
     void shouldThrowExceptionWhenDeleteInvoiceNotExist() throws NullPointerException {
         Invoice invoice = prepareInvoice();
 
@@ -264,24 +235,44 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Edit invoice")
+    @DisplayName("Edit invoice")
     void shouldEditInvoice() throws NullPointerException {
         Invoice invoice = prepareInvoice();
-        Invoice toEdit = prepareInvoice();
-        Invoice expected = prepareInvoice();
-        toEdit.setSeller(prepareSeller());
+        invoice.setId(null);
+        Invoice modifiedInvoice = new Invoice();
+        Random random = new Random();
+        Company buyer = new Company(323L, "123223", "Kraków 66-666", "Palma z.o.o");
+        Company seller = new Company(342L, "9844333888", "Berlin 66-666", "Szczupak z.o.o");
+        modifiedInvoice.setId(invoice.getId());
+        modifiedInvoice.setDate(LocalDateTime.of(
+            random.nextInt(120) + 1900,
+            random.nextInt(12) + 1,
+            random.nextInt(25) + 1,
+            random.nextInt(12),
+            random.nextInt(59) + 1,
+            random.nextInt(59) + 1));
+        modifiedInvoice.setBuyer(buyer);
+        modifiedInvoice.setSeller(seller);
 
-        when(inMemoryDatabase.findInvoiceById(toEdit.getId())).thenReturn(invoice);
-        when(inMemoryDatabase.saveInvoice(toEdit)).thenReturn(expected);
+        List<Invoice> invoices = new ArrayList<>();
 
-        Invoice invoiceEdit = invoiceBook.editInvoice(toEdit);
+        when(inMemoryDatabase.saveInvoice(invoice)).thenReturn(invoice);
+        Invoice savedInvoice = invoiceBook.saveInvoice(invoice);
 
-        assertEquals(expected, invoiceEdit);
+        when(inMemoryDatabase.saveInvoice(modifiedInvoice)).thenReturn(modifiedInvoice);
+        Invoice newInvoice = invoiceBook.saveInvoice(modifiedInvoice);
+        invoices.add(newInvoice);
+
+        when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
+        List<Invoice> savedInvoices = invoiceBook.findAllInvoices();
+
+        assertThat(savedInvoices.size(), is(1));
+        assertEquals(savedInvoice.getId(), newInvoice.getId());
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Throw exception when Edit not find invoice")
-    void shouldThrowExcetionWhenNotFindInvoiceForEditInvoice() throws NullPointerException {
+    @DisplayName("Throw exception when Edit not find invoice")
+    void shouldThrowExceptionWhenNotFindInvoiceForEditInvoice() throws NullPointerException {
         Invoice toEdit = prepareInvoice();
 
         when(inMemoryDatabase.findInvoiceById(toEdit.getId()))
@@ -291,7 +282,7 @@ class InvoiceBookTest {
     }
 
     @Test
-    @DisplayName("InvoiceBookTest - Edit null invoice return null")
+    @DisplayName("Edit null invoice return null")
     void shouldNotEditAndReturnNull() throws NullPointerException {
         Invoice invoice = prepareInvoice();
 

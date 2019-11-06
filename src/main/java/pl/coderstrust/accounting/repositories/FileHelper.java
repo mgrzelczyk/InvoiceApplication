@@ -1,23 +1,17 @@
 package pl.coderstrust.accounting.repositories;
 
-import pl.coderstrust.accounting.model.Invoice;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 public class FileHelper {
 
     private static String DATABASE_FILE_NAME = "database.db";
+    private static String separator = System.lineSeparator();
 
     public FileHelper(String DATABASE_FILE_NAME) {
         if (DATABASE_FILE_NAME == null) {
@@ -43,7 +37,7 @@ public class FileHelper {
         try (FileWriter writer = new FileWriter(DATABASE_FILE_NAME)) {
             for (String str: lines) {
                 writer.write(str);
-                writer.write("\n");
+                writer.write(separator);
             }
         }
     }

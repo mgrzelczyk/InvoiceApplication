@@ -7,7 +7,7 @@ import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.repositories.InMemoryDatabase;
 
 @Configuration
-public class RepositoryConfiguration {
+public class AppConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "database", havingValue = "in-memory")

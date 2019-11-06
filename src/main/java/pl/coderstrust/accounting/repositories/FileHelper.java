@@ -1,5 +1,7 @@
 package pl.coderstrust.accounting.repositories;
 
+import pl.coderstrust.accounting.model.Invoice;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

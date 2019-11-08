@@ -7,7 +7,7 @@ public class Application {
 
     private static Logger log = Logger.getLogger(Application.class.getName());
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         log.info("Hello World");
     }
 }

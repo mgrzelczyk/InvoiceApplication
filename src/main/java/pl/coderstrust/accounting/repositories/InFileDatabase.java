@@ -1,16 +1,22 @@
 package pl.coderstrust.accounting.repositories;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
+
+import java.io.DataInput;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,7 +81,7 @@ public class InFileDatabase implements InvoiceDatabase {
         return invoice;
     }
 
-    Long getLastId(Long id) throws IOException {
+    public Long getLastId(Long id) throws IOException {
         List<String> strings = fileHelper.readLinesFromFile();
         if (strings == null) {
             throw new IllegalArgumentException("List is empty.");
@@ -106,13 +112,31 @@ public class InFileDatabase implements InvoiceDatabase {
             // ArrayList<String> result = objectReader.readValue((JsonParser) strings);
             InFileInvoice readFromFileInvoices = null;
 //            for (int i = 0; i < strings.size(); i++) {
-//                readFromFileInvoices = new ObjectMapper().readValue(strings.get(i), InFileInvoice.class);
+//                readFromFileInvoices = objectMapper.readValue(strings, InFileInvoice.class);
 //            }
 
-            // JSONPObject jsonpObject = (JSONPObject) strings;
+            JsonNode node = objectMapper.createObjectNode();
+            node = objectMapper.valueToTree(strings);
 
-            System.out.println(strings);
-            System.out.println(readFromFileInvoices);
+            JsonNode root = objectReader.readTree(strings.toString());
+
+            id = root.path("id").asLong();
+            JsonNode dateNode = root.path("date");
+            JsonNode buyerNode = root.path("buyer");
+            JsonNode sellerNode = root.path("seller");
+            JsonNode entriesNode = root.path("entries");
+            System.out.println("Node tree: " + node);
+            System.out.println("Read tree: " + root);
+            System.out.println("id: " + id);
+            System.out.println("date Node: " + dateNode);
+            System.out.println("buyer Node: " + buyerNode);
+            System.out.println("seller Node: " + sellerNode);
+            System.out.println("entries Node: " + entriesNode);
+
+        }
+
+
+            // JSONPObject jsonpObject = (JSONPObject) strings;
             //Invoice invoiceResult = new Invoice(invoice.getId(), invoice.getDate());
             // JsonNode array = objectMapper.readValue((JsonParser) strings, JsonNode.class);
             // for (int i = 0; i < array.size(); i++) {
@@ -120,7 +144,7 @@ public class InFileDatabase implements InvoiceDatabase {
             // JsonNode idNode = jsonNode.get("ID");
             // String ID = idNode.asText();
 
-        }
+
         return invoice;
     }
 

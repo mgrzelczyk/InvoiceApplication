@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class InFileDatabase implements InvoiceDatabase {
                 Map<Long, InFileInvoice> database = new HashMap<>();
                 Map<Long, InFileInvoice> databaseCopy = new HashMap<>(database);
                 inFileInvoices.forEach(inFileInvoice -> databaseCopy.put(inFileInvoice.getId(), inFileInvoice));
+                counter.incrementAndGet();
                 Long lastId = Collections.max(databaseCopy.keySet());
 
                 InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
@@ -80,9 +82,10 @@ public class InFileDatabase implements InvoiceDatabase {
         }
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         inFileInvoices.clone();
-        for (int i = 0; i < strings.size(); i++) {
-            inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
-        }
+//        for (int i = 0; i < strings.size(); i++) {
+//            inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+//        }
+        objectMapper.readTree(strings.toString());
         ObjectReader objectReader = objectMapper.reader().forType(new TypeReference<List<String>>(){});
 
         Map<Long, InFileInvoice> database = new HashMap<>();
@@ -100,17 +103,23 @@ public class InFileDatabase implements InvoiceDatabase {
         } else {
             List<String> strings = fileHelper.readLinesFromFile();
             ObjectReader objectReader = objectMapper.reader().forType(new TypeReference<List<String>>(){});
-            ArrayList<String> result = objectReader.readValue((JsonParser) strings);
+            // ArrayList<String> result = objectReader.readValue((JsonParser) strings);
+            InFileInvoice readFromFileInvoices = null;
+//            for (int i = 0; i < strings.size(); i++) {
+//                readFromFileInvoices = new ObjectMapper().readValue(strings.get(i), InFileInvoice.class);
+//            }
 
-            JsonNode array = objectMapper.readValue((JsonParser) strings, JsonNode.class);
-            for (int i = 0; i < array.size(); i++) {
-                JsonNode jsonNode = array.get(i);
-                JsonNode idNode = jsonNode.get("ID");
-                String ID = idNode.asText();
-                if (id.equals(id)) {
-                    System.out.println("działa wyszukiwanie");
-                }
-            }
+            // JSONPObject jsonpObject = (JSONPObject) strings;
+
+            System.out.println(strings);
+            System.out.println(readFromFileInvoices);
+            //Invoice invoiceResult = new Invoice(invoice.getId(), invoice.getDate());
+            // JsonNode array = objectMapper.readValue((JsonParser) strings, JsonNode.class);
+            // for (int i = 0; i < array.size(); i++) {
+            // JsonNode jsonNode = array.get(i);
+            // JsonNode idNode = jsonNode.get("ID");
+            // String ID = idNode.asText();
+
         }
         return invoice;
     }

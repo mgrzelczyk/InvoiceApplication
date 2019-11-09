@@ -86,7 +86,7 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice findInvoiceById(Long id) throws IOException {
-        Invoice invoice = new Invoice();
+        Invoice invoice;
         List<String> strings = fileHelper.readLinesFromFile();
         List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
         Map<Long, InFileInvoice> database = new HashMap<>();
@@ -102,7 +102,6 @@ public class InFileDatabase implements InvoiceDatabase {
                 stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
             }
             stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
-
             invoice = database.get(id);
 
         }
@@ -127,22 +126,34 @@ public class InFileDatabase implements InvoiceDatabase {
 
         return stringsConvertedToList;
     }
-
-
+    
     @Override
     public Invoice deleteByInvoice(Long id) throws IOException {
-        Invoice invoice = new Invoice();
+        Invoice invoice;
+        List<String> strings = fileHelper.readLinesFromFile();
+        List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
         Map<Long, InFileInvoice> database = new HashMap<>();
-        Map<Long, InFileInvoice> databaseCopy = new HashMap<>();
-        databaseCopy.putAll(database);
 
-        fileHelper.readLinesFromFile();
-        findInvoiceById(id);
-        Long lastID = Collections.max(databaseCopy.keySet());
-        InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
-        inFileInvoice.setId(lastID);
-        inFileInvoice.setDeleted(true);
-        saveInvoice(inFileInvoice);
+        if (id == null) {
+            throw new IllegalArgumentException("ID is null.");
+        } else {
+            if (strings == null) {
+                throw new IllegalArgumentException("List is empty.");
+            }
+
+            for (int i = 0; i < strings.size(); i++) {
+                stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+            }
+            stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+
+            invoice = database.get(id);
+            InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
+
+            if (invoice == database.get(id)) {
+                database.remove(id);
+                inFileInvoice.setDeleted(true);
+            }
+        }
         return invoice;
     }
 }

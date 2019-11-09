@@ -1,22 +1,12 @@
 package pl.coderstrust.accounting.repositories;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
-import java.io.DataInput;
 import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -97,25 +87,23 @@ public class InFileDatabase implements InvoiceDatabase {
     @Override
     public Invoice findInvoiceById(Long id) throws IOException {
         Invoice invoice = new Invoice();
+        List<String> strings = fileHelper.readLinesFromFile();
+        List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
+        Map<Long, InFileInvoice> database = new HashMap<>();
+
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         } else {
-            List<String> strings = fileHelper.readLinesFromFile();
-            List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
-            Map<Long, InFileInvoice> database = new HashMap<>();
-            InFileInvoice readFromFileInvoices;
+            if (strings == null) {
+                throw new IllegalArgumentException("List is empty.");
+            }
 
             for (int i = 0; i < strings.size(); i++) {
-                readFromFileInvoices = objectMapper.readValue(strings.get(i), InFileInvoice.class);
-                stringsConvertedToList.add(readFromFileInvoices);
+                stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
             }
-
             stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
 
-            if (database.containsKey(id)){
-                System.out.println("Invoice ID#:" + id + " " + invoice);
-                return invoice;
-            }
+            invoice = database.get(id);
 
         }
         return invoice;
@@ -123,16 +111,23 @@ public class InFileDatabase implements InvoiceDatabase {
 
 
     @Override
-    public List<Invoice> findAllnvoices() {
-        List<String> invoicesList = new ArrayList<>();
-        ((ArrayList<String>) invoicesList).clone();
-        try {
-            invoicesList = (ArrayList<String>) fileHelper.readLinesFromFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public List<Invoice> findAllnvoices() throws IOException {
+        List<String> strings = fileHelper.readLinesFromFile();
+        List<Invoice> stringsConvertedToList = new ArrayList<>();
+        Map<Long, Class<InFileInvoice>> database = new HashMap<>();
+
+        if (strings == null) {
+            throw new IllegalArgumentException("List is empty.");
         }
-        return (List<pl.coderstrust.accounting.model.Invoice>) Invoice;
+
+        for (int i = 0; i < strings.size(); i++) {
+            stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+        }
+        stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), InFileInvoice.class));
+
+        return stringsConvertedToList;
     }
+
 
     @Override
     public Invoice deleteByInvoice(Long id) throws IOException {

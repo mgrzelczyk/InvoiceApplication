@@ -11,6 +11,10 @@ class InFileInvoice extends Invoice {
 
     private boolean deleted;
 
+    InFileInvoice(){
+
+    }
+
     InFileInvoice(boolean deleted) {
         this.deleted = deleted;
     }

@@ -65,7 +65,7 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldFindAllnvoices() {
+    void shouldFindAllnvoices() throws IOException {
         List<Invoice> listInvoiceExpected = new ArrayList<>();
 
         when(inFileDatabase.findAllnvoices()).thenReturn(listInvoiceExpected);

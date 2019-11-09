@@ -45,15 +45,13 @@ public class InFileDatabase implements InvoiceDatabase {
                     throw new IllegalArgumentException("List is empty.");
                 }
                 ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
-                inFileInvoices.clone();
                 for (int i = 0; i < strings.size(); i++) {
                     inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
                 }
                 Map<Long, InFileInvoice> database = new HashMap<>();
-                Map<Long, InFileInvoice> databaseCopy = new HashMap<>(database);
-                inFileInvoices.forEach(inFileInvoice -> databaseCopy.put(inFileInvoice.getId(), inFileInvoice));
+                inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
                 counter.incrementAndGet();
-                Long lastId = Collections.max(databaseCopy.keySet());
+                Long lastId = Collections.max(database.keySet());
 
                 InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
                 inFileInvoice.setId(lastId + 1L);
@@ -72,8 +70,6 @@ public class InFileDatabase implements InvoiceDatabase {
             try {
                 inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJson);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -88,17 +84,14 @@ public class InFileDatabase implements InvoiceDatabase {
         }
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         inFileInvoices.clone();
-//        for (int i = 0; i < strings.size(); i++) {
-//            inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
-//        }
         objectMapper.readTree(strings.toString());
-        ObjectReader objectReader = objectMapper.reader().forType(new TypeReference<List<String>>(){});
+        ObjectReader objectReader = objectMapper.reader().forType(new TypeReference<List<String>>() {
+        });
 
         Map<Long, InFileInvoice> database = new HashMap<>();
-        Map<Long, InFileInvoice> databaseCopy = new HashMap<>(database);
-        inFileInvoices.forEach(inFileInvoice -> databaseCopy.put(inFileInvoice.getId(), inFileInvoice));
+        inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
 
-        return Collections.max(databaseCopy.keySet());
+        return Collections.max(database.keySet());
     }
 
     @Override
@@ -108,43 +101,23 @@ public class InFileDatabase implements InvoiceDatabase {
             throw new IllegalArgumentException("ID is null.");
         } else {
             List<String> strings = fileHelper.readLinesFromFile();
-            ObjectReader objectReader = objectMapper.reader().forType(new TypeReference<List<String>>(){});
-            // ArrayList<String> result = objectReader.readValue((JsonParser) strings);
-            InFileInvoice readFromFileInvoices = null;
-//            for (int i = 0; i < strings.size(); i++) {
-//                readFromFileInvoices = objectMapper.readValue(strings, InFileInvoice.class);
-//            }
+            List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
+            Map<Long, InFileInvoice> database = new HashMap<>();
+            InFileInvoice readFromFileInvoices;
 
-            JsonNode node = objectMapper.createObjectNode();
-            node = objectMapper.valueToTree(strings);
+            for (int i = 0; i < strings.size(); i++) {
+                readFromFileInvoices = objectMapper.readValue(strings.get(i), InFileInvoice.class);
+                stringsConvertedToList.add(readFromFileInvoices);
+            }
 
-            JsonNode root = objectReader.readTree(strings.toString());
+            stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
 
-            id = root.path("id").asLong();
-            JsonNode dateNode = root.path("date");
-            JsonNode buyerNode = root.path("buyer");
-            JsonNode sellerNode = root.path("seller");
-            JsonNode entriesNode = root.path("entries");
-            System.out.println("Node tree: " + node);
-            System.out.println("Read tree: " + root);
-            System.out.println("id: " + id);
-            System.out.println("date Node: " + dateNode);
-            System.out.println("buyer Node: " + buyerNode);
-            System.out.println("seller Node: " + sellerNode);
-            System.out.println("entries Node: " + entriesNode);
+            if (database.containsKey(id)){
+                System.out.println("Invoice ID#:" + id + " " + invoice);
+                return invoice;
+            }
 
         }
-
-
-            // JSONPObject jsonpObject = (JSONPObject) strings;
-            //Invoice invoiceResult = new Invoice(invoice.getId(), invoice.getDate());
-            // JsonNode array = objectMapper.readValue((JsonParser) strings, JsonNode.class);
-            // for (int i = 0; i < array.size(); i++) {
-            // JsonNode jsonNode = array.get(i);
-            // JsonNode idNode = jsonNode.get("ID");
-            // String ID = idNode.asText();
-
-
         return invoice;
     }
 

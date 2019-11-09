@@ -9,38 +9,69 @@
 
   <properties>
     <jdk.version>11</jdk.version>
-    <junit.jupiter.version>5.3.1</junit.jupiter.version>
     <junit.platform.version>1.3.1</junit.platform.version>
+    <junit.jupiter.version>5.5.2</junit.jupiter.version>
+    <mockito.jupiter.version>2.21.0</mockito.jupiter.version>
+    <maven.compiler.plugin>3.8.1</maven.compiler.plugin>
+    <jacoco.maven.plugin>0.8.2</jacoco.maven.plugin>
+    <maven.checkstyle.plugin>3.0.0</maven.checkstyle.plugin>
+    <maven.surefire.plugin>2.22.2</maven.surefire.plugin>
+    <spring.test.version>2.2.0.RELEASE</spring.test.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.2.RELEASE</version>
+  </parent>
+
   <dependencies>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.jupiter.version}</version>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>${mockito.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
+      <artifactId>junit-jupiter</artifactId>
       <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit.jupiter.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <build>
     <plugins>
       <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>${maven.compiler.plugin}</version>
         <configuration>
           <source>11</source>
           <target>11</target>
@@ -49,10 +80,11 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.2</version>
+        <version>${jacoco.maven.plugin}</version>
         <configuration>
           <excludes>
             <exclude>pl/coderstrust/accounting/model/*.class</exclude>
+            <exclude>pl/coderstrust/accounting/Application.class</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -99,7 +131,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>${maven.checkstyle.plugin}</version>
         <executions>
           <execution>
             <id>verify</id>
@@ -125,7 +157,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
+        <version>${maven.surefire.plugin}</version>
       </plugin>
     </plugins>
   </build>

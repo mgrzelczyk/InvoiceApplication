@@ -9,8 +9,8 @@ public interface InvoiceDatabase {
 
     Invoice findInvoiceById(Long id);
 
-    List<Invoice> findAllnvoices();
+    List<Invoice> findAllInvoices();
 
-    Invoice deleteById(Long id);
+    Invoice deleteInvoiceById(Long id);
 
 }

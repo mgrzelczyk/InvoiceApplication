@@ -69,19 +69,24 @@ public class InFileDatabase implements InvoiceDatabase {
 
     public Long getLastId(Long id) throws IOException {
         List<String> strings = fileHelper.readLinesFromFile();
-        if (strings == null) {
-            throw new IllegalArgumentException("List is empty.");
-        }
-        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
-        inFileInvoices.clone();
-        objectMapper.readTree(strings.toString());
-        ObjectReader objectReader = objectMapper.reader().forType(new TypeReference<List<String>>() {
-        });
-
+        List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
         Map<Long, InFileInvoice> database = new HashMap<>();
-        inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+        Long lastId;
 
-        return Collections.max(database.keySet());
+        if (id == null) {
+            throw new IllegalArgumentException("ID is null.");
+        } else {
+            if (strings == null) {
+                throw new IllegalArgumentException("List is empty.");
+            }
+
+            for (int i = 0; i < strings.size(); i++) {
+                stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+            }
+            stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+            lastId = Collections.max(database.keySet());
+        }
+        return lastId;
     }
 
     @Override

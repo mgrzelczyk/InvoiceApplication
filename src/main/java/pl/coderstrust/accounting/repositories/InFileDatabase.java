@@ -126,7 +126,7 @@ public class InFileDatabase implements InvoiceDatabase {
 
         return stringsConvertedToList;
     }
-    
+
     @Override
     public Invoice deleteByInvoice(Long id) throws IOException {
         Invoice invoice;
@@ -140,19 +140,17 @@ public class InFileDatabase implements InvoiceDatabase {
             if (strings == null) {
                 throw new IllegalArgumentException("List is empty.");
             }
-
             for (int i = 0; i < strings.size(); i++) {
                 stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
             }
+
             stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
 
             invoice = database.get(id);
             InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
-
-            if (invoice == database.get(id)) {
-                database.remove(id);
-                inFileInvoice.setDeleted(true);
-            }
+            database.remove(id);
+            inFileInvoice.setDeleted(true);
+            invoice = inFileInvoice;
         }
         return invoice;
     }

@@ -1,11 +1,8 @@
 package pl.coderstrust.accounting.repositories;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;

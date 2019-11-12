@@ -32,6 +32,8 @@ class InFileDatabaseTest {
 
     @Test
     void shouldSaveInvoice() {
+
+        //TODO filehelper zakockować jeśli zostanie poproszony to ma zwrócic
         Invoice invoiceExpected = new Invoice(1L, null, null, null, null);
 
         when(inFileDatabase.saveInvoice(invoiceExpected)).thenReturn(invoiceExpected);

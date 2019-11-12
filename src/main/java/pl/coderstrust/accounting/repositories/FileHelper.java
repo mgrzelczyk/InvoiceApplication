@@ -1,6 +1,6 @@
 package pl.coderstrust.accounting.repositories;
 
-import pl.coderstrust.accounting.model.Invoice;
+import static pl.coderstrust.accounting.application.properties.DATABASE_FILE_NAME;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -12,14 +12,12 @@ import java.util.Scanner;
 
 public class FileHelper {
 
-    private static String DATABASE_FILE_NAME = "database.db";
     private static String separator = System.lineSeparator();
 
-    public FileHelper(String DATABASE_FILE_NAME) {
+    public FileHelper(String databaseFilename) {
         if (DATABASE_FILE_NAME == null) {
             throw new IllegalArgumentException("File database cannot be null.");
         }
-        this.DATABASE_FILE_NAME = DATABASE_FILE_NAME;
     }
 
     public List<String> readLinesFromFile() throws IOException {

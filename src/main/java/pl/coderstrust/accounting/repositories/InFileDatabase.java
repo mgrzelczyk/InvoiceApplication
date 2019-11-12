@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class InFileDatabase implements InvoiceDatabase {
 
-    private AtomicLong counter = new AtomicLong(0);
+    private AtomicLong counter = new AtomicLong(getLastId());
     private final FileHelper fileHelper;
     private ObjectMapper objectMapper = new ObjectMapper();
     private Object Invoice;
@@ -109,7 +109,6 @@ public class InFileDatabase implements InvoiceDatabase {
         }
         return invoice;
     }
-
 
     @Override
     public List<Invoice> findAllnvoices() throws IOException {

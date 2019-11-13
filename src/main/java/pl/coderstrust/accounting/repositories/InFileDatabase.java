@@ -79,7 +79,7 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public List<Invoice> findAllnvoices() throws IOException {
-        ArrayList <Invoice> convertLoadedInvoice = new ArrayList<>(loadInvoices());
+        List <Invoice> convertLoadedInvoice = new ArrayList<>(loadInvoices());
         return convertLoadedInvoice;
     }
 

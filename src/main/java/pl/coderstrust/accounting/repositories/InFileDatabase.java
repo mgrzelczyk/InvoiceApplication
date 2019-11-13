@@ -1,5 +1,6 @@
 package pl.coderstrust.accounting.repositories;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
@@ -31,7 +32,6 @@ public class InFileDatabase implements InvoiceDatabase {
                 loadInvoices();
                 counter.incrementAndGet();
                 Long lastId = Collections.max(database.keySet());
-
                 InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
                 inFileInvoice.setId(lastId + 1L);
                 String inFilenvoiceJSON = objectMapper.writeValueAsString(inFileInvoice);
@@ -39,10 +39,9 @@ public class InFileDatabase implements InvoiceDatabase {
                 inFileInvoice.setId(getLastId(lastId));
                 String inFilenvoiceJsonLastId = objectMapper.writeValueAsString(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (JsonParseException e) {
+                throw new IOException(e);
             }
-
         } else {
             InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
             String inFilenvoiceJson = null;
@@ -57,22 +56,11 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     public Long getLastId(Long id) throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile();
-        List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
-        Map<Long, InFileInvoice> database = new HashMap<>();
         Long lastId;
-
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         } else {
-            if (strings == null) {
-                throw new IllegalArgumentException("List is empty.");
-            }
-
-            for (int i = 0; i < strings.size(); i++) {
-                stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
-            }
-            stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+            loadInvoices();
             lastId = Collections.max(database.keySet());
         }
         return lastId;

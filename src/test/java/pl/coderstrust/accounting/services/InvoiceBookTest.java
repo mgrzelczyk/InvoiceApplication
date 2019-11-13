@@ -121,6 +121,55 @@ class InvoiceBookTest {
     }
 
     @Test
+    @DisplayName("Find invoices by date range")
+    void shouldFindAllInvoicesByDataRange() throws NullPointerException {
+        List<Invoice> invoices = new ArrayList<>();
+        Invoice invoice1 = prepareInvoice();
+        Invoice invoice2 = prepareInvoice();
+        Invoice invoice3 = prepareInvoice();
+        invoice1.setDate(LocalDateTime.of(2019, 12, 12,12,12,12));
+        invoice2.setDate(LocalDateTime.of(2018, 11, 24,2,47,12));
+        invoice3.setDate(LocalDateTime.of(2010, 1, 11,7,59,44));
+        invoices.add(invoice1);
+        invoices.add(invoice2);
+        invoices.add(invoice3);
+        invoices.add(invoice1);
+        invoices.add(invoice2);
+        LocalDateTime from =  LocalDateTime.of(2018, 12, 12,12,12,12);
+        LocalDateTime to = LocalDateTime.of(2019, 12, 12,12,12,12);
+
+        when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
+
+        List<Invoice> allInvoices = invoiceBook.findAllInvoiceByDateRange(from, to);
+        System.out.println(allInvoices.toString());
+
+        assertThat(allInvoices, hasSize(2));
+    }
+
+    @Test
+    @DisplayName("Not find invoices by date range")
+    void shouldNotFindAllInvoicesByDataRange() throws NullPointerException {
+        List<Invoice> invoices = new ArrayList<>();
+        Invoice invoice1 = prepareInvoice();
+        Invoice invoice2 = prepareInvoice();
+        Invoice invoice3 = prepareInvoice();
+        invoice1.setDate(LocalDateTime.of(2019, 12, 12,12,12,12));
+        invoice2.setDate(LocalDateTime.of(2018, 11, 24,2,47,12));
+        invoice3.setDate(LocalDateTime.of(2010, 1, 11,7,59,44));
+        invoices.add(invoice1);
+        invoices.add(invoice2);
+        invoices.add(invoice3);
+        invoices.add(invoice1);
+        invoices.add(invoice2);
+        LocalDateTime from =  LocalDateTime.of(1918, 12, 12,12,12,12);
+        LocalDateTime to = LocalDateTime.of(2000, 12, 12,12,12,12);
+
+        when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
+
+        assertNull(invoiceBook.findAllInvoiceByDateRange(from, to));
+    }
+
+    @Test
     @DisplayName("Find all invoices")
     void shouldFindAllInvoiceInRepository() throws NullPointerException {
         List<Invoice> invoices = prepareInvoices();

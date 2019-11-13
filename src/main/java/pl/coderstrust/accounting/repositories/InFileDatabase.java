@@ -26,13 +26,10 @@ public class InFileDatabase implements InvoiceDatabase {
     public Invoice saveInvoice(Invoice invoice) {
         if (invoice.getId() == null) {
             try {
-                List<String> strings = fileHelper.readLinesFromFile();
-                if (strings == null) {
-                    throw new IllegalArgumentException("List is empty.");
-                }
-                ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
-                for (int i = 0; i < strings.size(); i++) {
-                    inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+                List<String> insertInvoice = fileHelper.readLinesFromFile();
+
+                for (int i = 0; i < insertInvoice.size(); i++) {
+                    inFileInvoices.add(objectMapper.readValue(insertInvoice.get(i), InFileInvoice.class));
                 }
                 Map<Long, InFileInvoice> database = new HashMap<>();
                 inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
@@ -154,4 +151,10 @@ public class InFileDatabase implements InvoiceDatabase {
         }
         return invoice;
     }
+
+    private List insertInvoice (String invoice) throws IOException {
+        List<String> strings = fileHelper.readLinesFromFile();
+        return strings;
+    }
+
 }

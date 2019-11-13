@@ -14,17 +14,17 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class InFileDatabase implements InvoiceDatabase {
 
-    private final AtomicLong counter = new AtomicLong(getLastId());
+    private Long lastId;
+    private final AtomicLong counter = new AtomicLong(getLastId(lastId));
     private FileHelper fileHelper;
     private ObjectMapper objectMapper = new ObjectMapper();
     private ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
     private Map<Long, InFileInvoice> database = new HashMap<>();
     private Invoice invoice;
-    private Long lastId;
     private InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
     private InFileInvoiceSerializer inFileInvoiceSerializer = new InFileInvoiceSerializer(fileHelper);
 
-    public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper, Object invoice) throws IOException {
+    public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {
         this.fileHelper = fileHelper;
         this.objectMapper = objectMapper;
     }
@@ -38,7 +38,7 @@ public class InFileDatabase implements InvoiceDatabase {
                 Long lastId = Collections.max(database.keySet());
                 inFileInvoice.setId(lastId + 1L);
                 inFileInvoiceSerializer.fromStrings();
-                inFileInvoice.setId(getLastId());
+                inFileInvoice.setId(getLastId(lastId));
                 String inFilenvoiceJsonLastId = objectMapper.writeValueAsString(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
             } catch (JsonParseException e) {
@@ -56,7 +56,7 @@ public class InFileDatabase implements InvoiceDatabase {
         return invoice;
     }
 
-    public Long getLastId() throws IOException {
+    public Long getLastId(Long lastId) throws IOException {
             loadInvoices();
             lastId = Collections.max(database.keySet());
 

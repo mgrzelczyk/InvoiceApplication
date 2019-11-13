@@ -141,7 +141,6 @@ class InvoiceBookTest {
         when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
 
         List<Invoice> allInvoices = invoiceBook.findAllInvoiceByDateRange(from, to);
-        System.out.println(allInvoices.toString());
 
         assertThat(allInvoices, hasSize(2));
     }

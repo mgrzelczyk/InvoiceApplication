@@ -22,6 +22,7 @@ class InFileDatabaseTest {
     private InFileDatabase inFileDatabase;
     private Invoice invoice;
     private String DATABASE_FILE_NAME = "database.db";
+    private FileHelper fileHelper;
 
     @BeforeEach
     void setUp() {
@@ -31,12 +32,13 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldSaveInvoice() {
+    void shouldSaveInvoice() throws IOException {
 
         //TODO filehelper zakockować jeśli zostanie poproszony to ma zwrócic
         Invoice invoiceExpected = new Invoice(1L, null, null, null, null);
+        Invoice invoiceResult = (Invoice) fileHelper.readLinesFromFile();
 
-        when(inFileDatabase.saveInvoice(invoiceExpected)).thenReturn(invoiceExpected);
+        when(inFileDatabase.saveInvoice(invoiceExpected)).thenReturn(invoiceResult);
 
         Invoice invoiceFound = inFileDatabase.saveInvoice(invoiceExpected);
 
@@ -47,9 +49,9 @@ class InFileDatabaseTest {
     void shouldGetLastId() throws IOException {
         Long lastIdExpected = 1L;
 
-        when(inFileDatabase.getLastId(lastIdExpected)).thenReturn(lastIdExpected);
+        when(inFileDatabase.getLastId().thenReturn(lastIdExpected));
 
-        Long lastIdInvoiceFound = inFileDatabase.getLastId(lastIdExpected);
+        Long lastIdInvoiceFound = inFileDatabase.getLastId();
 
         assertEquals(lastIdExpected, lastIdInvoiceFound);
     }

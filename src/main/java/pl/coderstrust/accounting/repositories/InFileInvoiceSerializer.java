@@ -5,15 +5,12 @@ import pl.coderstrust.accounting.model.Invoice;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class InFileInvoiceSerializer {
 
     private ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
     private final FileHelper fileHelper;
     private ObjectMapper objectMapper = new ObjectMapper();
-    private Map<Long, InFileInvoice> database = new HashMap<>();
     private Invoice invoice;
     private InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
 

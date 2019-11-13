@@ -69,23 +69,12 @@ public class InFileDatabase implements InvoiceDatabase {
     @Override
     public Invoice findInvoiceById(Long id) throws IOException {
         Invoice invoice;
-        List<String> strings = fileHelper.readLinesFromFile();
-        List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
-        Map<Long, InFileInvoice> database = new HashMap<>();
 
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         } else {
-            if (strings == null) {
-                throw new IllegalArgumentException("List is empty.");
-            }
-
-            for (int i = 0; i < strings.size(); i++) {
-                stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
-            }
-            stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+            loadInvoices();
             invoice = database.get(id);
-
         }
         return invoice;
     }

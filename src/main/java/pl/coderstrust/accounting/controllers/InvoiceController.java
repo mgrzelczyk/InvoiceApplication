@@ -40,8 +40,8 @@ public class InvoiceController {
 
     @GetMapping("/invoices/")
     public ResponseEntity<List<Invoice>> findAllInvoicesByDateRange(
-        @RequestParam("from") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDateTime from,
-        @RequestParam("to") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDateTime to) {
+        @RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime from,
+        @RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime to) {
         List<Invoice> invoices = invoiceBook.findAllInvoiceByDateRange(from, to);
         if (invoices == null) {
             return ResponseEntity.notFound().build();

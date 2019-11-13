@@ -60,10 +60,10 @@ public class InFileDatabase implements InvoiceDatabase {
     public Long getLastId(Long id) throws IOException {
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
-        } else {
+        }
             loadInvoices();
             lastId = Collections.max(database.keySet());
-        }
+
         return lastId;
     }
 
@@ -71,10 +71,9 @@ public class InFileDatabase implements InvoiceDatabase {
     public Invoice findInvoiceById(Long id) throws IOException {
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
-        } else {
+        }
             loadInvoices();
             invoice = database.get(id);
-        }
         return invoice;
     }
 
@@ -88,14 +87,14 @@ public class InFileDatabase implements InvoiceDatabase {
     public Invoice deleteByInvoice(Long id) throws IOException {
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
-        } else {
+        }
             loadInvoices();
             invoice = database.get(id);
             InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
             database.remove(id);
             inFileInvoice.setDeleted(true);
             invoice = inFileInvoice;
-        }
+
         return invoice;
     }
 

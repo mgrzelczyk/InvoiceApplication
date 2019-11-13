@@ -16,6 +16,8 @@ public class InFileDatabase implements InvoiceDatabase {
     private final AtomicLong counter = new AtomicLong(getLastId(1L));
     private final FileHelper fileHelper;
     private ObjectMapper objectMapper = new ObjectMapper();
+    private ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
+    Map<Long, InFileInvoice> database = new HashMap<>();
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper, Object invoice) throws IOException {
         this.fileHelper = fileHelper;
@@ -23,16 +25,10 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     @Override
-    public Invoice saveInvoice(Invoice invoice) {
+    public Invoice saveInvoice(Invoice invoice) throws IOException {
         if (invoice.getId() == null) {
             try {
-                List<String> insertInvoice = fileHelper.readLinesFromFile();
-
-                for (int i = 0; i < insertInvoice.size(); i++) {
-                    inFileInvoices.add(objectMapper.readValue(insertInvoice.get(i), InFileInvoice.class));
-                }
-                Map<Long, InFileInvoice> database = new HashMap<>();
-                inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+                loadInvoices();
                 counter.incrementAndGet();
                 Long lastId = Collections.max(database.keySet());
 
@@ -155,6 +151,15 @@ public class InFileDatabase implements InvoiceDatabase {
     private List insertInvoice (String invoice) throws IOException {
         List<String> strings = fileHelper.readLinesFromFile();
         return strings;
+    }
+
+    private ArrayList<InFileInvoice> loadInvoices() throws IOException {
+        List<String> insertInvoice = fileHelper.readLinesFromFile();
+        for (int i = 0; i < insertInvoice.size(); i++) {
+            inFileInvoices.add(objectMapper.readValue(insertInvoice.get(i), InFileInvoice.class));
+        }
+        inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+        return inFileInvoices;
     }
 
 }

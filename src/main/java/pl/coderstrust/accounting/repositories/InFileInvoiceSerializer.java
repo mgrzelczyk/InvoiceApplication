@@ -20,13 +20,6 @@ public class InFileInvoiceSerializer {
     }
 
     List<InFileInvoice> fromStrings(List<String> strings) throws IOException {
-
-        List<String> insertInvoice = fileHelper.readLinesFromFile();
-        for (int i = 0; i < insertInvoice.size(); i++) {
-            inFileInvoices.add(objectMapper.readValue(insertInvoice.get(i), InFileInvoice.class));
-        }
-        Map<Long, InFileInvoice> database = new HashMap<>();
-        inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
-        return inFileInvoices;
+        return InFileInvoice;
     }
 }

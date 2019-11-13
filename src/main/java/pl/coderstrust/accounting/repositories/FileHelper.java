@@ -1,6 +1,6 @@
 package pl.coderstrust.accounting.repositories;
 
-import static pl.coderstrust.accounting.application.properties.DATABASE_FILE_NAME;
+import static pl.coderstrust.accounting.application.Properties.DATABASE_FILE_NAME;
 
 import java.io.File;
 import java.io.FileWriter;

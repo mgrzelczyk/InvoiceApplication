@@ -1,7 +1,9 @@
 package pl.coderstrust.accounting.controllers;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coderstrust.accounting.model.Invoice;
@@ -28,6 +31,18 @@ public class InvoiceController {
     @GetMapping("/invoices/")
     public ResponseEntity<List<Invoice>> findAllInvoices() {
         List<Invoice> invoices = invoiceBook.findAllInvoices();
+        if (invoices == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok().body(invoices);
+        }
+    }
+
+    @GetMapping("/invoices/")
+    public ResponseEntity<List<Invoice>> findAllInvoicesByDateRange(
+        @RequestParam("from") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDateTime from,
+        @RequestParam("to") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDateTime to) {
+        List<Invoice> invoices = invoiceBook.findAllInvoiceByDateRange(from, to);
         if (invoices == null) {
             return ResponseEntity.notFound().build();
         } else {

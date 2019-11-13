@@ -19,6 +19,8 @@ public class InFileDatabase implements InvoiceDatabase {
     private ObjectMapper objectMapper = new ObjectMapper();
     private ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
     Map<Long, InFileInvoice> database = new HashMap<>();
+    Invoice invoice;
+    Long lastId;
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper, Object invoice) throws IOException {
         this.fileHelper = fileHelper;
@@ -56,7 +58,6 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     public Long getLastId(Long id) throws IOException {
-        Long lastId;
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         } else {
@@ -68,8 +69,6 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice findInvoiceById(Long id) throws IOException {
-        Invoice invoice;
-
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         } else {
@@ -81,41 +80,16 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public List<Invoice> findAllnvoices() throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile();
-        List<Invoice> stringsConvertedToList = new ArrayList<>();
-        Map<Long, Class<InFileInvoice>> database = new HashMap<>();
-
-        if (strings == null) {
-            throw new IllegalArgumentException("List is empty.");
-        }
-
-        for (int i = 0; i < strings.size(); i++) {
-            stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
-        }
-        stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), InFileInvoice.class));
-
-        return stringsConvertedToList;
+        ArrayList <Invoice> convertLoadedInvoice = new ArrayList<>(loadInvoices());
+        return convertLoadedInvoice;
     }
 
     @Override
     public Invoice deleteByInvoice(Long id) throws IOException {
-        Invoice invoice;
-        List<String> strings = fileHelper.readLinesFromFile();
-        List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
-        Map<Long, InFileInvoice> database = new HashMap<>();
-
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         } else {
-            if (strings == null) {
-                throw new IllegalArgumentException("List is empty.");
-            }
-            for (int i = 0; i < strings.size(); i++) {
-                stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
-            }
-
-            stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
-
+            loadInvoices();
             invoice = database.get(id);
             InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
             database.remove(id);
@@ -125,12 +99,12 @@ public class InFileDatabase implements InvoiceDatabase {
         return invoice;
     }
 
-    private List insertInvoice (String invoice) throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile();
-        return strings;
+    private List<String> insertInvoice() throws IOException {
+        return fileHelper.readLinesFromFile();
     }
 
     private ArrayList<InFileInvoice> loadInvoices() throws IOException {
+        insertInvoice();
         List<String> insertInvoice = fileHelper.readLinesFromFile();
         for (int i = 0; i < insertInvoice.size(); i++) {
             inFileInvoices.add(objectMapper.readValue(insertInvoice.get(i), InFileInvoice.class));
@@ -138,5 +112,4 @@ public class InFileDatabase implements InvoiceDatabase {
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
         return inFileInvoices;
     }
-
 }

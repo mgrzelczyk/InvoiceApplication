@@ -15,12 +15,14 @@ import java.util.concurrent.atomic.AtomicLong;
 public class InFileDatabase implements InvoiceDatabase {
 
     private final AtomicLong counter = new AtomicLong(getLastId());
-    private final FileHelper fileHelper;
+    private FileHelper fileHelper;
     private ObjectMapper objectMapper = new ObjectMapper();
     private ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
     private Map<Long, InFileInvoice> database = new HashMap<>();
     private Invoice invoice;
     private Long lastId;
+    private InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
+    private InFileInvoiceSerializer inFileInvoiceSerializer = new InFileInvoiceSerializer(fileHelper);
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper, Object invoice) throws IOException {
         this.fileHelper = fileHelper;
@@ -34,10 +36,8 @@ public class InFileDatabase implements InvoiceDatabase {
                 loadInvoices();
                 counter.incrementAndGet();
                 Long lastId = Collections.max(database.keySet());
-                InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
                 inFileInvoice.setId(lastId + 1L);
-                String inFilenvoiceJSON = objectMapper.writeValueAsString(inFileInvoice);
-                fileHelper.writeLineToFile(inFilenvoiceJSON);
+                inFileInvoiceSerializer.fromStrings();
                 inFileInvoice.setId(getLastId());
                 String inFilenvoiceJsonLastId = objectMapper.writeValueAsString(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
@@ -45,7 +45,6 @@ public class InFileDatabase implements InvoiceDatabase {
                 throw new IOException(e);
             }
         } else {
-            InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
             String inFilenvoiceJson = null;
             try {
                 inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
@@ -87,7 +86,7 @@ public class InFileDatabase implements InvoiceDatabase {
         }
             loadInvoices();
             invoice = database.get(id);
-            InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
+            updateDelete();
             database.remove(id);
             inFileInvoice.setDeleted(true);
             invoice = inFileInvoice;
@@ -107,5 +106,9 @@ public class InFileDatabase implements InvoiceDatabase {
         }
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
         return inFileInvoices;
+    }
+
+    private InFileInvoice updateDelete (){
+        return new InFileInvoice(invoice, false);
     }
 }

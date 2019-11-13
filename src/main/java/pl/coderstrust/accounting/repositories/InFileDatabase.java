@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class InFileDatabase implements InvoiceDatabase {
 
-    private final AtomicLong counter = new AtomicLong(getLastId(1L));
+    private final AtomicLong counter = new AtomicLong(getLastId());
     private final FileHelper fileHelper;
     private ObjectMapper objectMapper = new ObjectMapper();
     private ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
@@ -38,7 +38,7 @@ public class InFileDatabase implements InvoiceDatabase {
                 inFileInvoice.setId(lastId + 1L);
                 String inFilenvoiceJSON = objectMapper.writeValueAsString(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJSON);
-                inFileInvoice.setId(getLastId(lastId));
+                inFileInvoice.setId(getLastId());
                 String inFilenvoiceJsonLastId = objectMapper.writeValueAsString(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
             } catch (JsonParseException e) {
@@ -57,10 +57,7 @@ public class InFileDatabase implements InvoiceDatabase {
         return invoice;
     }
 
-    public Long getLastId(Long id) throws IOException {
-        if (id == null) {
-            throw new IllegalArgumentException("ID is null.");
-        }
+    public Long getLastId() throws IOException {
             loadInvoices();
             lastId = Collections.max(database.keySet());
 

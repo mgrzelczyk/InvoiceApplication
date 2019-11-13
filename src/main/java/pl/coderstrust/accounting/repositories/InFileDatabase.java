@@ -13,12 +13,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class InFileDatabase implements InvoiceDatabase {
 
-    private AtomicLong counter = new AtomicLong(getLastId());
+    private final AtomicLong counter = new AtomicLong(getLastId(1L));
     private final FileHelper fileHelper;
     private ObjectMapper objectMapper = new ObjectMapper();
-    private Object Invoice;
 
-    public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) {
+    public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper, Object invoice) throws IOException {
         this.fileHelper = fileHelper;
         this.objectMapper = objectMapper;
     }

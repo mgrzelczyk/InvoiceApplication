@@ -18,9 +18,9 @@ public class InFileDatabase implements InvoiceDatabase {
     private final FileHelper fileHelper;
     private ObjectMapper objectMapper = new ObjectMapper();
     private ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
-    Map<Long, InFileInvoice> database = new HashMap<>();
-    Invoice invoice;
-    Long lastId;
+    private Map<Long, InFileInvoice> database = new HashMap<>();
+    private Invoice invoice;
+    private Long lastId;
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper, Object invoice) throws IOException {
         this.fileHelper = fileHelper;

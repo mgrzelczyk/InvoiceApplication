@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,11 +87,12 @@ public class InFileDatabase implements InvoiceDatabase {
         }
             loadInvoices();
             invoice = database.get(id);
-            updateDelete();
+            updateDelete(invoice, false);
             database.remove(id);
             inFileInvoice.setDeleted(true);
-            invoice = inFileInvoice;
-
+            if (inFileInvoice.getDeleted(true)) {
+                invoice = inFileInvoice;
+            }
         return invoice;
     }
 
@@ -108,7 +110,7 @@ public class InFileDatabase implements InvoiceDatabase {
         return inFileInvoices;
     }
 
-    private InFileInvoice updateDelete (){
-        return new InFileInvoice(invoice, false);
+    private InFileInvoice updateDelete (Invoice invoice, boolean deleted){
+        return new InFileInvoice();
     }
 }

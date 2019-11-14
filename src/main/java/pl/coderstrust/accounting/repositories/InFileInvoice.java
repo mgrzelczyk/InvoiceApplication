@@ -18,7 +18,7 @@ class InFileInvoice extends Invoice {
         this.deleted = deleted;
     }
 
-    InFileInvoice(Long id,
+    InFileInvoice (Long id,
                   LocalDateTime date,
                   Company buyer,
                   Company seller,
@@ -28,7 +28,7 @@ class InFileInvoice extends Invoice {
         this.deleted = deleted;
     }
 
-    InFileInvoice(Invoice invoice, boolean deleted){
+    InFileInvoice (Invoice invoice, boolean deleted){
         this(invoice.getId(),
             invoice.getDate(),
             invoice.getBuyer(),
@@ -37,11 +37,15 @@ class InFileInvoice extends Invoice {
             deleted);
     }
 
-    boolean isDeleted() {
+    boolean isDeleted () {
         return deleted;
     }
 
-    void setDeleted(boolean deleted) {
+    void setDeleted (boolean deleted) {
         this.deleted = deleted;
+    }
+
+    boolean getDeleted (boolean deleted){
+        return deleted;
     }
 }

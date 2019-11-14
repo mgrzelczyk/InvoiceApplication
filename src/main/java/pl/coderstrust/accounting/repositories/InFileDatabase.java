@@ -58,8 +58,8 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     public Long getLastId(Long lastId) throws IOException {
-            loadInvoices();
-            lastId = Collections.max(database.keySet());
+        loadInvoices();
+        lastId = Collections.max(database.keySet());
 
         return lastId;
     }
@@ -69,14 +69,14 @@ public class InFileDatabase implements InvoiceDatabase {
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         }
-            loadInvoices();
-            invoice = database.get(id);
+        loadInvoices();
+        invoice = database.get(id);
         return invoice;
     }
 
     @Override
     public List<Invoice> findAllnvoices() throws IOException {
-        List <Invoice> convertLoadedInvoice = new ArrayList<>(loadInvoices());
+        List<Invoice> convertLoadedInvoice = new ArrayList<>(loadInvoices());
         return convertLoadedInvoice;
     }
 
@@ -85,14 +85,14 @@ public class InFileDatabase implements InvoiceDatabase {
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         }
-            loadInvoices();
-            invoice = database.get(id);
-            updateDelete(invoice, false);
-            database.remove(id);
-            inFileInvoice.setDeleted(true);
-            if (inFileInvoice.getDeleted(true)) {
-                invoice = inFileInvoice;
-            }
+        loadInvoices();
+        invoice = database.get(id);
+        updateDelete(invoice, false);
+        database.remove(id);
+        inFileInvoice.setDeleted(true);
+        if (inFileInvoice.getDeleted(true)) {
+            invoice = inFileInvoice;
+        }
         return invoice;
     }
 
@@ -110,7 +110,7 @@ public class InFileDatabase implements InvoiceDatabase {
         return inFileInvoices;
     }
 
-    private InFileInvoice updateDelete (Invoice invoice, boolean deleted){
+    private InFileInvoice updateDelete(Invoice invoice, boolean deleted) {
         return new InFileInvoice();
     }
 }

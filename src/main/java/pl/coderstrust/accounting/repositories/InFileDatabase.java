@@ -103,9 +103,8 @@ public class InFileDatabase implements InvoiceDatabase {
 
     private ArrayList<InFileInvoice> loadInvoices() throws IOException {
         insertInvoice();
-        List<String> insertInvoice = fileHelper.readLinesFromFile();
-        for (int i = 0; i < insertInvoice.size(); i++) {
-            inFileInvoices.add(objectMapper.readValue(insertInvoice.get(i), InFileInvoice.class));
+        for (int i = 0; i < insertInvoice().size(); i++) {
+            inFileInvoices.add(objectMapper.readValue(insertInvoice().get(i), InFileInvoice.class));
         }
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
         return inFileInvoices;

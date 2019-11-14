@@ -22,6 +22,7 @@ class InFileDatabaseTest {
     private InFileDatabase inFileDatabase;
     private Invoice invoice;
     private String DATABASE_FILE_NAME = "database.db";
+
     @Mock
     private FileHelper fileHelper;
 

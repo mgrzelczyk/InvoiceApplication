@@ -22,7 +22,7 @@ public class InFileDatabase implements InvoiceDatabase {
     private ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
     private Map<Long, InFileInvoice> database = new HashMap<>();
     private Invoice invoice;
-    private InFileInvoice inFileInvoice = new InFileInvoice(invoice, false);
+    private InFileInvoice inFileInvoice;
     private InFileInvoiceSerializer inFileInvoiceSerializer = new InFileInvoiceSerializer(fileHelper);
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {

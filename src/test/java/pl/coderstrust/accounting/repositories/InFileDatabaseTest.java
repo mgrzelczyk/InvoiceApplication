@@ -19,6 +19,7 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 class InFileDatabaseTest {
 
+    @Mock
     private InFileDatabase inFileDatabase;
     private Invoice invoice;
     private String DATABASE_FILE_NAME = "database.db";
@@ -31,7 +32,7 @@ class InFileDatabaseTest {
         inFileDatabase = new InFileDatabase(fileHelper, new ObjectMapper());
         LocalDateTime date = LocalDateTime.of(2020, 1, 1, 1, 1, 1);
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-        invoice = new Invoice(1L, null, null, null, null);
+        invoice = new Invoice(1L, date, null, null, invoiceEntries);
     }
 
     @Test

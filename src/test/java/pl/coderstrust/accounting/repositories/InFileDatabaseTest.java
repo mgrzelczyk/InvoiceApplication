@@ -37,25 +37,26 @@ class InFileDatabaseTest {
     @Test
     void shouldSaveInvoice() throws IOException {
 
-        Invoice invoiceExpected = new Invoice(1L, null, null, null, null);
-        Invoice invoiceResult = (Invoice) fileHelper.readLinesFromFile();
+        Invoice invoiceExpected = invoice;
+        Invoice invoiceResult = new Invoice(1L, null, null, null, null);
+        fileHelper.readLinesFromFile();
 
         when(inFileDatabase.saveInvoice(invoiceExpected)).thenReturn(invoiceResult);
 
         Invoice invoiceFound = inFileDatabase.saveInvoice(invoiceExpected);
 
-        assertEquals(invoiceExpected, invoiceFound);
+        assertEquals(invoiceExpected, invoiceResult);
     }
 
     @Test
     void shouldGetLastId() throws IOException {
-        Long lastIdExpected = 1L;
-
-        //when(inFileDatabase.getLastId(lastIdExpected).thenReturn(lastIdExpected));
-
-        //Long lastIdInvoiceFound = inFileDatabase.getLastId();
-
-        //assertEquals(lastIdExpected, lastIdInvoiceFound);
+//        Long lastIdExpected = 1L;
+//
+//        when(inFileDatabase.getLastId(lastIdExpected).thenReturn(invoice));
+//
+//        Long lastIdInvoiceFound = inFileDatabase.getLastId();
+//
+//        assertEquals(lastIdExpected, lastIdInvoiceFound);
     }
 
     @Test

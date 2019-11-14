@@ -97,7 +97,8 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     private List<String> insertInvoice() throws IOException {
-        return fileHelper.readLinesFromFile();
+        List<String> strings = fileHelper.readLinesFromFile();
+        return strings;
     }
 
     private ArrayList<InFileInvoice> loadInvoices() throws IOException {

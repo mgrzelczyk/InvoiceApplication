@@ -18,11 +18,7 @@ public class InFileDatabase implements InvoiceDatabase {
     private Long lastId;
     private final AtomicLong counter = new AtomicLong(getLastId(lastId));
     private FileHelper fileHelper;
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
-    private Map<Long, InFileInvoice> database = new HashMap<>();
-    private Invoice invoice;
-    private InFileInvoice inFileInvoice;
+    private ObjectMapper objectMapper;
     private InFileInvoiceSerializer inFileInvoiceSerializer = new InFileInvoiceSerializer(fileHelper);
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {
@@ -32,13 +28,14 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice saveInvoice(Invoice invoice) throws IOException {
+        InFileInvoice inFileInvoice = new InFileInvoice();
         if (invoice.getId() == null) {
             try {
                 loadInvoices();
                 counter.incrementAndGet();
-                Long lastId = Collections.max(database.keySet());
+                getLastId(lastId);
                 inFileInvoice.setId(lastId + 1L);
-                inFileInvoiceSerializer.fromStrings();
+                inFileInvoiceSerializer.toStrings();
                 inFileInvoice.setId(getLastId(lastId));
                 String inFilenvoiceJsonLastId = objectMapper.writeValueAsString(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
@@ -46,10 +43,8 @@ public class InFileDatabase implements InvoiceDatabase {
                 throw new IOException(e);
             }
         } else {
-            String inFilenvoiceJson = null;
             try {
-                inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
-                fileHelper.writeLineToFile(inFilenvoiceJson);
+                inFileInvoiceSerializer.toStrings();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -58,6 +53,7 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     public Long getLastId(Long lastId) throws IOException {
+        Map<Long, InFileInvoice> database = new HashMap<>();
         loadInvoices();
         lastId = Collections.max(database.keySet());
 
@@ -66,6 +62,8 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice findInvoiceById(Long id) throws IOException {
+        Invoice invoice;
+        Map<Long, InFileInvoice> database = new HashMap<>();
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         }
@@ -82,6 +80,9 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice deleteByInvoice(Long id) throws IOException {
+        Invoice invoice;
+        InFileInvoice inFileInvoice = new InFileInvoice();
+        Map<Long, InFileInvoice> database = new HashMap<>();
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         }
@@ -102,6 +103,8 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     private ArrayList<InFileInvoice> loadInvoices() throws IOException {
+        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
+        Map<Long, InFileInvoice> database = new HashMap<>();
         insertInvoice();
         for (int i = 0; i < insertInvoice().size(); i++) {
             inFileInvoices.add(objectMapper.readValue(insertInvoice().get(i), InFileInvoice.class));

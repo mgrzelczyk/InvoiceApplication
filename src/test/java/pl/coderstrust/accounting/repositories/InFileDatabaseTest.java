@@ -17,7 +17,7 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 class InFileDatabaseTest {
 
-    private InFileInvoiceSerializer inFileInvoiceSerializer;
+    private InFileInvoiceSerialize inFileInvoiceSerialize;
     private Invoice invoice;
     private String DATABASE_FILE_NAME = "database.db";
 
@@ -26,7 +26,10 @@ class InFileDatabaseTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks
-    private InFileDatabase inFileDatabase;
+    private InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+
+    InFileDatabaseTest() throws IOException {
+    }
 
     @Test
     void shouldSaveInvoice() throws NullPointerException, IOException {
@@ -34,8 +37,7 @@ class InFileDatabaseTest {
         InFileInvoice invoiceExpected = (InFileInvoice) new Invoice();
         invoiceExpected.setId(1L);
 
-        // when FileHelper read lines from file , then return
-        // save invoice
+        when(fileHelper.readLinesFromFile(DATABASE_FILE_NAME)).thenReturn((List<String>) inFileDatabase.saveInvoice(inFileInvoice));
         when(inFileDatabase.saveInvoice(invoice)).thenReturn(invoiceExpected);
 
         Invoice invoiceResult = (Invoice) fileHelper.readLinesFromFile(DATABASE_FILE_NAME);

@@ -2,8 +2,6 @@ package pl.coderstrust.accounting.repositories;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static pl.coderstrust.accounting.application.Properties.DATABASE_FILE_NAME;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
@@ -23,6 +21,10 @@ public class InFileDatabase implements InvoiceDatabase {
     private ObjectMapper objectMapper;
     private Properties properties;
 
+    private final String DATABASE_FILE_NAME = "database.db";
+
+    InFileInvoice inFileInvoice = new InFileInvoice();
+
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {
         this.fileHelper = fileHelper;
@@ -31,17 +33,17 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice saveInvoice(Invoice invoice) throws IOException {
-        InFileInvoice inFileInvoice = new InFileInvoice();
-        ObjectMapper objectMapper = new ObjectMapper();
+
         InFileInvoiceSerialize inFileInvoiceSerialize = new InFileInvoiceSerialize(objectMapper);
         if (invoice.getId() == null) {
             try {
-                counter.incrementAndGet();
-                getLastId();
-                inFileInvoice.setId(getLastId() + 1L);
                 insertInvoice();
                 loadInvoices();
-                inFileInvoiceSerialize.serialize(inFileInvoice);
+                counter.incrementAndGet();
+                updateDelete(invoice, false);
+                inFileInvoice.setId(getLastId() + 1L);
+                String inFilenvoiceJSON = inFileInvoiceSerialize.serialize(inFileInvoice);
+                fileHelper.writeLineToFile(inFilenvoiceJSON);
                 inFileInvoice.setId(getLastId());
                 String inFilenvoiceJsonLastId = inFileInvoiceSerialize.serialize(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJsonLastId);

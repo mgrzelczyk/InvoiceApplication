@@ -1,6 +1,7 @@
 package pl.coderstrust.accounting.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static pl.coderstrust.accounting.application.Properties.DATABASE_FILE_NAME;
 import pl.coderstrust.accounting.model.Invoice;
 
 import java.io.IOException;
@@ -20,14 +21,14 @@ public class InFileInvoiceSerializer {
         this.fileHelper = fileHelper;
     }
 
-    public String toStrings () throws IOException {
-        String inFilenvoiceJSON = objectMapper.writeValueAsString(inFileInvoice);
-        fileHelper.writeLineToFile(inFilenvoiceJSON);
-        return inFilenvoiceJSON;
+    public String toStrings(InFileInvoice inFileInvoice) throws IOException {
+        String inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
+        fileHelper.writeLineToFile(inFilenvoiceJson);
+        return inFilenvoiceJson;
     }
 
-    public Map<Long, InFileInvoice> fromStrings () throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile();
+    public Map<Long, InFileInvoice> fromStrings() throws IOException {
+        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
         Map<Long, InFileInvoice> database = new HashMap<>();
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         for (int i = 0; i < strings.size(); i++) {

@@ -5,46 +5,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.coderstrust.accounting.model.Invoice;
-import pl.coderstrust.accounting.model.InvoiceEntry;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class InFileDatabaseTest {
 
-    @Mock
-    private InFileDatabase inFileDatabase;
+    private InFileInvoiceSerializer inFileInvoiceSerializer;
     private Invoice invoice;
     private String DATABASE_FILE_NAME = "database.db";
 
     @Mock
+    private InFileDatabase inFileDatabase;
+
+    @InjectMocks
     private FileHelper fileHelper;
 
     @BeforeEach
     void setUp() throws IOException {
         inFileDatabase = new InFileDatabase(fileHelper, new ObjectMapper());
-        LocalDateTime date = LocalDateTime.of(2020, 1, 1, 1, 1, 1);
-        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-        invoice = new Invoice(1L, date, null, null, invoiceEntries);
     }
 
     @Test
-    void shouldSaveInvoice() throws IOException {
+    void shouldSaveInvoice() throws NullPointerException, IOException {
+        InFileInvoice inFileInvoice = (InFileInvoice) new Invoice(1L, null, null, null, null);
+        InFileInvoice invoiceExpected = (InFileInvoice) new Invoice();
+        invoiceExpected.setId(1L);
 
-        Invoice invoiceExpected = invoice;
-        Invoice invoiceResult = new Invoice(1L, null, null, null, null);
-        fileHelper.readLinesFromFile();
+        when(inFileDatabase.saveInvoice(invoice)).thenReturn(invoiceExpected);
 
-        when(inFileDatabase.saveInvoice(invoiceExpected)).thenReturn(invoiceResult);
-
-        Invoice invoiceFound = inFileDatabase.saveInvoice(invoiceExpected);
+        Invoice invoiceResult = (Invoice) fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
 
         assertEquals(invoiceExpected, invoiceResult);
     }

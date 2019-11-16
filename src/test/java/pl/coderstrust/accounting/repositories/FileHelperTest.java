@@ -17,9 +17,9 @@ class FileHelperTest {
 
     @Test
     void readLinesFromFileShouldThrowExceptionForNullFilePath() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(NullPointerException.class,
             () -> {
-                fileHelper.readLinesFromFile();
+                fileHelper.readLinesFromFile(null);
             });
     }
 

@@ -2,6 +2,7 @@ package pl.coderstrust.accounting.repositories;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static pl.coderstrust.accounting.application.Properties.DATABASE_FILE_NAME;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
@@ -11,15 +12,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class InFileDatabase implements InvoiceDatabase {
 
-    private Long lastId;
-    private final AtomicLong counter = new AtomicLong(getLastId(lastId));
+    private final AtomicLong counter = new AtomicLong(getLastId());
     private FileHelper fileHelper;
     private ObjectMapper objectMapper;
-    private InFileInvoiceSerializer inFileInvoiceSerializer = new InFileInvoiceSerializer(fileHelper);
+    private Properties properties;
+
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {
         this.fileHelper = fileHelper;
@@ -29,14 +31,15 @@ public class InFileDatabase implements InvoiceDatabase {
     @Override
     public Invoice saveInvoice(Invoice invoice) throws IOException {
         InFileInvoice inFileInvoice = new InFileInvoice();
+        InFileInvoiceSerializer inFileInvoiceSerializer = new InFileInvoiceSerializer(fileHelper);
         if (invoice.getId() == null) {
             try {
                 loadInvoices();
                 counter.incrementAndGet();
-                getLastId(lastId);
-                inFileInvoice.setId(lastId + 1L);
-                inFileInvoiceSerializer.toStrings();
-                inFileInvoice.setId(getLastId(lastId));
+                getLastId();
+                inFileInvoice.setId(getLastId() + 1L);
+                inFileInvoiceSerializer.toStrings(inFileInvoice);
+                inFileInvoice.setId(getLastId());
                 String inFilenvoiceJsonLastId = objectMapper.writeValueAsString(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
             } catch (JsonParseException e) {
@@ -44,7 +47,7 @@ public class InFileDatabase implements InvoiceDatabase {
             }
         } else {
             try {
-                inFileInvoiceSerializer.toStrings();
+                inFileInvoiceSerializer.toStrings(inFileInvoice);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -52,8 +55,9 @@ public class InFileDatabase implements InvoiceDatabase {
         return invoice;
     }
 
-    public Long getLastId(Long lastId) throws IOException {
+    public Long getLastId() throws IOException {
         Map<Long, InFileInvoice> database = new HashMap<>();
+        Long lastId;
         loadInvoices();
         lastId = Collections.max(database.keySet());
 
@@ -98,7 +102,7 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     private List<String> insertInvoice() throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile();
+        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
         return strings;
     }
 

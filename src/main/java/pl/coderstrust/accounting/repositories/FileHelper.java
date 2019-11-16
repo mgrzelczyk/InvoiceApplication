@@ -19,7 +19,8 @@ public class FileHelper {
         }
     }
 
-    public List<String> readLinesFromFile() throws IOException {
+    @SuppressWarnings("checkstyle:ParameterName")
+    public List<String> readLinesFromFile(String DATABASE_FILE_NAME) throws IOException {
         List<String> result = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File(DATABASE_FILE_NAME))) {
             while (scanner.hasNext()) {

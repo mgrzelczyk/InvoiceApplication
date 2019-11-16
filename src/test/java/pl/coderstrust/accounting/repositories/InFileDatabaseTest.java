@@ -2,7 +2,6 @@ package pl.coderstrust.accounting.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,15 +22,11 @@ class InFileDatabaseTest {
     private String DATABASE_FILE_NAME = "database.db";
 
     @Mock
-    private InFileDatabase inFileDatabase;
+    private FileHelper fileHelper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks
-    private FileHelper fileHelper;
-
-    @BeforeEach
-    void setUp() throws IOException {
-        inFileDatabase = new InFileDatabase(fileHelper, new ObjectMapper());
-    }
+    private InFileDatabase inFileDatabase;
 
     @Test
     void shouldSaveInvoice() throws NullPointerException, IOException {
@@ -39,6 +34,8 @@ class InFileDatabaseTest {
         InFileInvoice invoiceExpected = (InFileInvoice) new Invoice();
         invoiceExpected.setId(1L);
 
+        // when FileHelper read lines from file , then return
+        // save invoice
         when(inFileDatabase.saveInvoice(invoice)).thenReturn(invoiceExpected);
 
         Invoice invoiceResult = (Invoice) fileHelper.readLinesFromFile(DATABASE_FILE_NAME);

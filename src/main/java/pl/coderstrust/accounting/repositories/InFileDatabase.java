@@ -31,23 +31,25 @@ public class InFileDatabase implements InvoiceDatabase {
     @Override
     public Invoice saveInvoice(Invoice invoice) throws IOException {
         InFileInvoice inFileInvoice = new InFileInvoice();
-        InFileInvoiceSerializer inFileInvoiceSerializer = new InFileInvoiceSerializer(fileHelper);
+        ObjectMapper objectMapper = new ObjectMapper();
+        InFileInvoiceSerialize inFileInvoiceSerialize = new InFileInvoiceSerialize(objectMapper);
         if (invoice.getId() == null) {
             try {
-                loadInvoices();
                 counter.incrementAndGet();
                 getLastId();
                 inFileInvoice.setId(getLastId() + 1L);
-                inFileInvoiceSerializer.toStrings(inFileInvoice);
+                insertInvoice();
+                loadInvoices();
+                inFileInvoiceSerialize.serialize(inFileInvoice);
                 inFileInvoice.setId(getLastId());
-                String inFilenvoiceJsonLastId = objectMapper.writeValueAsString(inFileInvoice);
+                String inFilenvoiceJsonLastId = inFileInvoiceSerialize.serialize(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
             } catch (JsonParseException e) {
                 throw new IOException(e);
             }
         } else {
             try {
-                inFileInvoiceSerializer.toStrings(inFileInvoice);
+                inFileInvoiceSerialize.serialize(inFileInvoice);
             } catch (IOException e) {
                 e.printStackTrace();
             }

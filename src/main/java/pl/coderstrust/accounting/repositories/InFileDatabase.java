@@ -1,30 +1,25 @@
 package pl.coderstrust.accounting.repositories;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static pl.coderstrust.accounting.application.Properties.DATABASE_FILE_NAME;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class InFileDatabase implements InvoiceDatabase {
 
-    private final AtomicLong counter = new AtomicLong(getLastId());
-    private FileHelper fileHelper;
+    private AtomicLong counter;
+    private final FileHelper fileHelper;
     private ObjectMapper objectMapper;
-    private Properties properties;
-
-    private final String DATABASE_FILE_NAME = "database.db";
-
-    InFileInvoice inFileInvoice = new InFileInvoice();
-
+    InFileInvoiceSerialize inFileInvoiceSerialize;
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {
         this.fileHelper = fileHelper;
@@ -32,27 +27,32 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     @Override
-    public Invoice saveInvoice(Invoice invoice) throws IOException {
-
-        InFileInvoiceSerialize inFileInvoiceSerialize = new InFileInvoiceSerialize(objectMapper);
+    public Invoice saveInvoice(Invoice invoice) throws JsonProcessingException {
         if (invoice.getId() == null) {
             try {
-                insertInvoice();
-                loadInvoices();
+                Map<Long, InFileInvoice> database = loadInvoices();
                 counter.incrementAndGet();
-                updateDelete(invoice, false);
-                inFileInvoice.setId(getLastId() + 1L);
-                String inFilenvoiceJSON = inFileInvoiceSerialize.serialize(inFileInvoice);
-                fileHelper.writeLineToFile(inFilenvoiceJSON);
+                Long lastId = Collections.max(database.keySet());
+
+                InFileInvoice inFileInvoice = updateDeleteInvoice(invoice);
+                inFileInvoice.setId(lastId + 1L);
+                String inFilenvoiceJson = inFileInvoiceSerialize.serialize(inFileInvoice);
+                fileHelper.writeLineToFile(inFilenvoiceJson);
                 inFileInvoice.setId(getLastId());
                 String inFilenvoiceJsonLastId = inFileInvoiceSerialize.serialize(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
-            } catch (JsonParseException e) {
-                throw new IOException(e);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
         } else {
+            InFileInvoice inFileInvoice = updateDeleteInvoice(invoice);
+            String inFilenvoiceJson = null;
             try {
-                inFileInvoiceSerialize.serialize(inFileInvoice);
+                inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
+                fileHelper.writeLineToFile(inFilenvoiceJson);
+            } catch (JsonParseException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -61,68 +61,76 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     public Long getLastId() throws IOException {
-        Map<Long, InFileInvoice> database = new HashMap<>();
-        Long lastId;
-        loadInvoices();
-        lastId = Collections.max(database.keySet());
-
+        Long lastId = Collections.max(loadInvoices().keySet());
         return lastId;
     }
 
     @Override
     public Invoice findInvoiceById(Long id) throws IOException {
         Invoice invoice;
-        Map<Long, InFileInvoice> database = new HashMap<>();
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
+        } else {
+            invoice = loadInvoices().get(id);
         }
-        loadInvoices();
-        invoice = database.get(id);
         return invoice;
     }
 
+
     @Override
     public List<Invoice> findAllnvoices() throws IOException {
-        List<Invoice> convertLoadedInvoice = new ArrayList<>(loadInvoices());
-        return convertLoadedInvoice;
+        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
+        List<Invoice> stringsConvertedToList = new ArrayList<>();
+        Map<Long, Class<InFileInvoice>> database = new HashMap<>();
+
+        for (int i = 0; i < strings.size(); i++) {
+            stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+        }
+        stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), InFileInvoice.class));
+
+        return stringsConvertedToList;
     }
 
     @Override
     public Invoice deleteByInvoice(Long id) throws IOException {
         Invoice invoice;
-        InFileInvoice inFileInvoice = new InFileInvoice();
+        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
+        List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
         Map<Long, InFileInvoice> database = new HashMap<>();
+
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
-        }
-        loadInvoices();
-        invoice = database.get(id);
-        updateDelete(invoice, false);
-        database.remove(id);
-        inFileInvoice.setDeleted(true);
-        if (inFileInvoice.getDeleted(true)) {
+        } else {
+            if (strings == null) {
+                throw new IllegalArgumentException("List is empty.");
+            }
+            for (int i = 0; i < strings.size(); i++) {
+                stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+            }
+
+            stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+
+            invoice = database.get(id);
+            InFileInvoice inFileInvoice = updateDeleteInvoice(invoice);
+            database.remove(id);
+            inFileInvoice.setDeleted(true);
             invoice = inFileInvoice;
         }
         return invoice;
     }
 
-    private List<String> insertInvoice() throws IOException {
+    private Map<Long, InFileInvoice> loadInvoices() throws IOException {
         List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
-        return strings;
-    }
-
-    private ArrayList<InFileInvoice> loadInvoices() throws IOException {
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
-        Map<Long, InFileInvoice> database = new HashMap<>();
-        insertInvoice();
-        for (int i = 0; i < insertInvoice().size(); i++) {
-            inFileInvoices.add(objectMapper.readValue(insertInvoice().get(i), InFileInvoice.class));
+        for (int i = 0; i < strings.size(); i++) {
+            inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
         }
+        Map<Long, InFileInvoice> database = new HashMap<>();
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
-        return inFileInvoices;
+        return database;
     }
 
-    private InFileInvoice updateDelete(Invoice invoice, boolean deleted) {
-        return new InFileInvoice();
+    private InFileInvoice updateDeleteInvoice(Invoice invoice) {
+        return new InFileInvoice(invoice, false);
     }
 }

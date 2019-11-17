@@ -49,5 +49,5 @@ public class FileHelper {
         }
         this.writeLinesToFile(Collections.singletonList(line));
     }
-    
+
 }

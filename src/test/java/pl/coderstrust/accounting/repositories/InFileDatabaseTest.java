@@ -2,8 +2,10 @@ package pl.coderstrust.accounting.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
@@ -11,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.coderstrust.accounting.model.Invoice;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,13 +35,24 @@ class InFileDatabaseTest {
 
     @Test
     void shouldSaveInvoice() throws IOException {
+        InFileInvoice inFileInvoice = new InFileInvoice();
         InFileInvoice invoiceExpected = new InFileInvoice();
+        List<String> invoiceList = new ArrayList<>();
+        invoiceExpected.setId(1L);
+        String filePath = "database.db";
 
-        when(fileHelper.readLinesFromFile(DATABASE_FILE_NAME)).thenReturn((List<String>) inFileDatabase.saveInvoice(invoiceExpected));
+        when(inFileDatabase.saveInvoice(inFileInvoice)).thenReturn(invoiceExpected);
 
-        InFileInvoice invoiceResult = (InFileInvoice) fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
+        when(fileHelper.readLinesFromFile(filePath)).thenReturn(invoiceList);
+
+        InFileInvoice invoiceResult = (InFileInvoice) fileHelper.readLinesFromFile(filePath);
 
         assertEquals(invoiceExpected, invoiceResult);
+    }
+
+    @Test
+    void shouldReturnNullForNullSave() throws NullPointerException, IOException {
+        assertThrows(NullPointerException.class, (Executable) inFileDatabase.saveInvoice(null));
     }
 
     @Test

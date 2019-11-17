@@ -1,5 +1,7 @@
 package pl.coderstrust.accounting.repositories;
 
+import static pl.coderstrust.accounting.application.Properties.DATABASE_FILE_NAME;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,7 +13,6 @@ import java.util.Scanner;
 public class FileHelper {
 
     private static String separator = System.lineSeparator();
-    private static String DATABASE_FILE_NAME = "database.db";
 
     public FileHelper(String databaseFilename) {
         if (DATABASE_FILE_NAME == null) {
@@ -48,4 +49,5 @@ public class FileHelper {
         }
         this.writeLinesToFile(Collections.singletonList(line));
     }
+    
 }

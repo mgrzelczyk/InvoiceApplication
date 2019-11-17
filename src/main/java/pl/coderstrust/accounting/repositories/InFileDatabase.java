@@ -34,7 +34,7 @@ public class InFileDatabase implements InvoiceDatabase {
                 counter.incrementAndGet();
                 Long lastId = Collections.max(database.keySet());
 
-                InFileInvoice inFileInvoice = updateDeleteInvoice(invoice);
+                InFileInvoice inFileInvoice = updateDeleteInvoice(invoice, false);
                 inFileInvoice.setId(lastId + 1L);
                 String inFilenvoiceJson = inFileInvoiceSerialize.serialize(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJson);
@@ -46,7 +46,7 @@ public class InFileDatabase implements InvoiceDatabase {
             }
 
         } else {
-            InFileInvoice inFileInvoice = updateDeleteInvoice(invoice);
+            InFileInvoice inFileInvoice = updateDeleteInvoice(invoice, false);
             String inFilenvoiceJson = null;
             try {
                 inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
@@ -61,8 +61,7 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     public Long getLastId() throws IOException {
-        Long lastId = Collections.max(loadInvoices().keySet());
-        return lastId;
+        return Collections.max(loadInvoices().keySet());
     }
 
     @Override
@@ -79,58 +78,55 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public List<Invoice> findAllnvoices() throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
-        List<Invoice> stringsConvertedToList = new ArrayList<>();
-        Map<Long, Class<InFileInvoice>> database = new HashMap<>();
-
-        for (int i = 0; i < strings.size(); i++) {
-            stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
-        }
-        stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), InFileInvoice.class));
-
-        return stringsConvertedToList;
+        return getInvoices();
     }
 
     @Override
     public Invoice deleteByInvoice(Long id) throws IOException {
         Invoice invoice;
-        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
-        List<InFileInvoice> stringsConvertedToList = new ArrayList<>();
-        Map<Long, InFileInvoice> database = new HashMap<>();
+        Map<Long, InFileInvoice> database = loadInvoices();
 
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         } else {
-            if (strings == null) {
-                throw new IllegalArgumentException("List is empty.");
-            }
-            for (int i = 0; i < strings.size(); i++) {
-                stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
-            }
-
-            stringsConvertedToList.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
-
+            getInvoices();
             invoice = database.get(id);
-            InFileInvoice inFileInvoice = updateDeleteInvoice(invoice);
+            InFileInvoice inFileInvoice = updateDeleteInvoice(invoice, true);
             database.remove(id);
-            inFileInvoice.setDeleted(true);
-            invoice = inFileInvoice;
+            if (inFileInvoice.getDeleted(true)) {
+                invoice = inFileInvoice;
+            }
         }
         return invoice;
     }
 
     private Map<Long, InFileInvoice> loadInvoices() throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
-        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
-        for (int i = 0; i < strings.size(); i++) {
-            inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
-        }
+        List<InFileInvoice> inFileInvoices = insertInvoice();
         Map<Long, InFileInvoice> database = new HashMap<>();
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
         return database;
     }
 
-    private InFileInvoice updateDeleteInvoice(Invoice invoice) {
-        return new InFileInvoice(invoice, false);
+    private List<InFileInvoice> insertInvoice() throws IOException {
+        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
+        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
+        for (int i = 0; i < strings.size(); i++) {
+            inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+        }
+        return inFileInvoices;
+    }
+
+    private InFileInvoice updateDeleteInvoice(Invoice invoice, boolean deleted) {
+        return new InFileInvoice(invoice, true);
+    }
+
+    private List<Invoice> getInvoices() throws IOException {
+        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
+        List<Invoice> stringsConvertedToList = new ArrayList<>();
+
+        for (int i = 0; i < strings.size(); i++) {
+            stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+        }
+        return stringsConvertedToList;
     }
 }

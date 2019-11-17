@@ -17,9 +17,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class InFileDatabase implements InvoiceDatabase {
 
     private AtomicLong counter;
-    private final FileHelper fileHelper;
+    private FileHelper fileHelper;
     private ObjectMapper objectMapper;
-    InFileInvoiceSerialize inFileInvoiceSerialize;
+    private InFileInvoiceSerialize inFileInvoiceSerialize;
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {
         this.fileHelper = fileHelper;
@@ -33,7 +33,6 @@ public class InFileDatabase implements InvoiceDatabase {
                 Map<Long, InFileInvoice> database = loadInvoices();
                 counter.incrementAndGet();
                 Long lastId = Collections.max(database.keySet());
-
                 InFileInvoice inFileInvoice = updateDeleteInvoice(invoice, false);
                 inFileInvoice.setId(lastId + 1L);
                 String inFilenvoiceJson = inFileInvoiceSerialize.serialize(inFileInvoice);

@@ -2,10 +2,8 @@ package pl.coderstrust.accounting.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
@@ -14,6 +12,7 @@ import pl.coderstrust.accounting.model.Invoice;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,17 +32,17 @@ class InFileDatabaseTest {
     InFileDatabaseTest() throws IOException {
     }
 
+
     @Test
     void shouldSaveInvoice() throws IOException {
         InFileInvoice inFileInvoice = new InFileInvoice();
         InFileInvoice invoiceExpected = new InFileInvoice();
-        List<String> invoiceList = new ArrayList<>();
+        List<String> invoiceListInput = new ArrayList<>();
         invoiceExpected.setId(1L);
-        String filePath = "database.db";
+        String inputFile = "database.db";
 
-        when(inFileDatabase.saveInvoice(inFileInvoice)).thenReturn(invoiceExpected);
-
-        when(fileHelper.readLinesFromFile(filePath)).thenReturn(invoiceList);
+        when(fileHelper.readLinesFromFile(inputFile)).thenReturn(invoiceListInput);
+        when(inFileDatabase.saveInvoice(invoiceListInput))
 
         InFileInvoice invoiceResult = (InFileInvoice) fileHelper.readLinesFromFile(filePath);
 
@@ -51,53 +50,22 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldReturnNullForNullSave() throws NullPointerException, IOException {
-        assertThrows(NullPointerException.class, (Executable) inFileDatabase.saveInvoice(null));
+    void shouldReturnNullForNullSave() {
     }
 
     @Test
-    void shouldGetLastId() throws IOException {
-//        Long lastIdExpected = 1L;
-//
-//        when(inFileDatabase.getLastId(lastIdExpected).thenReturn(invoice));
-//
-//        Long lastIdInvoiceFound = inFileDatabase.getLastId();
-//
-//        assertEquals(lastIdExpected, lastIdInvoiceFound);
+    void shouldGetLastId() {
     }
 
     @Test
-    void shouldFindInvoiceById() throws IOException {
-//        Long idExpected = 1L;
-//        Invoice invoiceExpected = new Invoice(1L, null, null, null, null);
-//
-//        when(inFileDatabase.findInvoiceById(idExpected)).thenReturn(invoice);
-//
-//        Invoice invoiceResult = inFileDatabase.findInvoiceById(idExpected);
-//
-//        assertEquals(invoiceExpected, invoiceResult);
+    void shouldFindInvoiceById() {
     }
 
     @Test
-    void shouldFindAllnvoices() throws IOException {
-//        List<Invoice> listInvoiceExpected = new ArrayList<>();
-//
-//        when(inFileDatabase.findAllnvoices()).thenReturn(listInvoiceExpected);
-//
-//        List<Invoice> listInvoiceResult = inFileDatabase.findAllnvoices();
-//
-//        assertEquals(listInvoiceExpected, listInvoiceResult);
+    void shouldFindAllnvoices() {
     }
 
     @Test
-    void shouldDeleteByInvoice() throws IOException {
-//        Long idDeleteInvoice = 1L;
-//        Invoice invoiceExpected = new Invoice(1L, null, null, null, null);
-//
-//        when(inFileDatabase.deleteByInvoice(idDeleteInvoice)).thenReturn(invoice);
-//
-//        Invoice invoiceDeletedResult = inFileDatabase.deleteByInvoice(idDeleteInvoice);
-//
-//        assertEquals(invoiceExpected, invoiceDeletedResult);
+    void shouldDeleteByInvoice()  {
     }
 }

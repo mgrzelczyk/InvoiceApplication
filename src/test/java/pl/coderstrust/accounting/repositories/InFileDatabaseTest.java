@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.coderstrust.accounting.model.Invoice;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,21 +32,24 @@ class InFileDatabaseTest {
     InFileDatabaseTest() throws IOException {
     }
 
-
     @Test
     void shouldSaveInvoice() throws IOException {
-        InFileInvoice inFileInvoice = new InFileInvoice();
-        InFileInvoice invoiceExpected = new InFileInvoice();
+        Invoice invoice = new Invoice();
+        InFileInvoice inFileInvoiceExpected = new InFileInvoice();
         List<String> invoiceListInput = new ArrayList<>();
-        invoiceExpected.setId(1L);
-        String inputFile = "database.db";
+        inFileInvoiceExpected.setId(1L);
+        String filePath = "database.db";
 
-        when(fileHelper.readLinesFromFile(inputFile)).thenReturn(invoiceListInput);
-        when(inFileDatabase.saveInvoice(invoiceListInput))
+        when(fileHelper.readLinesFromFile(filePath)).thenReturn(invoiceListInput);
+        when(inFileDatabase.saveInvoice(invoice)).thenReturn(inFileInvoiceExpected);
 
-        InFileInvoice invoiceResult = (InFileInvoice) fileHelper.readLinesFromFile(filePath);
+        InFileInvoice inFileInvoiceResult = (InFileInvoice) fileHelper.readLinesFromFile(filePath);
 
-        assertEquals(invoiceExpected, invoiceResult);
+        verify(fileHelper).readLinesFromFile(filePath);
+        verify(inFileDatabase).saveInvoice(invoice);
+        verify(fileHelper).writeLinesToFile(invoiceListInput);
+
+        assertEquals(inFileInvoiceExpected, inFileInvoiceResult);
     }
 
     @Test

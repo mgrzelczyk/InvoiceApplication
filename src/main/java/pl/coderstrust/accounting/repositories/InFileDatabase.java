@@ -28,11 +28,10 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     @Override
-    public Invoice saveInvoice(Invoice invoice) throws 
+    public Invoice saveInvoice(Invoice invoice) throws
         JsonProcessingException, IOException {
         if (invoice.getId() == null) {
             try {
-                Map<Long, InFileInvoice> database = loadInvoices();
                 counter.incrementAndGet();
                 Long lastId = getLastId();
                 InFileInvoice inFileInvoice = updateDeleteInvoice(invoice, false);

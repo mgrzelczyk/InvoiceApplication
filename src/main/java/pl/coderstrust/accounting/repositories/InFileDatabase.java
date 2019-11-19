@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static pl.coderstrust.accounting.application.Properties.DATABASE_FILE_NAME;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +28,8 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     @Override
-    public Invoice saveInvoice(Invoice invoice) throws JsonProcessingException {
+    public Invoice saveInvoice(Invoice invoice) throws 
+        JsonProcessingException, IOException {
         if (invoice.getId() == null) {
             try {
                 Map<Long, InFileInvoice> database = loadInvoices();

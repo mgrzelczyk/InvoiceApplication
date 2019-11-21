@@ -4,15 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
+import pl.coderstrust.accounting.model.InvoiceEntry;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,29 +26,32 @@ class InFileDatabaseTest {
     private FileHelper fileHelper;
 
     @Mock
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper;
 
     @InjectMocks
-    private InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+    private InFileDatabase inFileDatabase;
 
-    InFileDatabaseTest() throws IOException {
-    }
 
     @Test
     void shouldSaveInvoice() throws IOException {
-        Invoice invoiceExpected = new Invoice();
-        Invoice invoiceResult = new Invoice();
+        LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
+        Company buyer = new Company(1L, "tin#1", "buyer address", "buyer name");
+        Company seller = new Company(2L, "tin#2", "seller address", "seller name");
+        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
+        Invoice invoiceExpected = new Invoice(1L, date, buyer, seller, invoiceEntries);
+        Invoice invoice = new Invoice(1L, date, buyer, seller, invoiceEntries);
+        InFileInvoice inFileInvoice = new InFileInvoice();
+        inFileInvoice.setId(2L);
         List<String> invoiceListInput = new ArrayList<>();
-        invoiceExpected.setId(1L);
-        invoiceResult.setId(1L);
         String filePath = "database.db";
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        String lineToWrite = "{\"id\":9,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
-        Mockito.lenient().when(fileHelper.readLinesFromFile(filePath)).thenReturn(invoiceListInput);
-        Mockito.lenient().when(inFileDatabase.saveInvoice(invoiceExpected)).thenCallRealMethod();
+        when(objectMapper.writeValueAsString(any())).thenReturn("lineToWrite");
 
-//        verify(fileHelper).readLinesFromFile(filePath);
-//        verify(inFileDatabase).saveInvoice(invoiceExpected);
-//        verify(fileHelper).writeLineToFile(filePath);
+        Invoice invoiceResult = inFileDatabase.saveInvoice(invoice);
+
+        verify(fileHelper).writeLineToFile("lineToWrite");
 
         assertEquals(invoiceExpected, invoiceResult);
     }

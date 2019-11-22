@@ -40,6 +40,26 @@ class InFileDatabaseTest {
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
         Invoice invoiceExpected = new Invoice(1L, date, buyer, seller, invoiceEntries);
         Invoice invoice = new Invoice(1L, date, buyer, seller, invoiceEntries);
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        String lineToWrite = "{\"id\":9,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
+
+        when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
+
+        Invoice invoiceResult = inFileDatabase.saveInvoice(invoice);
+
+        verify(fileHelper).writeLineToFile(lineToWrite);
+
+        assertEquals(invoiceExpected, invoiceResult);
+    }
+
+    @Test
+    void shouldGetLastId() throws IOException {
+        LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
+        Company buyer = new Company(1L, "tin#1", "buyer address", "buyer name");
+        Company seller = new Company(2L, "tin#2", "seller address", "seller name");
+        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
+        Invoice invoiceExpected = new Invoice(1L, date, buyer, seller, invoiceEntries);
+        Invoice invoice = new Invoice(1L, date, buyer, seller, invoiceEntries);
         InFileInvoice inFileInvoice = new InFileInvoice();
         inFileInvoice.setId(2L);
         List<String> invoiceListInput = new ArrayList<>();
@@ -47,26 +67,13 @@ class InFileDatabaseTest {
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "{\"id\":9,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
-        when(objectMapper.writeValueAsString(any())).thenReturn("lineToWrite");
+        when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
 
-        Invoice invoiceResult = inFileDatabase.saveInvoice(invoice);
+        Long lastId = inFileDatabase.getLastId();
 
-        verify(fileHelper).writeLineToFile("lineToWrite");
+        verify(fileHelper).writeLineToFile(lineToWrite);
 
         assertEquals(invoiceExpected, invoiceResult);
-    }
-
-    @Test
-    void shouldReturnNullForNullSave() {
-    }
-
-    @Test
-    void shouldGetLastId() throws IOException {
-        Invoice invoice = new Invoice();
-        InFileInvoice inFileInvoiceExpected = new InFileInvoice();
-        List<String> invoiceListInput = new ArrayList<>();
-        inFileInvoiceExpected.setId(1L);
-        String filePath = "database.db";
 
         when(inFileDatabase.getLastId()).thenReturn(1L);
     }

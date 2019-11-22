@@ -47,6 +47,7 @@ public class InFileDatabase implements InvoiceDatabase {
         } else {
             InFileInvoice inFileInvoice = updateDeleteInvoice(invoice, false);
             String inFilenvoiceJson = null;
+            counter.incrementAndGet();
             try {
                 inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
                 fileHelper.writeLineToFile(inFilenvoiceJson);

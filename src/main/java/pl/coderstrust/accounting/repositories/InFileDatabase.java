@@ -60,10 +60,6 @@ public class InFileDatabase implements InvoiceDatabase {
         return invoice;
     }
 
-    public Long getLastId() throws IOException {
-        return Collections.max(loadInvoices().keySet());
-    }
-
     @Override
     public Invoice findInvoiceById(Long id) throws IOException {
         Invoice invoice;
@@ -99,6 +95,10 @@ public class InFileDatabase implements InvoiceDatabase {
         return invoice;
     }
 
+    private Long getLastId() throws IOException {
+        return Collections.max(loadInvoices().keySet());
+    }
+
     private Map<Long, InFileInvoice> loadInvoices() throws IOException {
         List<InFileInvoice> inFileInvoices = insertInvoice();
         Map<Long, InFileInvoice> database = new HashMap<>();
@@ -128,4 +128,5 @@ public class InFileDatabase implements InvoiceDatabase {
         }
         return stringsConvertedToList;
     }
+    
 }

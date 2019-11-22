@@ -128,5 +128,5 @@ public class InFileDatabase implements InvoiceDatabase {
         }
         return stringsConvertedToList;
     }
-    
+
 }

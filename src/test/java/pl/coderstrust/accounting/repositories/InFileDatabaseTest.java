@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
@@ -17,7 +18,9 @@ import pl.coderstrust.accounting.model.InvoiceEntry;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 class InFileDatabaseTest {
@@ -41,7 +44,7 @@ class InFileDatabaseTest {
         Invoice invoiceExpected = new Invoice(1L, date, buyer, seller, invoiceEntries);
         Invoice invoice = new Invoice(1L, date, buyer, seller, invoiceEntries);
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-        String lineToWrite = "{\"id\":9,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
+        String lineToWrite = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
 
@@ -53,40 +56,29 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldGetLastId() throws IOException {
-        LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
-        Company buyer = new Company(1L, "tin#1", "buyer address", "buyer name");
-        Company seller = new Company(2L, "tin#2", "seller address", "seller name");
-        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-        Invoice invoiceExpected = new Invoice(1L, date, buyer, seller, invoiceEntries);
-        Invoice invoice = new Invoice(1L, date, buyer, seller, invoiceEntries);
-        InFileInvoice inFileInvoice = new InFileInvoice();
-        inFileInvoice.setId(2L);
-        List<String> invoiceListInput = new ArrayList<>();
-        String filePath = "database.db";
+    void shouldFindInvoiceByIdForNullInvoice() throws IOException {
+        Invoice invoiceFindExpected = null;
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-        String lineToWrite = "{\"id\":9,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
+        String filePath = "database.db";
+        List<String> readedLinesFromFile = new ArrayList<>();
+        given(fileHelper.readLinesFromFile(filePath)).willReturn(readedLinesFromFile);
+        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
+        for (String s : readedLinesFromFile) {
+            inFileInvoices.add(objectMapper.readValue(s, InFileInvoice.class));
+        }
+        Map<Long, InFileInvoice> database = new HashMap<>();
+        inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+        System.out.println("Database:" + database);
+        System.out.println("Read Lines: " + fileHelper.readLinesFromFile(filePath));
 
-        when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
+        Invoice invoiceFindResult = inFileDatabase.findInvoiceById(1L);
 
-        Long lastId = inFileDatabase.getLastId();
-
-        verify(fileHelper).writeLineToFile(lineToWrite);
-
-        assertEquals(invoiceExpected, invoiceResult);
-
-        when(inFileDatabase.getLastId()).thenReturn(1L);
+        assertEquals(invoiceFindExpected, invoiceFindResult);
     }
 
     @Test
-    void shouldFindInvoiceById() throws IOException {
-        Invoice invoice = new Invoice();
-        InFileInvoice inFileInvoiceExpected = new InFileInvoice();
-        List<String> invoiceListInput = new ArrayList<>();
-        inFileInvoiceExpected.setId(1L);
-        String filePath = "database.db";
+    void shouldThrownExceptionForNullWhenTryFindInvoiceWithNullID() {
 
-        when(inFileDatabase.findInvoiceById(1L)).thenReturn(invoice);
     }
 
     @Test

@@ -77,20 +77,56 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldThrownExceptionForNullWhenTryFindInvoiceWithNullID() {
+    void shouldThrownExceptionForNullWhenTryFindInvoiceWithNullID() throws IOException {
+        Invoice invoiceFindExpected = new Invoice();
+        invoiceFindExpected.setId(null);
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        String filePath = "database.db";
+        List<String> readedLinesFromFile = new ArrayList<>();
+        given(fileHelper.readLinesFromFile(filePath)).willReturn(readedLinesFromFile);
+        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
+        for (String s : readedLinesFromFile) {
+            inFileInvoices.add(objectMapper.readValue(s, InFileInvoice.class));
+        }
+        Map<Long, InFileInvoice> database = new HashMap<>();
+        inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+        when(inFileDatabase.findInvoiceById(null)).thenThrow(IllegalArgumentException.class);
 
+        Invoice invoiceFindResult = inFileDatabase.findInvoiceById(null);
+
+        assertEquals(invoiceFindExpected, invoiceFindResult);
     }
 
     @Test
     void shouldFindAllnvoices() throws IOException {
-        List<Invoice> invoiceList = new ArrayList<>();
+        ArrayList<String> readedLinesFromFile = new ArrayList<>();
+        List<Invoice> invoicesExpected = new ArrayList<>();
+        for (String s : readedLinesFromFile) {
+            invoicesExpected.add(objectMapper.readValue(s, InFileInvoice.class));
+        }
 
-        when(inFileDatabase.findAllnvoices()).thenReturn(invoiceList);
+        ArrayList<Invoice> invoicesResult = new ArrayList<>();
 
-        verify(inFileDatabase.findAllnvoices());
+        assertEquals(invoicesExpected, invoicesResult);
     }
 
     @Test
-    void shouldDeleteByInvoice()  {
+    void shouldDeleteByInvoice() throws IOException {
+        Invoice invoiceFindExpected = inFileDatabase.deleteByInvoice(1L);
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        String filePath = "database.db";
+        List<String> readedLinesFromFile = new ArrayList<>();
+        given(fileHelper.readLinesFromFile(filePath)).willReturn(readedLinesFromFile);
+        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
+        for (String s : readedLinesFromFile) {
+            inFileInvoices.add(objectMapper.readValue(s, InFileInvoice.class));
+        }
+        Map<Long, InFileInvoice> database = new HashMap<>();
+        inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+
+        Invoice invoiceResult = inFileDatabase.deleteByInvoice(1L);
+
+        assertEquals(invoiceFindExpected, invoiceResult);
     }
+
 }

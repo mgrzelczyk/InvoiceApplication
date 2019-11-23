@@ -123,8 +123,6 @@ class InFileDatabaseTest {
         }
         Map<Long, InFileInvoice> database = new HashMap<>();
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
-        System.out.println("InFileInvoices array: " + inFileInvoices);
-        System.out.println("String readed lines: " + readedLinesFromFile);
 
         Invoice invoiceDeleteResult = inFileDatabase.deleteByInvoice(1L);
 

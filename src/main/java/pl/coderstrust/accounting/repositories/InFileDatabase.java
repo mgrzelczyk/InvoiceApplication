@@ -78,15 +78,16 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice deleteByInvoice(Long id) throws IOException {
-        Invoice invoice;
+        Invoice invoice = new Invoice();
+        InFileInvoice inFileInvoice;
         Map<Long, InFileInvoice> database = loadInvoices();
 
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         } else {
             getInvoices();
-            invoice = database.get(id);
-            InFileInvoice inFileInvoice = updateDeleteInvoice(invoice, true);
+            inFileInvoice = database.get(id);
+            inFileInvoice = updateDeleteInvoice(invoice, true);
             database.remove(id);
             if (inFileInvoice.getDeleted(true)) {
                 invoice = inFileInvoice;

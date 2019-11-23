@@ -34,7 +34,6 @@ class InFileDatabaseTest {
     @InjectMocks
     private InFileDatabase inFileDatabase;
 
-
     @Test
     void shouldSaveInvoice() throws IOException {
         LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
@@ -53,6 +52,7 @@ class InFileDatabaseTest {
         verify(fileHelper).writeLineToFile(lineToWrite);
 
         assertEquals(invoiceExpected, invoiceResult);
+        System.out.println((invoiceResult));
     }
 
     @Test
@@ -112,19 +112,19 @@ class InFileDatabaseTest {
 
     @Test
     void shouldDeleteByInvoice() throws IOException {
-        Invoice invoiceDeleteExpected = inFileDatabase.deleteByInvoice(1L);
-        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String filePath = "database.db";
         List<String> readedLinesFromFile = new ArrayList<>();
-        String lineToWrite = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
-        when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
+        String lineToWrite2 = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
         given(fileHelper.readLinesFromFile(filePath)).willReturn(readedLinesFromFile);
+        Invoice invoiceDeleteExpected = inFileDatabase.deleteByInvoice(1L);
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         for (String s : readedLinesFromFile) {
             inFileInvoices.add(objectMapper.readValue(s, InFileInvoice.class));
         }
         Map<Long, InFileInvoice> database = new HashMap<>();
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+        System.out.println("InFileInvoices array: " + inFileInvoices);
+        System.out.println("String readed lines: " + readedLinesFromFile);
 
         Invoice invoiceDeleteResult = inFileDatabase.deleteByInvoice(1L);
 

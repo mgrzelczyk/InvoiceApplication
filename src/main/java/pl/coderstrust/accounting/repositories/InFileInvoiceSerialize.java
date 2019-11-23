@@ -14,8 +14,7 @@ public class InFileInvoiceSerialize {
     }
 
     public String serialize(InFileInvoice inFileInvoice) throws IOException {
-        String inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
-        return inFilenvoiceJson;
+        return objectMapper.writeValueAsString(inFileInvoice);
     }
 
     public String deserialize(String inFilenvoiceJson)

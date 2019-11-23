@@ -112,10 +112,12 @@ class InFileDatabaseTest {
 
     @Test
     void shouldDeleteByInvoice() throws IOException {
-        Invoice invoiceFindExpected = inFileDatabase.deleteByInvoice(1L);
+        Invoice invoiceDeleteExpected = inFileDatabase.deleteByInvoice(1L);
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String filePath = "database.db";
         List<String> readedLinesFromFile = new ArrayList<>();
+        String lineToWrite = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
+        when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
         given(fileHelper.readLinesFromFile(filePath)).willReturn(readedLinesFromFile);
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         for (String s : readedLinesFromFile) {
@@ -124,9 +126,9 @@ class InFileDatabaseTest {
         Map<Long, InFileInvoice> database = new HashMap<>();
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
 
-        Invoice invoiceResult = inFileDatabase.deleteByInvoice(1L);
+        Invoice invoiceDeleteResult = inFileDatabase.deleteByInvoice(1L);
 
-        assertEquals(invoiceFindExpected, invoiceResult);
+        assertEquals(invoiceDeleteExpected, invoiceDeleteResult);
     }
 
 }

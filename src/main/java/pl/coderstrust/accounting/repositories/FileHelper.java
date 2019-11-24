@@ -14,14 +14,10 @@ class FileHelper {
 
     private static final String separator = System.lineSeparator();
 
-    public FileHelper(String databaseFilename) {
-        if (DATABASE_FILE_NAME == null) {
-            throw new IllegalArgumentException("File database cannot be null.");
-        }
+    public FileHelper() {
     }
 
-    @SuppressWarnings("checkstyle:ParameterName")
-    public List<String> readLinesFromFile(String DATABASE_FILE_NAME) throws IOException {
+    public List<String> readLinesFromFile() throws IOException {
         List<String> result = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File(DATABASE_FILE_NAME))) {
             while (scanner.hasNext()) {

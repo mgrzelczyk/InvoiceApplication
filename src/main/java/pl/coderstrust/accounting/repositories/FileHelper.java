@@ -10,9 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-public class FileHelper {
+class FileHelper {
 
-    private static String separator = System.lineSeparator();
+    private static final String separator = System.lineSeparator();
 
     public FileHelper(String databaseFilename) {
         if (DATABASE_FILE_NAME == null) {

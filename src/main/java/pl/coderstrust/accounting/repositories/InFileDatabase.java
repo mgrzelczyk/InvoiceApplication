@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class InFileDatabase implements InvoiceDatabase {
 
-    private AtomicLong counter = new AtomicLong(0);
+    private AtomicLong counter = new AtomicLong(getLastId());
     private FileHelper fileHelper;
     private ObjectMapper objectMapper;
     private InFileInvoiceSerialize inFileInvoiceSerialize;

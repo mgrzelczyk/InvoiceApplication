@@ -1,9 +1,6 @@
 package pl.coderstrust.accounting.repositories;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import static pl.coderstrust.accounting.application.Properties.DATABASE_FILE_NAME;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
@@ -28,34 +25,19 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     @Override
-    public Invoice saveInvoice(Invoice invoice) throws
-        JsonProcessingException, IOException {
+    public Invoice saveInvoice(Invoice invoice) throws IOException {
         if (invoice.getId() == null) {
             try {
-                counter.incrementAndGet();
-                Long lastId = getLastId();
-                InFileInvoice inFileInvoice = updateDeleteInvoice(invoice, false);
-                inFileInvoice.setId(lastId + 1L);
-                String inFilenvoiceJson = inFileInvoiceSerialize.serialize(inFileInvoice);
-                fileHelper.writeLineToFile(inFilenvoiceJson);
-                inFileInvoice.setId(getLastId());
-                String inFilenvoiceJsonLastId = inFileInvoiceSerialize.serialize(inFileInvoice);
-                fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
+                insertInvoice(invoice);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            InFileInvoice inFileInvoice = updateDeleteInvoice(invoice, false);
+            InFileInvoice inFileInvoice = updateInvoiceDeleteStatus(invoice, false);
             String inFilenvoiceJson = null;
+            inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
+            fileHelper.writeLineToFile(inFilenvoiceJson);
             counter.incrementAndGet();
-            try {
-                inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
-                fileHelper.writeLineToFile(inFilenvoiceJson);
-            } catch (JsonParseException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         return invoice;
     }
@@ -72,12 +54,12 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     @Override
-    public List<Invoice> findAllnvoices() throws IOException {
+    public List<Invoice> findAllInvoices() throws IOException {
         return getInvoices();
     }
 
     @Override
-    public Invoice deleteByInvoice(Long id) throws IOException {
+    public Invoice deleteInvoiceById(Long id) throws IOException {
         Invoice invoice = new Invoice();
         InFileInvoice inFileInvoice;
         Map<Long, InFileInvoice> database = loadInvoices();
@@ -87,7 +69,7 @@ public class InFileDatabase implements InvoiceDatabase {
         } else {
             getInvoices();
             inFileInvoice = database.get(id);
-            inFileInvoice = updateDeleteInvoice(invoice, true);
+            inFileInvoice = updateInvoiceDeleteStatus(invoice, true);
             database.remove(id);
             if (inFileInvoice.getDeleted(true)) {
                 invoice = inFileInvoice;
@@ -107,6 +89,18 @@ public class InFileDatabase implements InvoiceDatabase {
         return database;
     }
 
+    private void insertInvoice(Invoice invoice) throws IOException {
+        Long lastId = getLastId();
+        InFileInvoice inFileInvoice = updateInvoiceDeleteStatus(invoice, false);
+        inFileInvoice.setId(lastId + 1L);
+        String inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
+        fileHelper.writeLineToFile(inFilenvoiceJson);
+        counter.incrementAndGet();
+        inFileInvoice.setId(getLastId());
+        String inFilenvoiceJsonLastId = objectMapper.writeValueAsString(inFileInvoice);
+        fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
+    }
+
     private List<InFileInvoice> insertInvoice() throws IOException {
         List<String> strings = fileHelper.readLinesFromFile();
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
@@ -116,16 +110,17 @@ public class InFileDatabase implements InvoiceDatabase {
         return inFileInvoices;
     }
 
-    private InFileInvoice updateDeleteInvoice(Invoice invoice, boolean deleted) {
-        return new InFileInvoice(invoice, true);
+    private InFileInvoice updateInvoiceDeleteStatus(Invoice invoice, boolean deleted) {
+        InFileInvoice inFileInvoice = new InFileInvoice(invoice, true);
+        return inFileInvoice;
     }
 
     private List<Invoice> getInvoices() throws IOException {
         List<String> strings = fileHelper.readLinesFromFile();
         List<Invoice> stringsConvertedToList = new ArrayList<>();
 
-        for (int i = 0; i < strings.size(); i++) {
-            stringsConvertedToList.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+        for (String string : strings) {
+            stringsConvertedToList.add(objectMapper.readValue(string, InFileInvoice.class));
         }
         return stringsConvertedToList;
     }

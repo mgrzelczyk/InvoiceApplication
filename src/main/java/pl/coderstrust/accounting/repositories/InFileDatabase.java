@@ -18,9 +18,9 @@ import java.util.concurrent.atomic.AtomicLong;
 public class InFileDatabase implements InvoiceDatabase {
 
     private AtomicLong counter = new AtomicLong(getLastId());
-    private FileHelper fileHelper;
-    private ObjectMapper objectMapper;
-    private InFileInvoiceSerialize inFileInvoiceSerialize;
+    private final FileHelper fileHelper;
+    private final ObjectMapper objectMapper;
+
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {
         this.fileHelper = fileHelper;
@@ -108,7 +108,7 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     private List<InFileInvoice> insertInvoice() throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
+        List<String> strings = fileHelper.readLinesFromFile();
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         for (int i = 0; i < strings.size(); i++) {
             inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
@@ -121,7 +121,7 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     private List<Invoice> getInvoices() throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile(DATABASE_FILE_NAME);
+        List<String> strings = fileHelper.readLinesFromFile();
         List<Invoice> stringsConvertedToList = new ArrayList<>();
 
         for (int i = 0; i < strings.size(); i++) {

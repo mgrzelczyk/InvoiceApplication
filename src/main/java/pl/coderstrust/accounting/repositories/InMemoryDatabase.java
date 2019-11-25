@@ -14,7 +14,7 @@ public class InMemoryDatabase implements InvoiceDatabase {
     private Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
     private AtomicLong counter = new AtomicLong(0);
 
-    @Override
+    @Override //zrobic kopie
     public Invoice saveInvoice(Invoice invoice) {
         if (invoice.getId() == null) {
             Long id = counter.incrementAndGet();

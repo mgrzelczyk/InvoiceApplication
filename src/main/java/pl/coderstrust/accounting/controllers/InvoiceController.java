@@ -28,22 +28,26 @@ public class InvoiceController {
         this.invoiceBook = invoiceBook;
     }
 
-    @GetMapping("/invoices/")
+    @GetMapping("/invoices")
     public ResponseEntity<List<Invoice>> findAllInvoices() {
         List<Invoice> invoices = invoiceBook.findAllInvoices();
         if (invoices == null) {
+            //ResponseEn.. return 500
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok().body(invoices);
         }
     }
 
-    @GetMapping("/invoices/")
+    //dodac metode do findAll
+    @GetMapping("/invoices/range")
     public ResponseEntity<List<Invoice>> findAllInvoicesByDateRange(
-        @RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime from,
-        @RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime to) {
+        @RequestParam(value = "from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime from,
+        @RequestParam(value = "to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime to) {
+        //zmien nazwe
         List<Invoice> invoices = invoiceBook.findAllInvoiceByDateRange(from, to);
         if (invoices == null) {
+            //ResponseEn.. return 500
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok().body(invoices);
@@ -60,7 +64,7 @@ public class InvoiceController {
         }
     }
 
-    @PostMapping("/invoice/")
+    @PostMapping("/invoice")
     public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice invoice) {
         Invoice createdInvoice = invoiceBook.saveInvoice(invoice);
         if (createdInvoice == null) {
@@ -74,7 +78,8 @@ public class InvoiceController {
         }
     }
 
-    @PutMapping("/invoice/")
+    //do zmiany!
+    @PutMapping("/invoice")
     public ResponseEntity<Invoice> editInvoice(@RequestBody Invoice invoice) {
         Invoice editedInvoice = invoiceBook.saveInvoice(invoice);
         if (editedInvoice == null) {

@@ -15,6 +15,14 @@ public class Invoice {
     public Invoice() {
     }
 
+    public Invoice(Invoice invoice) {
+        setId(invoice.getId());
+        setDate(invoice.getDate());
+        setBuyer(invoice.getBuyer());
+        setSeller(invoice.getSeller());
+        setEntries(invoice.getEntries());
+    }
+
     public Invoice(Long id, LocalDateTime date, Company buyer,
         Company seller, List<InvoiceEntry> entries) {
         this.id = id;

@@ -15,6 +15,4 @@ public class AppConfiguration {
         return new InMemoryDatabase();
     }
 
-    public static final String DATABASE_FILE_NAME = "database.db";
-
 }

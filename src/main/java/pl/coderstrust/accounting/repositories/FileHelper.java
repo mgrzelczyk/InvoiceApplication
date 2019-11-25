@@ -1,6 +1,7 @@
 package pl.coderstrust.accounting.repositories;
 
-import static pl.coderstrust.accounting.application.Properties.DATABASE_FILE_NAME;
+import pl.coderstrust.accounting.application.DatabaseProperties;
+import static pl.coderstrust.accounting.application.DatabaseProperties.databaseFileName;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,13 +14,15 @@ import java.util.Scanner;
 class FileHelper {
 
     private static final String separator = System.lineSeparator();
+    private static String dbFile;
 
-    public FileHelper() {
+    public FileHelper(DatabaseProperties properties) {
+        this.dbFile = databaseFileName;
     }
 
     public List<String> readLinesFromFile() throws IOException {
         List<String> result = new ArrayList<>();
-        try (Scanner scanner = new Scanner(new File(DATABASE_FILE_NAME))) {
+        try (Scanner scanner = new Scanner(new File(databaseFileName))) {
             while (scanner.hasNext()) {
                 result.add(scanner.nextLine());
             }
@@ -31,7 +34,7 @@ class FileHelper {
         if (lines == null) {
             throw new IllegalArgumentException("Lines cannot be null.");
         }
-        try (FileWriter writer = new FileWriter(DATABASE_FILE_NAME)) {
+        try (FileWriter writer = new FileWriter(databaseFileName)) {
             for (String str: lines) {
                 writer.write(str);
                 writer.write(separator);

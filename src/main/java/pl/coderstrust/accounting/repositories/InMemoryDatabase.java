@@ -1,6 +1,5 @@
 package pl.coderstrust.accounting.repositories;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -10,16 +9,23 @@ import java.util.concurrent.atomic.AtomicLong;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
-
 public class InMemoryDatabase implements InvoiceDatabase {
 
+    private Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
     private AtomicLong counter = new AtomicLong(0);
-    public Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
-    Invoice invoice = new Invoice();
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {
-        return invoiceMap.put(counter.incrementAndGet(), invoice);
+        if (invoice.getId() == null) {
+            Long id = counter.incrementAndGet();
+            invoiceMap.put(id, invoice);
+            invoice.setId(id);
+            return invoice;
+        } else if (invoiceMap.containsKey(invoice.getId())) {
+            invoiceMap.put(invoice.getId(), invoice);
+            return invoice;
+        }
+        throw new NullPointerException("it doesn't work :C");
     }
 
     @Override
@@ -28,13 +34,13 @@ public class InMemoryDatabase implements InvoiceDatabase {
     }
 
     @Override
-    public List<Invoice> findAllnvoices() {
+    public List<Invoice> findAllInvoices() {
         Collection<Invoice> values = invoiceMap.values();
         return new ArrayList<>(values);
     }
 
     @Override
-    public Invoice deleteByInvoice(Long id) {
+    public Invoice deleteInvoiceById(Long id) {
         return invoiceMap.remove(id);
     }
 

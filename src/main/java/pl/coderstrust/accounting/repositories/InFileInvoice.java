@@ -18,12 +18,12 @@ class InFileInvoice extends Invoice {
         this.deleted = deleted;
     }
 
-    InFileInvoice(Long id,
-                  LocalDateTime date,
-                  Company buyer,
-                  Company seller,
-                  List<InvoiceEntry> entries,
-                  boolean deleted) {
+    private InFileInvoice(Long id,
+                          LocalDateTime date,
+                          Company buyer,
+                          Company seller,
+                          List<InvoiceEntry> entries,
+                          boolean deleted) {
         super(id, date, buyer, seller, entries);
         this.deleted = deleted;
     }

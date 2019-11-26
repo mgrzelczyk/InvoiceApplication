@@ -123,13 +123,13 @@ class InvoiceBookTest {
     @Test
     @DisplayName("Find invoices by date range")
     void shouldFindAllInvoicesByDataRange() throws NullPointerException {
-        List<Invoice> invoices = new ArrayList<>();
         Invoice invoice1 = prepareInvoice();
         Invoice invoice2 = prepareInvoice();
         Invoice invoice3 = prepareInvoice();
         invoice1.setDate(LocalDate.of(2019, 12, 12));
         invoice2.setDate(LocalDate.of(2018, 11, 24));
         invoice3.setDate(LocalDate.of(2010, 1, 11));
+        List<Invoice> invoices = new ArrayList<>();
         invoices.add(invoice1);
         invoices.add(invoice2);
         invoices.add(invoice3);
@@ -148,13 +148,13 @@ class InvoiceBookTest {
     @Test
     @DisplayName("Not find invoices by date range")
     void shouldNotFindAllInvoicesByDataRange() throws NullPointerException {
-        List<Invoice> invoices = new ArrayList<>();
         Invoice invoice1 = prepareInvoice();
         Invoice invoice2 = prepareInvoice();
         Invoice invoice3 = prepareInvoice();
         invoice1.setDate(LocalDate.of(2019, 12, 12));
         invoice2.setDate(LocalDate.of(2018, 11, 24));
         invoice3.setDate(LocalDate.of(2010, 1, 11));
+        List<Invoice> invoices = new ArrayList<>();
         invoices.add(invoice1);
         invoices.add(invoice2);
         invoices.add(invoice3);

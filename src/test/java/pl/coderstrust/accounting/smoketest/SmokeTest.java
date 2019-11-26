@@ -1,4 +1,4 @@
-package pl.coderstrust.accounting.smokeTest;
+package pl.coderstrust.accounting.smoketest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -3,6 +3,8 @@ package pl.coderstrust.accounting.repositories;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.coderstrust.accounting.application.DatabaseProperties;
+
 import java.io.IOException;
 
 class FileHelperTest {
@@ -12,14 +14,15 @@ class FileHelperTest {
 
     @BeforeEach
     void setup() {
-        fileHelper = new FileHelper(DATABASE_FILE_HELPER);
+        DatabaseProperties databaseProperties = new DatabaseProperties();
+        fileHelper = new FileHelper(databaseProperties);
     }
 
     @Test
     void readLinesFromFileShouldThrowExceptionForNullFilePath() {
         assertThrows(NullPointerException.class,
             () -> {
-                fileHelper.readLinesFromFile(null);
+                fileHelper.readLinesFromFile();
             });
     }
 

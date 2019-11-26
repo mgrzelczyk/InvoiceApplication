@@ -18,7 +18,7 @@ public class AppConfiguration {
     }
 
     @Bean
-    public ObjectMapper objectMapper(){
+    public ObjectMapper objectMapper() {
         return new ObjectMapper()
             .registerModule(new JSR353Module());
     }

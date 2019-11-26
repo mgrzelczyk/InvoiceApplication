@@ -61,7 +61,7 @@ class InFileDatabaseTest {
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String filePath = "database.db";
         List<String> readedLinesFromFile = new ArrayList<>();
-        given(fileHelper.readLinesFromFile(filePath)).willReturn(readedLinesFromFile);
+        given(fileHelper.readLinesFromFile()).willReturn(readedLinesFromFile);
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         for (String s : readedLinesFromFile) {
             inFileInvoices.add(objectMapper.readValue(s, InFileInvoice.class));
@@ -69,7 +69,7 @@ class InFileDatabaseTest {
         Map<Long, InFileInvoice> database = new HashMap<>();
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
         System.out.println("Database:" + database);
-        System.out.println("Read Lines: " + fileHelper.readLinesFromFile(filePath));
+        System.out.println("Read Lines: " + fileHelper.readLinesFromFile());
 
         Invoice invoiceFindResult = inFileDatabase.findInvoiceById(1L);
 
@@ -83,7 +83,7 @@ class InFileDatabaseTest {
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String filePath = "database.db";
         List<String> readedLinesFromFile = new ArrayList<>();
-        given(fileHelper.readLinesFromFile(filePath)).willReturn(readedLinesFromFile);
+        given(fileHelper.readLinesFromFile()).willReturn(readedLinesFromFile);
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         for (String s : readedLinesFromFile) {
             inFileInvoices.add(objectMapper.readValue(s, InFileInvoice.class));
@@ -115,8 +115,8 @@ class InFileDatabaseTest {
         String filePath = "database.db";
         List<String> readedLinesFromFile = new ArrayList<>();
         String lineToWrite2 = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
-        given(fileHelper.readLinesFromFile(filePath)).willReturn(readedLinesFromFile);
-        Invoice invoiceDeleteExpected = inFileDatabase.deleteByInvoice(1L);
+        given(fileHelper.readLinesFromFile()).willReturn(readedLinesFromFile);
+        Invoice invoiceDeleteExpected = inFileDatabase.deleteInvoiceById(1L);
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         for (String s : readedLinesFromFile) {
             inFileInvoices.add(objectMapper.readValue(s, InFileInvoice.class));
@@ -124,7 +124,7 @@ class InFileDatabaseTest {
         Map<Long, InFileInvoice> database = new HashMap<>();
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
 
-        Invoice invoiceDeleteResult = inFileDatabase.deleteByInvoice(1L);
+        Invoice invoiceDeleteResult = inFileDatabase.deleteInvoiceById(1L);
 
         assertEquals(invoiceDeleteExpected, invoiceDeleteResult);
     }

@@ -4,6 +4,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,29 +30,25 @@ public class InvoiceController {
     }
 
     @GetMapping("/invoices")
-    public ResponseEntity<List<Invoice>> findAllInvoices() {
-        List<Invoice> invoices = invoiceBook.findAllInvoices();
-        if (invoices == null) {
-            //ResponseEn.. return 500
-            return ResponseEntity.notFound().build();
+    public ResponseEntity findAllInvoices(
+        @RequestParam(value = "from", required = false)
+        @DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE)
+            LocalDateTime from,
+        @RequestParam(value = "to", required = false)
+        @DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE)
+            LocalDateTime to) {
+        List<Invoice> invoices;
+        System.out.println("sprawdzam : " + from + ", " + to);
+        if (from != null && to != null) {
+            System.out.println("Bylo tutaj");
+            invoices = invoiceBook.findAllInvoiceByDateRange(from, to);
         } else {
+            invoices = invoiceBook.findAllInvoices();
+        }
+        if (invoices != null) {
             return ResponseEntity.ok().body(invoices);
         }
-    }
-
-    //dodac metode do findAll
-    @GetMapping("/invoices/range")
-    public ResponseEntity<List<Invoice>> findAllInvoicesByDateRange(
-        @RequestParam(value = "from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime from,
-        @RequestParam(value = "to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime to) {
-        //zmien nazwe
-        List<Invoice> invoices = invoiceBook.findAllInvoiceByDateRange(from, to);
-        if (invoices == null) {
-            //ResponseEn.. return 500
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().body(invoices);
-        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @GetMapping("/invoice/{id}")
@@ -68,7 +65,7 @@ public class InvoiceController {
     public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice invoice) {
         Invoice createdInvoice = invoiceBook.saveInvoice(invoice);
         if (createdInvoice == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } else {
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -78,24 +75,27 @@ public class InvoiceController {
         }
     }
 
-    //do zmiany!
     @PutMapping("/invoice")
     public ResponseEntity<Invoice> editInvoice(@RequestBody Invoice invoice) {
-        Invoice editedInvoice = invoiceBook.saveInvoice(invoice);
-        if (editedInvoice == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().body(editedInvoice);
+        if (invoice.equals(invoiceBook.findInvoiceById(invoice.getId()))) {
+            Invoice editedInvoice = invoiceBook.saveInvoice(invoice);
+            if (editedInvoice != null) {
+                return ResponseEntity.ok().body(editedInvoice);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
         }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/invoice/{id}")
     public ResponseEntity<Object> deleteInvoiceById(@PathVariable("id") Long id) {
         Invoice deletedInvoice = invoiceBook.deleteInvoiceById(id);
         if (deletedInvoice == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } else {
             return ResponseEntity.noContent().build();
         }
     }
+
 }

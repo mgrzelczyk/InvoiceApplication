@@ -19,6 +19,8 @@
     <spring.test.version>2.2.0.RELEASE</spring.test.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <jackson.datatype.jsr353.version>2.10.1</jackson.datatype.jsr353.version>
+    <javax.json.version>1.0.4</javax.json.version>
   </properties>
 
   <parent>
@@ -28,6 +30,16 @@
   </parent>
 
   <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr353</artifactId>
+      <version>${jackson.datatype.jsr353.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.json</artifactId>
+      <version>${javax.json.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>

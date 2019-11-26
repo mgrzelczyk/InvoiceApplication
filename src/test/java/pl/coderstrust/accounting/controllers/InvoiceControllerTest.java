@@ -1,36 +1,30 @@
 package pl.coderstrust.accounting.controllers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.doReturn;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.Matchers.is;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.model.InvoiceEntry;
@@ -38,7 +32,10 @@ import pl.coderstrust.accounting.services.InvoiceBook;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = InvoiceController.class)
-public class InvoiceControllerTest {
+class InvoiceControllerTest {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,11 +43,9 @@ public class InvoiceControllerTest {
     @MockBean
     private InvoiceBook service;
 
-    @Autowired
-    ObjectMapper objectMapper;
-
     @Test
-    public void greetingShouldReturnMessageFromService() throws Exception {
+    @DisplayName("Should return 3 object")
+    void shouldReturn3Invoice() throws Exception {
         List<Invoice> invoices = prepareInvoices();
 
         when(service.findAllInvoices()).thenReturn(invoices);
@@ -64,28 +59,243 @@ public class InvoiceControllerTest {
         String jsonString = mvcResult.getResponse().getContentAsString();
         Invoice[] mappedInvoices = objectMapper.readValue(jsonString, Invoice[].class);
 
+        assertEquals(mappedInvoices.length, 3);
+    }
 
+    @Test
+    @DisplayName("Should check first object in table")
+    void shouldCheckFirstInvoiceInTable() throws Exception {
+        List<Invoice> invoices = prepareInvoices();
+        Invoice invoice = invoices.get(0);
 
-        //.andExpect(jsonPath("$.invoices.*", hasSize(3)));
-//doReturn
+        when(service.findAllInvoices()).thenReturn(invoices);
 
+        MvcResult mvcResult = mockMvc.perform(get("/api/invoices")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isOk())
+            .andReturn();
+
+        String jsonString = mvcResult.getResponse().getContentAsString();
+        Invoice[] mappedInvoices = objectMapper.readValue(jsonString, Invoice[].class);
+        Invoice mappedInvoice = mappedInvoices[0];
+
+        assertEquals(invoice, mappedInvoice);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    @Test
+    @DisplayName("Should find one object by date")
+    void shouldFindInvoiceByDate() throws Exception {
+        Invoice invoice = prepareInvoice();
+        invoice.setId(1L);
+        invoice.setDate(LocalDateTime.of(2018, 12, 12, 12, 12, 12));
+        List<Invoice> invoices = new ArrayList<>();
+        invoices.add(invoice);
+        LocalDateTime from = LocalDateTime.of(2018, 1, 1, 1, 1, 1);
+        LocalDateTime to = LocalDateTime.of(2019, 1, 1, 1, 1, 1);
+
+        when(service.findAllInvoiceByDateRange(from, to)).thenReturn(invoices);
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/invoices")
+            .param("from", "2018-01-01")
+            .param("to", "2019-12-12")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isOk())
+            .andReturn();
+
+        String jsonString = mvcResult.getResponse().getContentAsString();
+        System.out.println(jsonString);
+    }
+    //----------------------------------------------------------------------------------------------
+
+    @Test
+    @DisplayName("Should show internal server error")
+    void shouldShowInternalServerError() throws Exception {
+
+        when(service.findAllInvoices()).thenReturn(null);
+
+        mockMvc.perform(get("/api/invoices")
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isInternalServerError());
+    }
+
+    @Test
+    @DisplayName("Should return invoice")
+    void shouldFindInvoice() throws Exception {
+        Invoice invoice = prepareInvoice();
+        invoice.setDate(LocalDateTime.of(2018, 12, 12, 12, 12, 12));
+        invoice.setId(1L);
+
+        when(service.findInvoiceById(1L)).thenReturn(invoice);
+
+        mockMvc.perform(get("/api/invoice/{id}", 1L)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isOk())
+            .andExpect(jsonPath("$.id", is(1)))
+            .andExpect(jsonPath("$.date", is("2018-12-12T12:12:12")));
+    }
+
+    @Test
+    @DisplayName("Should show status not found invoice")
+    void shouldDontFindInvoice() throws Exception {
+        when(service.findInvoiceById(1L)).thenReturn(null);
+
+        mockMvc.perform(get("/api/invoice/{id}", 1L)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isNotFound());
+    }
+
+    @Test
+    @DisplayName("Should save invoice and return URI")
+    void shouldSaveAndReturnUri() throws Exception {
+        Invoice invoice = prepareInvoice();
+        invoice.setId(1L);
+
+        when(service.saveInvoice(invoice)).thenReturn(invoice);
+
+        MvcResult mvcResult = mockMvc.perform(post("/api/invoice")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(invoice))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isCreated())
+            .andReturn();
+
+        String jsonValue = mvcResult.getResponse().getContentAsString();
+
+        assertEquals(objectMapper.writeValueAsString(invoice), jsonValue);
+    }
+
+    @Test
+    @DisplayName("Should save invoice and return URI2")
+    void shouldSaveAndReturnUri2() throws Exception {
+        Invoice invoice = prepareInvoice();
+        invoice.setId(1L);
+
+        when(service.saveInvoice(invoice)).thenReturn(invoice);
+
+        mockMvc.perform(post("/api/invoice")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(invoice))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isCreated())
+            .andExpect(jsonPath("$.id", is(1)))
+            .andExpect(jsonPath("$.buyer.name", is(invoice.getBuyer().getName())));
+    }
+
+    @Test
+    @DisplayName("Should dont save invoice and show Error 500")
+    void shouldDontSaveInvoice() throws Exception {
+        Invoice invoice = prepareInvoice();
+
+        when(service.saveInvoice(invoice)).thenReturn(null);
+
+        mockMvc.perform(post("/api/invoice")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(invoice))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isInternalServerError());
+    }
+
+    @Test
+    @DisplayName("Should edit the invoice")
+    void shouldEditInvoice() throws Exception {
+        Invoice invoice = prepareInvoice();
+        invoice.setId(1L);
+
+        when(service.findInvoiceById(1L)).thenReturn(invoice);
+        invoice.setBuyer(prepareCompany("Poznan", "DDr"));
+        when(service.saveInvoice(invoice)).thenReturn(invoice);
+
+        MvcResult mvcResult = mockMvc.perform(put("/api/invoice")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(invoice))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isOk())
+            .andReturn();
+
+        String jsonValue = mvcResult.getResponse().getContentAsString();
+
+        assertEquals(objectMapper.writeValueAsString(invoice), jsonValue);
+    }
+
+    @Test
+    @DisplayName("Should not found invoice for edit")
+    void shouldNotFoundInvoiceForEdit() throws Exception {
+        Invoice invoice = prepareInvoice();
+        invoice.setId(1L);
+
+        when(service.findInvoiceById(1L)).thenReturn(null);
+
+        mockMvc.perform(put("/api/invoice")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(invoice))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isNotFound());
+    }
+
+    @Test
+    @DisplayName("Should not edit invoice")
+    void shouldNotEditInvoice() throws Exception {
+        Invoice invoice = prepareInvoice();
+        invoice.setId(1L);
+
+        when(service.findInvoiceById(1L)).thenReturn(invoice);
+        invoice.setBuyer(prepareCompany("Poznan", "DDr"));
+        when(service.saveInvoice(invoice)).thenReturn(null);
+
+        mockMvc.perform(put("/api/invoice")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(invoice))
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isInternalServerError());
+    }
+
+    @Test
+    @DisplayName("Should show no content")
+    void shouldDeleteInvoice() throws Exception {
+        Invoice invoice = prepareInvoice();
+        invoice.setId(1L);
+
+        when(service.deleteInvoiceById(invoice.getId())).thenReturn(invoice);
+
+        mockMvc.perform(delete("/api/invoice/{id}", 1L)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isNoContent());
     }
 
 
+    @Test
+    @DisplayName("Should dont delete and show internal error")
+    void shouldDontDeleteAndShowInternalError() throws Exception {
+        Invoice invoice = prepareInvoice();
+        invoice.setId(1L);
 
+        when(service.deleteInvoiceById(invoice.getId())).thenReturn(null);
 
-
-
-
-
-
-
-
-
-
-
-
-
+        mockMvc.perform(delete("/api/invoice/{id}", 1L)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status()
+                .isInternalServerError());
+    }
 
     private Invoice prepareInvoice() {
         Random random = new Random();

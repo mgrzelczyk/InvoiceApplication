@@ -90,6 +90,11 @@ class InMemoryDatabaseTest {
         for (Invoice invoice : expected) {
             inMemory.saveInvoice(invoice);
         }
+
+        expected.get(0).setId(1L);
+        expected.get(1).setId(2L);
+        expected.get(2).setId(3L);
+
         List<Invoice> result = inMemory.findAllInvoices();
 
         assertEquals(expected, result);

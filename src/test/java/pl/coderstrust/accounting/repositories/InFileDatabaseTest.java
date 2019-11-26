@@ -34,6 +34,15 @@ class InFileDatabaseTest {
     @InjectMocks
     private InFileDatabase inFileDatabase;
 
+    void createInvoice() {
+        LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
+        Company buyer = new Company(1L, "tin#1", "buyer address", "buyer name");
+        Company seller = new Company(2L, "tin#2", "seller address", "seller name");
+        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
+        Invoice invoiceExpected = new Invoice(1L, date, buyer, seller, invoiceEntries);
+        Invoice invoice = new Invoice(1L, date, buyer, seller, invoiceEntries);
+    }
+
     @Test
     void shouldSaveInvoice() throws IOException {
         LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
@@ -54,6 +63,28 @@ class InFileDatabaseTest {
         assertEquals(invoiceExpected, invoiceResult);
         System.out.println((invoiceResult));
     }
+
+    @Test
+    void shouldSaveInvoiceForNullId() throws IOException {
+        LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
+        Company buyer = new Company(1L, "tin#1", "buyer address", "buyer name");
+        Company seller = new Company(2L, "tin#2", "seller address", "seller name");
+        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
+        Invoice invoiceExpected = new Invoice(null, date, buyer, seller, invoiceEntries);
+        Invoice invoice = new Invoice(null, date, buyer, seller, invoiceEntries);
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        String lineToWrite = "{\"id\":null,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
+
+        when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
+
+        Invoice invoiceResult = inFileDatabase.saveInvoice(invoice);
+
+        verify(fileHelper).writeLineToFile(lineToWrite);
+
+        assertEquals(invoiceExpected, invoiceResult);
+        System.out.println((invoiceResult));
+    }
+
 
     @Test
     void shouldFindInvoiceByIdForNullInvoice() throws IOException {

@@ -1,11 +1,12 @@
 package pl.coderstrust.accounting.services;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
+
 
 @Service
 public class InvoiceBook {
@@ -39,7 +40,7 @@ public class InvoiceBook {
         return null;
     }
 
-    public List<Invoice> findAllInvoiceByDateRange(LocalDateTime from, LocalDateTime to) {
+    public List<Invoice> findAllInvoiceByDateRange(LocalDate from, LocalDate to) {
         List<Invoice> invoices = new ArrayList<>();
         for (Invoice invoice : invoiceDatabase.findAllInvoices()) {
             if (invoice.getDate().isAfter(from) && invoice.getDate().isBefore(to)

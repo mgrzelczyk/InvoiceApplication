@@ -11,4 +11,16 @@ class AppConfigurationTest {
         AppConfiguration appConfiguration = new AppConfiguration();
         assertNotNull(appConfiguration.inMemoryDatabase());
     }
+
+    @Test
+    void objectMapper() {
+        AppConfiguration appConfiguration = new AppConfiguration();
+        assertNotNull(appConfiguration.localDateFormatter());
+    }
+
+    @Test
+    void localDateFormatter() {
+        AppConfiguration appConfiguration = new AppConfiguration();
+        assertNotNull(appConfiguration.localDateFormatter());
+    }
 }

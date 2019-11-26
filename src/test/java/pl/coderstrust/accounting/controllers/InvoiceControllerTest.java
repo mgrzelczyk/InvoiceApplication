@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -84,23 +84,22 @@ class InvoiceControllerTest {
         assertEquals(invoice, mappedInvoice);
     }
 
-    //----------------------------------------------------------------------------------------------
     @Test
     @DisplayName("Should find one object by date")
     void shouldFindInvoiceByDate() throws Exception {
         Invoice invoice = prepareInvoice();
         invoice.setId(1L);
-        invoice.setDate(LocalDateTime.of(2018, 12, 12, 12, 12, 12));
+        invoice.setDate(LocalDate.of(2018, 12, 12));
         List<Invoice> invoices = new ArrayList<>();
         invoices.add(invoice);
-        LocalDateTime from = LocalDateTime.of(2018, 1, 1, 1, 1, 1);
-        LocalDateTime to = LocalDateTime.of(2019, 1, 1, 1, 1, 1);
+        LocalDate from = LocalDate.of(2018, 1, 1);
+        LocalDate to = LocalDate.of(2019, 1, 1);
 
         when(service.findAllInvoiceByDateRange(from, to)).thenReturn(invoices);
 
         MvcResult mvcResult = mockMvc.perform(get("/api/invoices")
-            .param("from", "2018-01-01")
-            .param("to", "2019-12-12")
+            .param("from", from.toString())
+            .param("to", to.toString())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status()
@@ -108,9 +107,9 @@ class InvoiceControllerTest {
             .andReturn();
 
         String jsonString = mvcResult.getResponse().getContentAsString();
-        System.out.println(jsonString);
+        Invoice[] mappedInvoices = objectMapper.readValue(jsonString, Invoice[].class);
+        assertEquals(invoice, mappedInvoices[0]);
     }
-    //----------------------------------------------------------------------------------------------
 
     @Test
     @DisplayName("Should show internal server error")
@@ -129,7 +128,7 @@ class InvoiceControllerTest {
     @DisplayName("Should return invoice")
     void shouldFindInvoice() throws Exception {
         Invoice invoice = prepareInvoice();
-        invoice.setDate(LocalDateTime.of(2018, 12, 12, 12, 12, 12));
+        invoice.setDate(LocalDate.of(2018, 12, 12));
         invoice.setId(1L);
 
         when(service.findInvoiceById(1L)).thenReturn(invoice);
@@ -140,7 +139,7 @@ class InvoiceControllerTest {
             .andExpect(status()
                 .isOk())
             .andExpect(jsonPath("$.id", is(1)))
-            .andExpect(jsonPath("$.date", is("2018-12-12T12:12:12")));
+            .andExpect(jsonPath("$.date", is("2018-12-12")));
     }
 
     @Test
@@ -303,13 +302,10 @@ class InvoiceControllerTest {
         Company buyer = prepareCompany("Wrocław 66-666", "TurboMarek z.o.o");
         Company seller = prepareCompany("Gdynia 66-666", "Szczupak z.o.o");
         Invoice invoice = new Invoice();
-        invoice.setDate(LocalDateTime.of(
+        invoice.setDate(LocalDate.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
-            random.nextInt(25) + 1,
-            random.nextInt(12),
-            random.nextInt(59) + 1,
-            random.nextInt(59) + 1));
+            random.nextInt(25) + 1));
         invoice.setBuyer(buyer);
         invoice.setSeller(seller);
         invoice.setEntries(invoiceEntries);

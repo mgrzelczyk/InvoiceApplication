@@ -1,9 +1,10 @@
 package pl.coderstrust.accounting.controllers;
 
 import java.net.URI;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,15 +33,13 @@ public class InvoiceController {
     @GetMapping("/invoices")
     public ResponseEntity findAllInvoices(
         @RequestParam(value = "from", required = false)
-        @DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE)
-            LocalDateTime from,
+        @DateTimeFormat(iso = ISO.DATE)
+            LocalDate from,
         @RequestParam(value = "to", required = false)
-        @DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE)
-            LocalDateTime to) {
+        @DateTimeFormat(iso = ISO.DATE)
+            LocalDate to) {
         List<Invoice> invoices;
-        System.out.println("sprawdzam : " + from + ", " + to);
         if (from != null && to != null) {
-            System.out.println("Bylo tutaj");
             invoices = invoiceBook.findAllInvoiceByDateRange(from, to);
         } else {
             invoices = invoiceBook.findAllInvoices();

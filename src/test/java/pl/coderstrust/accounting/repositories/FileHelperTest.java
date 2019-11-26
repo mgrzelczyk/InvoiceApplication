@@ -9,11 +9,11 @@ import pl.coderstrust.accounting.application.DatabaseProperties;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class FileHelperTest {
 
     private FileHelper fileHelper;
-    private String DATABASE_FILE_HELPER = "database.db";
 
     @BeforeEach
     void setup() {
@@ -37,10 +37,10 @@ class FileHelperTest {
         stringsExpected.add(0, jSon);
 
         //when
-        List<String> strings = fileHelper.readLinesFromFile();
-        
+        List<String> stringsResult = fileHelper.readLinesFromFile();
+
         //then
-        assertEquals(stringsExpected, strings);
+        assertEquals(stringsExpected, stringsResult);
     }
 
     @Test
@@ -52,10 +52,40 @@ class FileHelperTest {
     }
 
     @Test
+    void shouldWriteLinesToFile() throws IOException {
+        //given
+        String stringsExpected = "{\"id\":4,\"date\":whatever,\"buyer\":null,\"seller\":null,\"entries\":null}";
+
+        //when
+        fileHelper.writeLineToFile(stringsExpected);
+        List<String> stringsList = fileHelper.readLinesFromFile();
+        String stringsResult = stringsList.stream().map(String::valueOf).collect(Collectors.joining());
+
+        //then
+        System.out.println(stringsResult);
+        assertEquals(stringsExpected, stringsResult);
+    }
+
+    @Test
     public void writeLineToFileMethodShouldThrowExceptionForNullLLine() throws IOException {
         assertThrows(IllegalArgumentException.class,
             () -> {
                 fileHelper.writeLinesToFile(null);
             });
+    }
+
+    @Test
+    void shouldWriteLineToFile() throws IOException {
+        //given
+        List<String> stringsExpected = new ArrayList<>();
+        String jSon = "{\"id\":3,\"date\":tomorrow,\"buyer\":null,\"seller\":null,\"entries\":null}";
+        stringsExpected.add(0, jSon);
+
+        //when
+        fileHelper.writeLinesToFile(stringsExpected);
+        List<String> stringsResult = fileHelper.readLinesFromFile();
+
+        //then
+        assertEquals(stringsExpected, stringsResult);
     }
 }

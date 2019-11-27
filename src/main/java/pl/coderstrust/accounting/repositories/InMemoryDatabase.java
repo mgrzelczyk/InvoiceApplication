@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
-public class InMemoryDatabase implements InvoiceDatabase<Invoice, Long> {
+public class InMemoryDatabase implements InvoiceDatabase {
 
     private Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
     private AtomicLong counter = new AtomicLong(0);

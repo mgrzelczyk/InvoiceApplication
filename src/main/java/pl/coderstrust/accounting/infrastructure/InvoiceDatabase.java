@@ -1,16 +1,18 @@
 package pl.coderstrust.accounting.infrastructure;
 
-import java.util.List;
 import pl.coderstrust.accounting.model.Invoice;
 
-public interface InvoiceDatabase {
+import java.io.IOException;
+import java.util.List;
 
-    Invoice saveInvoice(Invoice invoice);
+public interface InvoiceDatabase<T, ID> {
 
-    Invoice findInvoiceById(Long id);
+    Invoice saveInvoice(T invoice) throws IOException;
 
-    List<Invoice> findAllInvoices();
+    Invoice findInvoiceById(ID id) throws IOException;
 
-    Invoice deleteInvoiceById(Long id);
+    List<Invoice> findAllInvoices() throws IOException;
+
+    Invoice deleteInvoiceById(ID id) throws IOException;
 
 }

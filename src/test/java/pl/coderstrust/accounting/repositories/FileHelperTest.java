@@ -23,6 +23,7 @@ class FileHelperTest {
 
     @Test
     void readLinesFromFileShouldThrowExceptionForNullFilePath() {
+        // when, then
         assertThrows(NullPointerException.class,
             () -> {
                 fileHelper.readLinesFromFile();
@@ -45,6 +46,7 @@ class FileHelperTest {
 
     @Test
     public void writeLinesToFileMethodShouldThrowExceptionForNullLines() throws IOException {
+        // when, then
         assertThrows(IllegalArgumentException.class,
             () -> {
                 fileHelper.writeLineToFile(null);
@@ -68,6 +70,7 @@ class FileHelperTest {
 
     @Test
     public void writeLineToFileMethodShouldThrowExceptionForNullLLine() throws IOException {
+        // when, then
         assertThrows(IllegalArgumentException.class,
             () -> {
                 fileHelper.writeLinesToFile(null);

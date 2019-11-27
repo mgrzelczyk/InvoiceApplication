@@ -13,7 +13,6 @@ import java.util.Scanner;
 
 class FileHelper {
 
-    private static final String separator = System.lineSeparator();
     private static String dbFile;
 
     public FileHelper(DatabaseProperties properties) {
@@ -37,7 +36,6 @@ class FileHelper {
         try (FileWriter writer = new FileWriter(databaseFileName)) {
             for (String str: lines) {
                 writer.write(str);
-                writer.write(separator);
             }
         }
     }

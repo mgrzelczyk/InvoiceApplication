@@ -18,7 +18,7 @@ class FileHelperTest {
     @BeforeEach
     void setup() {
         DatabaseProperties databaseProperties = new DatabaseProperties();
-        fileHelper = new FileHelper(databaseProperties);
+        fileHelper = new FileHelper();
     }
 
     @Test

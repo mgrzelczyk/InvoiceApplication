@@ -1,6 +1,5 @@
 package pl.coderstrust.accounting.repositories;
 
-import pl.coderstrust.accounting.application.DatabaseProperties;
 import static pl.coderstrust.accounting.application.DatabaseProperties.databaseFileName;
 
 import java.io.File;
@@ -13,10 +12,8 @@ import java.util.Scanner;
 
 class FileHelper {
 
-    private static String dbFile;
-
-    public FileHelper(DatabaseProperties properties) {
-        this.dbFile = databaseFileName;
+    public FileHelper() {
+        String dbFile = InFileDatabaseProperties.dbFile;
     }
 
     public List<String> readLinesFromFile() throws IOException {

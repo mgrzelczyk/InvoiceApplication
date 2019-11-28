@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class InFileDatabase implements InvoiceDatabase {
 
-    private AtomicLong counter = new AtomicLong(getLastId());
+    private final AtomicLong counter = new AtomicLong(getLastId());
     private final FileHelper fileHelper;
     private final ObjectMapper objectMapper;
 
@@ -27,11 +27,7 @@ public class InFileDatabase implements InvoiceDatabase {
     @Override
     public Invoice saveInvoice(Invoice invoice) throws IOException {
         if (invoice.getId() == null) {
-            try {
                 insertInvoice(invoice);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         } else {
             InFileInvoice inFileInvoice = updateInvoiceDeleteStatus(invoice, false);
             String inFilenvoiceJson = null;

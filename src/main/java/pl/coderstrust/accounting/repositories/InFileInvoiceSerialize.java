@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class InFileInvoiceSerialize {
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     public InFileInvoiceSerialize(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;

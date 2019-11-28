@@ -1,6 +1,5 @@
 package pl.coderstrust.accounting.repositories;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -17,10 +16,9 @@ class InFileInvoiceSerialize {
         return objectMapper.writeValueAsString(inFileInvoice);
     }
 
-    public String deserialize(String inFilenvoiceJson)
-        throws IOException, JsonProcessingException {
+    public InFileInvoice deserialize(String inFilenvoiceJson) throws IOException {
         InFileInvoice inFileInvoice = objectMapper.readValue(inFilenvoiceJson, InFileInvoice.class);
-        return inFileInvoice.toString();
+        return objectMapper.readValue(inFilenvoiceJson, InFileInvoice.class);
     }
 
 }

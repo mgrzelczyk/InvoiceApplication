@@ -29,7 +29,7 @@ public class InFileDatabase implements InvoiceDatabase {
         if (invoice.getId() == null) {
                 insertInvoice(invoice);
         } else {
-            InFileInvoice inFileInvoice = updateInvoiceDeleteStatus(invoice, false);
+            InFileInvoice inFileInvoice = updateInvoice(invoice, false);
             String inFilenvoiceJson = null;
             inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
             fileHelper.writeLineToFile(inFilenvoiceJson);
@@ -65,7 +65,7 @@ public class InFileDatabase implements InvoiceDatabase {
         } else {
             getInvoices();
             inFileInvoice = database.get(id);
-            inFileInvoice = updateInvoiceDeleteStatus(invoice, true);
+            inFileInvoice = updateInvoice(invoice, true);
             database.remove(id);
             if (inFileInvoice.getDeleted(true)) {
                 invoice = inFileInvoice;
@@ -87,7 +87,7 @@ public class InFileDatabase implements InvoiceDatabase {
 
     private void insertInvoice(Invoice invoice) throws IOException {
         Long lastId = getLastId();
-        InFileInvoice inFileInvoice = updateInvoiceDeleteStatus(invoice, false);
+        InFileInvoice inFileInvoice = updateInvoice(invoice, false);
         inFileInvoice.setId(lastId + 1L);
         String inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
         fileHelper.writeLineToFile(inFilenvoiceJson);
@@ -106,8 +106,12 @@ public class InFileDatabase implements InvoiceDatabase {
         return inFileInvoices;
     }
 
-    private InFileInvoice updateInvoiceDeleteStatus(Invoice invoice, boolean deleted) {
+    private InFileInvoice updateInvoice(Invoice invoice, boolean deleted) throws IOException {
         InFileInvoice inFileInvoice = new InFileInvoice(invoice, true);
+        String inFilenvoiceJson = null;
+        inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
+        fileHelper.writeLineToFile(inFilenvoiceJson);
+        counter.incrementAndGet();
         return inFileInvoice;
     }
 

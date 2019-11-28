@@ -24,7 +24,7 @@ import pl.coderstrust.accounting.services.InvoiceBook;
 @RequestMapping("/api")
 public class InvoiceController {
 
-    private InvoiceBook invoiceBook;
+    private final InvoiceBook invoiceBook;
 
     public InvoiceController(InvoiceBook invoiceBook) {
         this.invoiceBook = invoiceBook;
@@ -65,18 +65,17 @@ public class InvoiceController {
         Invoice createdInvoice = invoiceBook.saveInvoice(invoice);
         if (createdInvoice == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        } else {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdInvoice.getId())
-                .toUri();
-            return ResponseEntity.created(uri).body(createdInvoice);
         }
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(createdInvoice.getId())
+            .toUri();
+        return ResponseEntity.created(uri).body(createdInvoice);
     }
 
     @PutMapping("/invoice")
     public ResponseEntity<Invoice> editInvoice(@RequestBody Invoice invoice) {
-        if (invoice.equals(invoiceBook.findInvoiceById(invoice.getId()))) {
+        if (invoiceBook.findInvoiceById(invoice.getId()) != null) {
             Invoice editedInvoice = invoiceBook.saveInvoice(invoice);
             if (editedInvoice != null) {
                 return ResponseEntity.ok().body(editedInvoice);

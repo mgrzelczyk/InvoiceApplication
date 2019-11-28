@@ -158,9 +158,10 @@ class InvoiceControllerTest {
     @DisplayName("Should save invoice and return URI")
     void shouldSaveAndReturnUri() throws Exception {
         Invoice invoice = prepareInvoice();
-        invoice.setId(1L);
+        Invoice saved = invoice;
+        saved.setId(1L);
 
-        when(service.saveInvoice(invoice)).thenReturn(invoice);
+        when(service.saveInvoice(invoice)).thenReturn(saved);
 
         MvcResult mvcResult = mockMvc.perform(post("/api/invoice")
             .contentType(MediaType.APPLICATION_JSON)
@@ -172,7 +173,7 @@ class InvoiceControllerTest {
 
         String jsonValue = mvcResult.getResponse().getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(invoice), jsonValue);
+        assertEquals(objectMapper.writeValueAsString(saved), jsonValue);
     }
 
     @Test
@@ -214,9 +215,12 @@ class InvoiceControllerTest {
         Invoice invoice = prepareInvoice();
         invoice.setId(1L);
 
+        Invoice edited = prepareInvoice();
+        edited.setId(1L);
+
+
         when(service.findInvoiceById(1L)).thenReturn(invoice);
-        invoice.setBuyer(prepareCompany("Poznan", "DDr"));
-        when(service.saveInvoice(invoice)).thenReturn(invoice);
+        when(service.saveInvoice(invoice)).thenReturn(edited);
 
         MvcResult mvcResult = mockMvc.perform(put("/api/invoice")
             .contentType(MediaType.APPLICATION_JSON)
@@ -228,7 +232,7 @@ class InvoiceControllerTest {
 
         String jsonValue = mvcResult.getResponse().getContentAsString();
 
-        assertEquals(objectMapper.writeValueAsString(invoice), jsonValue);
+        assertEquals(objectMapper.writeValueAsString(edited), jsonValue);
     }
 
     @Test

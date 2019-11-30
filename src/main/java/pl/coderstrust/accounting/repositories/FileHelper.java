@@ -1,5 +1,6 @@
 package pl.coderstrust.accounting.repositories;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,9 +30,12 @@ class FileHelper {
         if (lines == null) {
             throw new IllegalArgumentException("Lines cannot be null.");
         }
-        try (FileWriter writer = new FileWriter(databaseFileName)) {
+        try (FileWriter writer = new FileWriter(databaseFileName, true)) {
+            BufferedWriter bw = new BufferedWriter(writer);
             for (String str: lines) {
-                writer.write(str);
+                bw.append(str);
+                writer.append(str);
+                writer.append("\n");
             }
         }
     }

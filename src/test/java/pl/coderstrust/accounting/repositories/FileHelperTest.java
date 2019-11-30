@@ -56,7 +56,7 @@ class FileHelperTest {
     @Test
     void shouldWriteLinesToFile() throws IOException {
         //given
-        String stringsExpected = "{\"id\":4,\"date\":whatever,\"buyer\":null,\"seller\":null,\"entries\":null}";
+        String stringsExpected = "{\"id\":2,\"date\":whatever,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         //when
         fileHelper.writeLineToFile(stringsExpected);

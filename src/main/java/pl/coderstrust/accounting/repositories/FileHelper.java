@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-class FileHelper {
+public class FileHelper {
 
     public static final String databaseFileName = "database.db";
 

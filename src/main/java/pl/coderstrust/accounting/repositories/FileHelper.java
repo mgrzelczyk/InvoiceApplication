@@ -21,6 +21,7 @@ class FileHelper {
         try (Scanner scanner = new Scanner(new File(databaseFileName))) {
             while (scanner.hasNext()) {
                 result.add(scanner.nextLine());
+                scanner.close();
             }
         }
         return result;
@@ -34,8 +35,8 @@ class FileHelper {
             BufferedWriter bw = new BufferedWriter(writer);
             for (String str: lines) {
                 bw.append(str);
-                writer.append(str);
-                writer.append("\n");
+                bw.newLine();
+                bw.close();
             }
         }
     }

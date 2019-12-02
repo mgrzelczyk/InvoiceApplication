@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -90,6 +90,11 @@ class InMemoryDatabaseTest {
         for (Invoice invoice : expected) {
             inMemory.saveInvoice(invoice);
         }
+
+        expected.get(0).setId(1L);
+        expected.get(1).setId(2L);
+        expected.get(2).setId(3L);
+
         List<Invoice> result = inMemory.findAllInvoices();
 
         assertEquals(expected, result);
@@ -115,13 +120,10 @@ class InMemoryDatabaseTest {
         Company buyer = prepareCompany("Wrocław 66-666", "TurboMarek z.o.o");
         Company seller = prepareCompany("Gdynia 66-666", "Szczupak z.o.o");
         Invoice invoice = new Invoice();
-        invoice.setDate(LocalDateTime.of(
+        invoice.setDate(LocalDate.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
-            random.nextInt(25) + 1,
-            random.nextInt(12),
-            random.nextInt(59) + 1,
-            random.nextInt(59) + 1));
+            random.nextInt(25) + 1));
         invoice.setBuyer(buyer);
         invoice.setSeller(seller);
         invoice.setEntries(invoiceEntries);

@@ -16,16 +16,17 @@ public class InMemoryDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {
-        if (invoice.getId() == null) {
+        Invoice copiedInvoice = new Invoice(invoice);
+        if (copiedInvoice.getId() == null) {
             Long id = counter.incrementAndGet();
-            invoiceMap.put(id, invoice);
-            invoice.setId(id);
-            return invoice;
-        } else if (invoiceMap.containsKey(invoice.getId())) {
-            invoiceMap.put(invoice.getId(), invoice);
-            return invoice;
+            invoiceMap.put(id, copiedInvoice);
+            copiedInvoice.setId(id);
+            return copiedInvoice;
+        } else if (invoiceMap.containsKey(copiedInvoice.getId())) {
+            invoiceMap.put(copiedInvoice.getId(), copiedInvoice);
+            return copiedInvoice;
         }
-        throw new NullPointerException("it doesn't work :C");
+        throw new NullPointerException("There isn't option");
     }
 
     @Override

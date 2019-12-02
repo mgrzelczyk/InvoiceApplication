@@ -19,6 +19,7 @@
     <spring.test.version>2.2.0.RELEASE</spring.test.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <javax.json.version>1.0.4</javax.json.version>
   </properties>
 
   <parent>

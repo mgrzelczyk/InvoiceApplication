@@ -1,10 +1,12 @@
 package pl.coderstrust.accounting.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
+
 
 @Service
 public class InvoiceBook {
@@ -31,7 +33,22 @@ public class InvoiceBook {
     }
 
     public List<Invoice> findAllInvoices() {
-        List<Invoice> invoices = new ArrayList<>(invoiceDatabase.findAllInvoices());
+        List<Invoice> invoices;
+        invoices = new ArrayList<>(invoiceDatabase.findAllInvoices());
+        if (!invoices.isEmpty()) {
+            return invoices;
+        }
+        return null;
+    }
+
+    public List<Invoice> findAllInvoiceByDateRange(LocalDate from, LocalDate to) {
+        List<Invoice> invoices = new ArrayList<>();
+        for (Invoice invoice : invoiceDatabase.findAllInvoices()) {
+            if (invoice.getDate().isAfter(from) && invoice.getDate().isBefore(to)
+                || invoice.getDate().isEqual(from) || invoice.getDate().isEqual(to)) {
+                invoices.add(invoice);
+            }
+        }
         if (!invoices.isEmpty()) {
             return invoices;
         }

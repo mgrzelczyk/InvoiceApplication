@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -121,6 +121,54 @@ class InvoiceBookTest {
     }
 
     @Test
+    @DisplayName("Find invoices by date range")
+    void shouldFindAllInvoicesByDataRange() throws NullPointerException {
+        Invoice invoice1 = prepareInvoice();
+        Invoice invoice2 = prepareInvoice();
+        Invoice invoice3 = prepareInvoice();
+        invoice1.setDate(LocalDate.of(2019, 12, 12));
+        invoice2.setDate(LocalDate.of(2018, 11, 24));
+        invoice3.setDate(LocalDate.of(2010, 1, 11));
+        List<Invoice> invoices = new ArrayList<>();
+        invoices.add(invoice1);
+        invoices.add(invoice2);
+        invoices.add(invoice3);
+        invoices.add(invoice1);
+        invoices.add(invoice2);
+        LocalDate from = LocalDate.of(2018, 12, 12);
+        LocalDate to = LocalDate.of(2019, 12, 12);
+
+        when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
+
+        List<Invoice> allInvoices = invoiceBook.findAllInvoiceByDateRange(from, to);
+
+        assertThat(allInvoices, hasSize(2));
+    }
+
+    @Test
+    @DisplayName("Not find invoices by date range")
+    void shouldNotFindAllInvoicesByDataRange() throws NullPointerException {
+        Invoice invoice1 = prepareInvoice();
+        Invoice invoice2 = prepareInvoice();
+        Invoice invoice3 = prepareInvoice();
+        invoice1.setDate(LocalDate.of(2019, 12, 12));
+        invoice2.setDate(LocalDate.of(2018, 11, 24));
+        invoice3.setDate(LocalDate.of(2010, 1, 11));
+        List<Invoice> invoices = new ArrayList<>();
+        invoices.add(invoice1);
+        invoices.add(invoice2);
+        invoices.add(invoice3);
+        invoices.add(invoice1);
+        invoices.add(invoice2);
+        LocalDate from = LocalDate.of(1918, 12, 12);
+        LocalDate to = LocalDate.of(2000, 12, 12);
+
+        when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
+
+        assertNull(invoiceBook.findAllInvoiceByDateRange(from, to));
+    }
+
+    @Test
     @DisplayName("Find all invoices")
     void shouldFindAllInvoiceInRepository() throws NullPointerException {
         List<Invoice> invoices = prepareInvoices();
@@ -176,13 +224,10 @@ class InvoiceBookTest {
         Company buyer = prepareCompany("Wrocław 66-666", "TurboMarek z.o.o");
         Company seller = prepareCompany("Gdynia 66-666", "Szczupak z.o.o");
         Invoice invoice = new Invoice();
-        invoice.setDate(LocalDateTime.of(
+        invoice.setDate(LocalDate.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
-            random.nextInt(25) + 1,
-            random.nextInt(12),
-            random.nextInt(59) + 1,
-            random.nextInt(59) + 1));
+            random.nextInt(25) + 1));
         invoice.setBuyer(buyer);
         invoice.setSeller(seller);
         invoice.setEntries(invoiceEntries);

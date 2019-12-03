@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
+import pl.coderstrust.accounting.repositories.HibernateDatabase;
 import pl.coderstrust.accounting.repositories.InMemoryDatabase;
 
 @Configuration
@@ -13,6 +14,12 @@ public class AppConfiguration {
     @ConditionalOnProperty(name = "database", havingValue = "in-memory")
     public InvoiceDatabase inMemoryDatabase() {
         return new InMemoryDatabase();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "database", havingValue = "in-hibernate")
+    public InvoiceDatabase inHibernateDatabase() {
+        return new HibernateDatabase();
     }
 
 }

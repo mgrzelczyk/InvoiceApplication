@@ -1,5 +1,7 @@
 package pl.coderstrust.accounting.model;
 
+import javax.persistence.Entity;
+
 public enum Vat {
     STANDARD_23(23),
     REDUCED_8(8),

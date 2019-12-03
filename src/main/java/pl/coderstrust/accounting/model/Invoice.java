@@ -1,6 +1,6 @@
 package pl.coderstrust.accounting.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -14,7 +14,7 @@ public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime date;
+    private LocalDate date;
     private Company buyer;
     private Company seller;
     private List<InvoiceEntry> entries;
@@ -22,7 +22,15 @@ public class Invoice {
     public Invoice() {
     }
 
-    public Invoice(Long id, LocalDateTime date, Company buyer,
+    public Invoice(Invoice invoice) {
+        setId(invoice.getId());
+        setDate(invoice.getDate());
+        setBuyer(invoice.getBuyer());
+        setSeller(invoice.getSeller());
+        setEntries(invoice.getEntries());
+    }
+
+    public Invoice(Long id, LocalDate date, Company buyer,
         Company seller, List<InvoiceEntry> entries) {
         this.id = id;
         this.date = date;
@@ -39,11 +47,11 @@ public class Invoice {
         this.id = id;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

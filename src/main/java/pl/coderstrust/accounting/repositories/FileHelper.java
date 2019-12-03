@@ -1,5 +1,7 @@
 package pl.coderstrust.accounting.repositories;
 
+import static pl.coderstrust.accounting.config.AppConfiguration.databaseFileName;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -10,8 +12,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class FileHelper {
-
-    public static final String databaseFileName = "database.db";
 
     public FileHelper() {
     }

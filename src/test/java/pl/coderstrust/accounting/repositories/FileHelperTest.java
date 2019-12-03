@@ -4,14 +4,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ExtendWith(MockitoExtension.class)
 class FileHelperTest {
 
+    @InjectMocks
     private FileHelper fileHelper;
 
     @BeforeEach
@@ -31,11 +37,13 @@ class FileHelperTest {
     @Test
     void shouldReadLinesFromFile() throws IOException {
         //given
+        List<String> stringsReaded = new ArrayList<>();
         List<String> stringsExpected = new ArrayList<>();
         String jSon = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
         stringsExpected.add(0, jSon);
 
         //when
+        when(fileHelper.readLinesFromFile()).thenReturn(stringsExpected);
         List<String> stringsResult = fileHelper.readLinesFromFile();
 
         //then

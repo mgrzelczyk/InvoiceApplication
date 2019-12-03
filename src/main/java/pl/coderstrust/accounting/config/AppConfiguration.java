@@ -16,6 +16,7 @@ public class AppConfiguration {
 
     private final FileHelper fileHelper = new FileHelper();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    public static final String databaseFileName = "database.db";
 
     @Bean
     @ConditionalOnProperty(name = "database", havingValue = "in-memory")

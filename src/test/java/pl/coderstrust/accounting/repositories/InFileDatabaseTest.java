@@ -47,7 +47,7 @@ class InFileDatabaseTest {
         // given
         Invoice invoice = createInvoice();
         Invoice invoiceExpected = createInvoice();
-        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         // when
@@ -66,7 +66,7 @@ class InFileDatabaseTest {
         // given
         Invoice invoiceExpected = new Invoice(null, null, null, null, null);
         Invoice invoice = new Invoice(null, null, null, null, null);
-        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "{\"id\":null,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         // when
@@ -86,7 +86,7 @@ class InFileDatabaseTest {
     void shouldFindInvoiceByIdForNullInvoice() throws IOException {
         // given
         Invoice invoiceFindExpected = null;
-        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         List<String> readedLinesFromFile = new ArrayList<>();
         when(fileHelper.readLinesFromFile()).thenReturn(readedLinesFromFile);
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
@@ -108,7 +108,7 @@ class InFileDatabaseTest {
         // given
         Invoice invoiceFindExpected = createInvoice();
         invoiceFindExpected.setId(null);
-        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         List<String> readedLinesFromFile = new ArrayList<>();
         when(fileHelper.readLinesFromFile()).thenReturn(readedLinesFromFile);
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();

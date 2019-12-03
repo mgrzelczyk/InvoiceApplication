@@ -21,7 +21,6 @@ public class FileHelper {
         try (Scanner scanner = new Scanner(new File(databaseFileName))) {
             while (scanner.hasNext()) {
                 result.add(scanner.nextLine());
-                scanner.close();
             }
         }
         return result;
@@ -32,11 +31,11 @@ public class FileHelper {
             throw new IllegalArgumentException("Lines cannot be null.");
         }
         try (FileWriter writer = new FileWriter(databaseFileName, true)) {
-            BufferedWriter bw = new BufferedWriter(writer);
-            for (String str: lines) {
-                bw.append(str);
-                bw.newLine();
-                bw.close();
+            try (BufferedWriter bw = new BufferedWriter(writer)) {
+                for (String str: lines) {
+                    bw.append(str);
+                    bw.newLine();
+                }
             }
         }
     }

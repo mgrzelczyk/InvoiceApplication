@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.coderstrust.accounting.application.DatabaseProperties;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ class FileHelperTest {
 
     @BeforeEach
     void setup() {
-        DatabaseProperties databaseProperties = new DatabaseProperties();
         fileHelper = new FileHelper();
     }
 

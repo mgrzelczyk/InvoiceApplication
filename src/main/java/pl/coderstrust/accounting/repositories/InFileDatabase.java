@@ -27,26 +27,19 @@ public class InFileDatabase implements InvoiceDatabase {
     @Override
     public Invoice saveInvoice(Invoice invoice) throws IOException {
         if (invoice.getId() == null) {
-                insertInvoice(invoice);
+            insertInvoice(invoice);
         } else {
-            InFileInvoice inFileInvoice = updateInvoice(invoice, false);
-            String inFilenvoiceJson = null;
-            inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
-            fileHelper.writeLineToFile(inFilenvoiceJson);
-            counter.incrementAndGet();
+            updateInvoice(invoice, false);
         }
         return invoice;
     }
 
     @Override
     public Invoice findInvoiceById(Long id) throws IOException {
-        Invoice invoice;
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
-        } else {
-            invoice = loadInvoices().get(id);
         }
-        return invoice;
+        return loadInvoices().get(id);
     }
 
     @Override
@@ -108,10 +101,8 @@ public class InFileDatabase implements InvoiceDatabase {
 
     private InFileInvoice updateInvoice(Invoice invoice, boolean deleted) throws IOException {
         InFileInvoice inFileInvoice = new InFileInvoice(invoice, true);
-        String inFilenvoiceJson = null;
-        inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
+        String inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
         fileHelper.writeLineToFile(inFilenvoiceJson);
-        counter.incrementAndGet();
         return inFileInvoice;
     }
 
@@ -120,7 +111,7 @@ public class InFileDatabase implements InvoiceDatabase {
         List<Invoice> stringsConvertedToList = new ArrayList<>();
 
         for (String string : strings) {
-            stringsConvertedToList.add(objectMapper.readValue(string, InFileInvoice.class));
+            stringsConvertedToList.add(objectMapper.readValue(string, Invoice.class));
         }
         return stringsConvertedToList;
     }

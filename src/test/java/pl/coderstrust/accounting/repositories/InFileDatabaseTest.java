@@ -43,11 +43,22 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldSaveInvoice() throws IOException {
+    void shouldInsertInvoice(){
+        // create invoice, id null, save invoice, invoiceResult z id, new createInvoice.setId i zmiaana wartości,
+        // porównanie czy jest taki sam; czy  odczytuje tego invoice'a
+    }
+
+    @Test
+    void shouldUpdateInvoice() throws IOException {
         // given
         Invoice invoice = createInvoice();
         Invoice invoiceExpected = createInvoice();
         inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        invoiceExpected.setId(1L);
+        invoiceExpected.setDate(null);
+        invoiceExpected.setBuyer(null);
+        invoiceExpected.setSeller(null);
+        invoiceExpected.setEntries(null);
         String lineToWrite = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         // when
@@ -64,12 +75,13 @@ class InFileDatabaseTest {
     @Test
     void shouldReturnNullWhenFindInvoiceByIdThatDoesntExists() throws IOException {
         // given
-        Invoice invoiceExpected = new Invoice(null, null, null, null, null);
+        Invoice invoiceExpected = new Invoice(1L, null, null, null, null);
         Invoice invoice = new Invoice(null, null, null, null, null);
         inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "{\"id\":null,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         // when
+        when(fileHelper.readLinesFromFile()).thenReturn(List.of());
         when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
 
         Invoice invoiceResult = inFileDatabase.saveInvoice(invoice);
@@ -78,9 +90,7 @@ class InFileDatabaseTest {
         verify(fileHelper).writeLineToFile(lineToWrite);
 
         assertEquals(invoiceExpected, invoiceResult);
-        System.out.println((invoiceResult));
     }
-
 
     @Test
     void shouldFindInvoiceByIdForNullInvoice() throws IOException {

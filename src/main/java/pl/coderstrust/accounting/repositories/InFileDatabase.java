@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class InFileDatabase implements InvoiceDatabase {
@@ -27,10 +28,16 @@ public class InFileDatabase implements InvoiceDatabase {
     @Override
     public Invoice saveInvoice(Invoice invoice) throws IOException {
         if (invoice.getId() == null) {
-            insertInvoice(invoice);
+            return insertInvoice(invoice);
         } else {
-            updateInvoice(invoice, false);
+            return updateInvoice(invoice);
         }
+    }
+
+    private Invoice updateInvoice(Invoice invoice) throws IOException {
+        InFileInvoice inFileInvoice = createInFileInvoice(invoice, false);
+        String json = objectMapper.writeValueAsString(inFileInvoice);
+        fileHelper.writeLineToFile(json);
         return invoice;
     }
 
@@ -49,48 +56,48 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice deleteInvoiceById(Long id) throws IOException {
-        Invoice invoice = new Invoice();
-        InFileInvoice inFileInvoice;
-        Map<Long, InFileInvoice> database = loadInvoices();
-
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
-        } else {
-            getInvoices();
-            inFileInvoice = database.get(id);
-            inFileInvoice = updateInvoice(invoice, true);
-            database.remove(id);
-            if (inFileInvoice.getDeleted(true)) {
-                invoice = inFileInvoice;
-            }
         }
+
+        Invoice invoice = findInvoiceById(id);
+        InFileInvoice deletedInvoice = createInFileInvoice(invoice, true);
+        String json = objectMapper.writeValueAsString(deletedInvoice);
+        fileHelper.writeLineToFile(json);
+
         return invoice;
     }
 
     private Long getLastId() throws IOException {
-        return Collections.max(loadInvoices().keySet());
+        try {
+            return Collections.max(loadInvoices().keySet());
+        } catch (NoSuchElementException e) {
+            return 0L;
+        }
     }
 
     private Map<Long, InFileInvoice> loadInvoices() throws IOException {
-        List<InFileInvoice> inFileInvoices = insertInvoice();
+        List<InFileInvoice> inFileInvoices = readInvoicesFromFile();
         Map<Long, InFileInvoice> database = new HashMap<>();
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
         return database;
     }
 
-    private void insertInvoice(Invoice invoice) throws IOException {
+    private Invoice insertInvoice(Invoice invoice) throws IOException {
         Long lastId = getLastId();
-        InFileInvoice inFileInvoice = updateInvoice(invoice, false);
+        InFileInvoice inFileInvoice = createInFileInvoice(invoice, false);
         inFileInvoice.setId(lastId + 1L);
         String inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
         fileHelper.writeLineToFile(inFilenvoiceJson);
         counter.incrementAndGet();
-        inFileInvoice.setId(getLastId());
-        String inFilenvoiceJsonLastId = objectMapper.writeValueAsString(inFileInvoice);
-        fileHelper.writeLineToFile(inFilenvoiceJsonLastId);
+        return createInvoice(inFileInvoice);
     }
 
-    private List<InFileInvoice> insertInvoice() throws IOException {
+    private Invoice createInvoice(InFileInvoice inFileInvoice) {
+        new Invoice();
+    }
+
+    private List<InFileInvoice> readInvoicesFromFile() throws IOException {
         List<String> strings = fileHelper.readLinesFromFile();
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         for (int i = 0; i < strings.size(); i++) {
@@ -99,7 +106,7 @@ public class InFileDatabase implements InvoiceDatabase {
         return inFileInvoices;
     }
 
-    private InFileInvoice updateInvoice(Invoice invoice, boolean deleted) throws IOException {
+    private InFileInvoice createInFileInvoice(Invoice invoice, boolean deleted) throws IOException {
         InFileInvoice inFileInvoice = new InFileInvoice(invoice, true);
         String inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
         fileHelper.writeLineToFile(inFilenvoiceJson);

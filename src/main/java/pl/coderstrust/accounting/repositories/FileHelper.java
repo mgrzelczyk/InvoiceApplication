@@ -1,7 +1,5 @@
 package pl.coderstrust.accounting.repositories;
 
-import static pl.coderstrust.accounting.config.AppConfiguration.databaseFileName;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -13,7 +11,10 @@ import java.util.Scanner;
 
 public class FileHelper {
 
-    public FileHelper() {
+    private final String databaseFileName;
+
+    public FileHelper(String databaseFileName) {
+        this.databaseFileName = databaseFileName;
     }
 
     public List<String> readLinesFromFile() throws IOException {
@@ -30,12 +31,10 @@ public class FileHelper {
         if (lines == null) {
             throw new IllegalArgumentException("Lines cannot be null.");
         }
-        try (FileWriter writer = new FileWriter(databaseFileName, true)) {
-            try (BufferedWriter bw = new BufferedWriter(writer)) {
-                for (String str: lines) {
-                    bw.append(str);
-                    bw.newLine();
-                }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(databaseFileName, true))) {
+            for (String str : lines) {
+                bw.append(str);
+                bw.newLine();
             }
         }
     }

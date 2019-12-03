@@ -1,6 +1,8 @@
 package pl.coderstrust.accounting.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +16,11 @@ import java.io.IOException;
 @Configuration
 public class AppConfiguration {
 
-    private final FileHelper fileHelper = new FileHelper();
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    public static final String databaseFileName = "database.db";
+    @Value()
+    String fileDatabase;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Bean
     @ConditionalOnProperty(name = "database", havingValue = "in-memory")
@@ -27,6 +31,7 @@ public class AppConfiguration {
     @Bean
     @ConditionalOnProperty(name = "database", havingValue = "in-file")
     public InvoiceDatabase inFileDatabase() throws IOException {
+        FileHelper fileHelper = new FileHelper(fileDatabase);
         return new InFileDatabase(fileHelper, objectMapper);
     }
 

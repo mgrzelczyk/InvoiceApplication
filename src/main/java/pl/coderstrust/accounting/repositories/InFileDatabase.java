@@ -67,7 +67,7 @@ public class InFileDatabase implements InvoiceDatabase {
         }
     }
 
-    private List<InFileInvoice> readInvoicesFromFile() throws IOException {
+    private ArrayList<InFileInvoice> readInvoicesFromFile() throws IOException {
         List<String> strings = fileHelper.readLinesFromFile();
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
         for (int i = 0; i < strings.size(); i++) {

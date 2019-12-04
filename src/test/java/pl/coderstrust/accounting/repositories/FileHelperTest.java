@@ -1,9 +1,10 @@
 package pl.coderstrust.accounting.repositories;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
-import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 
 import java.io.File;
@@ -12,12 +13,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 class FileHelperTest {
 
     private FileHelper fileHelper;
+
+    @BeforeClass
+    private File createTemporaryFolder() {
+        return new File("src/test/temporary/");
+    }
 
     @BeforeClass
     private void copyFilesUsingStream(String source, String dest) throws IOException {
@@ -31,20 +36,16 @@ class FileHelperTest {
             while ((length = is.read(buffer)) > 0) {
                 os.write(buffer, 0, length);
             }
-
         } finally {
             is.close();
             os.close();
         }
     }
 
-    @AfterClass
-    public void clean() {
-        File dir = new File("src/test/resources/temporary/");
-        for (File file:dir.listFiles()) {
-            file.delete();
-        }
-        dir.delete();
+    @AfterTest
+    public void clean() throws IOException {
+        File dir = new File("src/test/resources/temporary/testFile");
+        FileUtils.forceDelete(dir);
     }
 
     @Test
@@ -62,7 +63,7 @@ class FileHelperTest {
         String source = "src/test/resources/testFile";
         String dest = "src/test/resources/temporary/testFile";
         copyFilesUsingStream(source, dest);
-        fileHelper = new FileHelper("src/test/resources/temporary/testFile");
+        FileHelper fileHelper = new FileHelper(dest);
         List<String> stringsExpected = List.of("abc", "def");
 
         //when
@@ -75,7 +76,7 @@ class FileHelperTest {
     @Test
     public void writeLinesToFileMethodShouldThrowExceptionForNullLines() throws IOException {
         // when, then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(NullPointerException.class,
             () -> {
                 fileHelper.writeLineToFile(null);
             });
@@ -84,13 +85,16 @@ class FileHelperTest {
     @Test
     void shouldWriteLinesToFile() throws IOException {
         //given
-        FileHelper fileHelper = new FileHelper("scr/test/resources/testWriteFile");
-        String stringsExpected = "{\"id\":2,\"date\":whatever,\"buyer\":null,\"seller\":null,\"entries\":null}";
+        String source = "src/test/resources/testWriteFile";
+        String dest = "src/test/resources/temporary/testWriteFile";
+        copyFilesUsingStream(source, dest);
+        FileHelper fileHelper = new FileHelper(dest);
+        String stringsExpected = "{\"id\":2,\"date\":whatever,\"buyer\":null," +
+            "\"seller\":null,\"entries\":null}";
 
         //when
         fileHelper.writeLineToFile(stringsExpected);
         List<String> stringsList = fileHelper.readLinesFromFile();
-
 
         //then
         assertEquals(List.of(stringsExpected), stringsList);
@@ -99,7 +103,10 @@ class FileHelperTest {
     @Test
     void shouldAppendLineToExistingFile() throws IOException {
         //given
-        FileHelper fileHelper = new FileHelper("scr/test/resources/testWriteFile2");
+        String source = "src/test/resources/testWriteFile2";
+        String dest = "src/test/resources/temporary/testWriteFile2";
+        copyFilesUsingStream(source, dest);
+        FileHelper fileHelper = new FileHelper(dest);
         String stringsNewLine = "def";
 
         //when
@@ -113,25 +120,10 @@ class FileHelperTest {
     @Test
     public void writeLineToFileMethodShouldThrowExceptionForNullLLine() throws IOException {
         // when, then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(NullPointerException.class,
             () -> {
                 fileHelper.writeLinesToFile(null);
             });
-    }
-
-    @Test
-    void shouldWriteLineToFile() throws IOException {
-        //given
-        List<String> stringsExpected = new ArrayList<>();
-        String jSon = "{\"id\":3,\"date\":tomorrow,\"buyer\":null,\"seller\":null,\"entries\":null}";
-        stringsExpected.add(0, jSon);
-
-        //when
-        fileHelper.writeLinesToFile(stringsExpected);
-        List<String> stringsResult = fileHelper.readLinesFromFile();
-
-        //then
-        assertEquals(stringsExpected, stringsResult);
     }
 
 }

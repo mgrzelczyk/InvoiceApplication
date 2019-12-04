@@ -31,7 +31,10 @@ class InFileDatabaseTest {
     private ObjectMapper objectMapper;
 
     @InjectMocks
-    private InFileDatabase inFileDatabase;
+    private InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+
+    InFileDatabaseTest() throws IOException {
+    }
 
     private Invoice createInvoice() {
         LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
@@ -43,9 +46,16 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldInsertInvoice(){
+    void shouldInsertInvoice() throws IOException {
         // create invoice, id null, save invoice, invoiceResult z id, new createInvoice.setId i zmiaana wartości,
         // porównanie czy jest taki sam; czy  odczytuje tego invoice'a
+        Invoice invoiceExpected = createInvoice();
+        invoiceExpected.setId(null);
+        inFileDatabase.saveInvoice(invoiceExpected);
+        Invoice invoiceResult = createInvoice();
+        invoiceResult.setId(1L);
+
+        assertEquals(invoiceExpected, invoiceResult);
     }
 
     @Test

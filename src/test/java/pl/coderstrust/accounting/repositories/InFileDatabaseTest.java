@@ -46,22 +46,6 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldInsertInvoice() throws IOException {
-        Invoice invoiceExpected = createInvoice();
-        invoiceExpected.setId(null);
-        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-        inFileDatabase.saveInvoice(invoiceExpected);
-        invoiceExpected.setId(1L);
-        invoiceExpected = inFileDatabase.saveInvoice(invoiceExpected);
-        Invoice invoiceResult = createInvoice();
-        invoiceResult.setId(1L);
-        invoiceResult = inFileDatabase.saveInvoice(invoiceResult);
-
-
-        assertEquals(invoiceExpected, invoiceResult);
-    }
-
-    @Test
     void shouldUpdateInvoice() throws IOException {
         // given
         Invoice invoice = createInvoice();
@@ -75,6 +59,22 @@ class InFileDatabaseTest {
 
         // then
         verify(fileHelper).writeLineToFile(lineToWrite);
+
+        assertEquals(invoiceExpected, invoiceResult);
+    }
+
+    @Test
+    void shouldInsertInvoice() throws IOException {
+        Invoice invoiceExpected = createInvoice();
+        invoiceExpected.setId(null);
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        inFileDatabase.saveInvoice(invoiceExpected);
+        invoiceExpected.setId(1L);
+        invoiceExpected = inFileDatabase.saveInvoice(invoiceExpected);
+        Invoice invoiceResult = createInvoice();
+        invoiceResult.setId(1L);
+        invoiceResult = inFileDatabase.saveInvoice(invoiceResult);
+
 
         assertEquals(invoiceExpected, invoiceResult);
     }

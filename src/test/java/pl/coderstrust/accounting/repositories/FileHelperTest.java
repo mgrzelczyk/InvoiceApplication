@@ -4,7 +4,7 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
 import java.io.File;
@@ -13,6 +13,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 class FileHelperTest {
@@ -20,8 +23,8 @@ class FileHelperTest {
     private FileHelper fileHelper;
 
     @BeforeClass
-    private File createTemporaryFolder() {
-        return new File("src/test/temporary/");
+    private Path createTemporaryFolder() throws IOException {
+        return Files.createDirectories(Paths.get("src/test/temporary/"));
     }
 
     @BeforeClass
@@ -42,7 +45,7 @@ class FileHelperTest {
         }
     }
 
-    @AfterTest
+    @AfterClass
     public void clean() throws IOException {
         File dir = new File("src/test/resources/temporary/testFile");
         FileUtils.forceDelete(dir);

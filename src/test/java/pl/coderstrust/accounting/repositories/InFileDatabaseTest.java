@@ -49,6 +49,7 @@ class InFileDatabaseTest {
     void shouldInsertInvoice() throws IOException {
         Invoice invoiceExpected = createInvoice();
         invoiceExpected.setId(null);
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         inFileDatabase.saveInvoice(invoiceExpected);
         invoiceExpected.setId(1L);
         invoiceExpected = inFileDatabase.saveInvoice(invoiceExpected);
@@ -65,7 +66,7 @@ class InFileDatabaseTest {
         // given
         Invoice invoice = createInvoice();
         Invoice invoiceExpected = createInvoice();
-        inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         // when

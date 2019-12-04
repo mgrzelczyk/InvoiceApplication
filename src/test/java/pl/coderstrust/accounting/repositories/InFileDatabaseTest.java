@@ -54,6 +54,8 @@ class InFileDatabaseTest {
         inFileDatabase.saveInvoice(invoiceExpected);
         Invoice invoiceResult = createInvoice();
         invoiceResult.setId(1L);
+        inFileDatabase.saveInvoice(invoiceResult);
+
 
         assertEquals(invoiceExpected, invoiceResult);
     }
@@ -64,16 +66,10 @@ class InFileDatabaseTest {
         Invoice invoice = createInvoice();
         Invoice invoiceExpected = createInvoice();
         inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-        invoiceExpected.setId(1L);
-        invoiceExpected.setDate(null);
-        invoiceExpected.setBuyer(null);
-        invoiceExpected.setSeller(null);
-        invoiceExpected.setEntries(null);
         String lineToWrite = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         // when
         when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
-
         Invoice invoiceResult = inFileDatabase.saveInvoice(invoice);
 
         // then

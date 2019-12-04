@@ -19,7 +19,6 @@ public class InFileDatabase implements InvoiceDatabase {
     private final FileHelper fileHelper;
     private final ObjectMapper objectMapper;
 
-
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {
         this.fileHelper = fileHelper;
         this.objectMapper = objectMapper;

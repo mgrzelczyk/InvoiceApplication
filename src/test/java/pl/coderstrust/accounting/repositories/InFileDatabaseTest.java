@@ -47,14 +47,14 @@ class InFileDatabaseTest {
 
     @Test
     void shouldInsertInvoice() throws IOException {
-        // create invoice, id null, save invoice, invoiceResult z id, new createInvoice.setId i zmiaana wartości,
-        // porównanie czy jest taki sam; czy  odczytuje tego invoice'a
         Invoice invoiceExpected = createInvoice();
         invoiceExpected.setId(null);
         inFileDatabase.saveInvoice(invoiceExpected);
+        invoiceExpected.setId(1L);
+        invoiceExpected = inFileDatabase.saveInvoice(invoiceExpected);
         Invoice invoiceResult = createInvoice();
         invoiceResult.setId(1L);
-        inFileDatabase.saveInvoice(invoiceResult);
+        invoiceResult = inFileDatabase.saveInvoice(invoiceResult);
 
 
         assertEquals(invoiceExpected, invoiceResult);

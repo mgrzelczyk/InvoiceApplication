@@ -16,7 +16,7 @@ import java.io.IOException;
 @Configuration
 public class AppConfiguration {
 
-    @Value()
+    @Value("${value.from.file}")
     String fileDatabase;
 
     @Autowired

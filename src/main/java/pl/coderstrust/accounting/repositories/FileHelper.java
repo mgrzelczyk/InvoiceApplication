@@ -11,15 +11,15 @@ import java.util.Scanner;
 
 public class FileHelper {
 
-    private final String databaseFileName;
+    private final String fileDatabase;
 
     public FileHelper(String databaseFileName) {
-        this.databaseFileName = databaseFileName;
+        this.fileDatabase = databaseFileName;
     }
 
     public List<String> readLinesFromFile() throws IOException {
         List<String> result = new ArrayList<>();
-        try (Scanner scanner = new Scanner(new File(databaseFileName))) {
+        try (Scanner scanner = new Scanner(new File(fileDatabase))) {
             while (scanner.hasNext()) {
                 result.add(scanner.nextLine());
             }
@@ -31,7 +31,7 @@ public class FileHelper {
         if (lines == null) {
             throw new IllegalArgumentException("Lines cannot be null.");
         }
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(databaseFileName, true))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileDatabase, true))) {
             for (String str : lines) {
                 bw.append(str);
                 bw.newLine();

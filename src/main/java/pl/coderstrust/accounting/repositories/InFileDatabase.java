@@ -34,13 +34,6 @@ public class InFileDatabase implements InvoiceDatabase {
         }
     }
 
-    private Invoice updateInvoice(Invoice invoice) throws IOException {
-        InFileInvoice inFileInvoice = createInFileInvoice(invoice, false);
-        String json = objectMapper.writeValueAsString(inFileInvoice);
-        fileHelper.writeLineToFile(json);
-        return invoice;
-    }
-
     @Override
     public Invoice findInvoiceById(Long id) throws IOException {
         if (id == null) {
@@ -59,12 +52,10 @@ public class InFileDatabase implements InvoiceDatabase {
         if (id == null) {
             throw new IllegalArgumentException("ID is null.");
         }
-
         Invoice invoice = findInvoiceById(id);
         InFileInvoice deletedInvoice = createInFileInvoice(invoice, true);
         String json = objectMapper.writeValueAsString(deletedInvoice);
         fileHelper.writeLineToFile(json);
-
         return invoice;
     }
 
@@ -74,6 +65,15 @@ public class InFileDatabase implements InvoiceDatabase {
         } catch (NoSuchElementException e) {
             return 0L;
         }
+    }
+
+    private List<InFileInvoice> readInvoicesFromFile() throws IOException {
+        List<String> strings = fileHelper.readLinesFromFile();
+        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
+        for (int i = 0; i < strings.size(); i++) {
+            inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
+        }
+        return inFileInvoices;
     }
 
     private Map<Long, InFileInvoice> loadInvoices() throws IOException {
@@ -98,13 +98,11 @@ public class InFileDatabase implements InvoiceDatabase {
         return new Invoice();
     }
 
-    private List<InFileInvoice> readInvoicesFromFile() throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile();
-        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
-        for (int i = 0; i < strings.size(); i++) {
-            inFileInvoices.add(objectMapper.readValue(strings.get(i), InFileInvoice.class));
-        }
-        return inFileInvoices;
+    private Invoice updateInvoice(Invoice invoice) throws IOException {
+        InFileInvoice inFileInvoice = createInFileInvoice(invoice, false);
+        String json = objectMapper.writeValueAsString(inFileInvoice);
+        fileHelper.writeLineToFile(json);
+        return invoice;
     }
 
     private InFileInvoice createInFileInvoice(Invoice invoice, boolean deleted) throws IOException {

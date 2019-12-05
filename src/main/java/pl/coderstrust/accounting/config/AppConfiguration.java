@@ -14,9 +14,10 @@ import pl.coderstrust.accounting.repositories.InMemoryDatabase;
 import java.io.IOException;
 
 @Configuration
+//@PropertySource(value = "application.properties", ignoreResourceNotFound = true)
 public class AppConfiguration {
 
-    @Value("${value.from.file}")
+    @Value("${fileDatabase}")
     String fileDatabase;
 
     @Autowired

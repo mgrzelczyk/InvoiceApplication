@@ -3,9 +3,9 @@ package pl.coderstrust.accounting.repositories;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,12 +22,11 @@ class FileHelperTest {
 
     private FileHelper fileHelper;
 
-    @BeforeClass
+    @BeforeEach
     private Path createTemporaryFolder() throws IOException {
         return Files.createDirectories(Paths.get("src/test/temporary/"));
     }
 
-    @BeforeClass
     private void copyFilesUsingStream(String source, String dest) throws IOException {
         InputStream is = null;
         OutputStream os = null;

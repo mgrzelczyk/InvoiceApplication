@@ -15,13 +15,14 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class InFileDatabase implements InvoiceDatabase {
 
-    private final AtomicLong counter = new AtomicLong(getLastId());
+    private final AtomicLong counter;
     private final FileHelper fileHelper;
     private final ObjectMapper objectMapper;
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {
         this.fileHelper = fileHelper;
         this.objectMapper = objectMapper;
+        this.counter = new AtomicLong(getLastId());
     }
 
     @Override

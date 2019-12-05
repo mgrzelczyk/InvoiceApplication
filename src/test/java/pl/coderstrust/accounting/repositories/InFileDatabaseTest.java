@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.model.InvoiceEntry;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class InFileDatabaseTest {
 
@@ -31,10 +33,8 @@ class InFileDatabaseTest {
     private ObjectMapper objectMapper;
 
     @InjectMocks
-    private InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+    private InFileDatabase inFileDatabase;
 
-    InFileDatabaseTest() throws IOException {
-    }
 
     private Invoice createInvoice() {
         LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);

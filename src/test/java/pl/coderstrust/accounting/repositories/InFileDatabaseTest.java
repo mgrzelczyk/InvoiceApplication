@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -48,23 +49,23 @@ class InFileDatabaseTest {
     @Test
     void shouldUpdateInvoice() throws IOException {
         // given
-        Invoice invoice = new Invoice();
         Invoice invoiceExpected = createInvoice();
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         // when
         when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
-        Invoice invoiceResult = inFileDatabase.saveInvoice(invoice);
+        Invoice invoiceResult = inFileDatabase.saveInvoice(createInvoice());
 
         // then
-        verify(fileHelper).writeLineToFile(lineToWrite);
+        verify(fileHelper, atLeast(2)).writeLineToFile(lineToWrite);
 
         assertEquals(invoiceExpected, invoiceResult);
     }
 
     @Test
     void shouldInsertInvoice() throws IOException {
+        //given
         Invoice invoiceExpected = createInvoice();
         invoiceExpected.setId(null);
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
@@ -73,16 +74,18 @@ class InFileDatabaseTest {
         invoiceExpected = inFileDatabase.saveInvoice(invoiceExpected);
         Invoice invoiceResult = createInvoice();
         invoiceResult.setId(1L);
+
+        //when
         invoiceResult = inFileDatabase.saveInvoice(invoiceResult);
 
-
+        //then
         assertEquals(invoiceExpected, invoiceResult);
     }
 
     @Test
     void shouldReturnNullWhenFindInvoiceByIdThatDoesntExists() throws IOException {
         // given
-        Invoice invoiceExpected = new Invoice(1L, null, null, null, null);
+        Invoice invoiceExpected = new Invoice(null, null, null, null, null);
         Invoice invoice = new Invoice(null, null, null, null, null);
         inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "{\"id\":null,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
@@ -94,7 +97,7 @@ class InFileDatabaseTest {
         Invoice invoiceResult = inFileDatabase.saveInvoice(invoice);
 
         // then
-        verify(fileHelper).writeLineToFile(lineToWrite);
+        verify(fileHelper, atLeast(2)).writeLineToFile(lineToWrite);
 
         assertEquals(invoiceExpected, invoiceResult);
     }
@@ -159,17 +162,11 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldDeleteByInvoice() throws IOException {
+    void shouldDeleteByInvoiceId() throws IOException {
         // given
-        List<String> readedLinesFromFile = new ArrayList<>();
-        when(fileHelper.readLinesFromFile()).thenReturn(readedLinesFromFile);
-        Invoice invoiceDeleteExpected = inFileDatabase.deleteInvoiceById(1L);
-        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
-        for (String s : readedLinesFromFile) {
-            inFileInvoices.add(objectMapper.readValue(s, InFileInvoice.class));
-        }
-        Map<Long, InFileInvoice> database = new HashMap<>();
-        inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
+        Invoice invoiceDeleteExpected = createInvoice();
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        invoiceDeleteExpected = inFileDatabase.findInvoiceById(1L);
 
         // when
         Invoice invoiceDeleteResult = inFileDatabase.deleteInvoiceById(1L);

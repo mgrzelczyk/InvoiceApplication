@@ -94,7 +94,6 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     private Invoice createInvoice(InFileInvoice inFileInvoice) {
-        new Invoice();
         return new Invoice();
     }
 

@@ -2,6 +2,7 @@ package pl.coderstrust.accounting.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -125,26 +126,11 @@ class InFileDatabaseTest {
 
     @Test
     void shouldThrownExceptionForNullWhenTryFindInvoiceWithNullID() throws IOException {
-        // given
-        Invoice invoiceFindExpected = createInvoice();
-        invoiceFindExpected.setId(null);
-        inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-        List<String> readedLinesFromFile = new ArrayList<>();
-        when(fileHelper.readLinesFromFile()).thenReturn(readedLinesFromFile);
-        ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
-        for (String s : readedLinesFromFile) {
-            inFileInvoices.add(objectMapper.readValue(s, InFileInvoice.class));
-        }
-        Map<Long, InFileInvoice> database = new HashMap<>();
-        inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
-
-        // when
-        when(inFileDatabase.findInvoiceById(null)).thenThrow(NullPointerException.class);
-
-        Invoice invoiceFindResult = inFileDatabase.findInvoiceById(null);
-
-        // then
-        assertEquals(invoiceFindExpected, invoiceFindResult);
+        // given, when, then
+        assertThrows(IllegalArgumentException.class,
+            () -> {
+                inFileDatabase.findInvoiceById(null);
+            });
     }
 
     @Test

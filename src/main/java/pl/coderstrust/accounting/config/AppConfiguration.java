@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.repositories.FileHelper;
 import pl.coderstrust.accounting.repositories.InFileDatabase;
@@ -14,7 +15,7 @@ import pl.coderstrust.accounting.repositories.InMemoryDatabase;
 import java.io.IOException;
 
 @Configuration
-//@PropertySource(value = "application.properties", ignoreResourceNotFound = true)
+@PropertySource(value = "application.properties", ignoreResourceNotFound = true)
 public class AppConfiguration {
 
     @Value("${fileDatabase}")

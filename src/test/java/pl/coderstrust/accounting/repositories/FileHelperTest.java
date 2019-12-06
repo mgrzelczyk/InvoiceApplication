@@ -1,11 +1,11 @@
 package pl.coderstrust.accounting.repositories;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testng.annotations.AfterClass;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -23,8 +22,8 @@ class FileHelperTest {
     private FileHelper fileHelper;
 
     @BeforeEach
-    private Path createTemporaryFolder() throws IOException {
-        return Files.createDirectories(Paths.get("src/test/temporary/"));
+    private void createTemporaryFolder() throws IOException {
+         Files.createDirectories(Paths.get("src/test/resources/temporary/"));
     }
 
     private void copyFilesUsingStream(String source, String dest) throws IOException {
@@ -44,9 +43,9 @@ class FileHelperTest {
         }
     }
 
-    @AfterClass
+    @AfterEach
     public void clean() throws IOException {
-        File dir = new File("src/test/resources/temporary/testFile");
+        File dir = new File("src/test/resources/temporary/");
         FileUtils.forceDelete(dir);
     }
 

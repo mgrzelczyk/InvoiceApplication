@@ -48,7 +48,7 @@ class InFileDatabaseTest {
     @Test
     void shouldUpdateInvoice() throws IOException {
         // given
-        Invoice invoice = createInvoice();
+        Invoice invoice = new Invoice();
         Invoice invoiceExpected = createInvoice();
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
@@ -136,7 +136,7 @@ class InFileDatabaseTest {
         inFileInvoices.forEach(inFileInvoice -> database.put(inFileInvoice.getId(), inFileInvoice));
 
         // when
-        when(inFileDatabase.findInvoiceById(null)).thenThrow(IllegalArgumentException.class);
+        when(inFileDatabase.findInvoiceById(null)).thenThrow(NullPointerException.class);
 
         Invoice invoiceFindResult = inFileDatabase.findInvoiceById(null);
 

@@ -148,6 +148,15 @@ class InFileDatabaseTest {
     }
 
     @Test
+    void shouldThrownExceptionForNullWhenTryDeleteInvoiceWithNullID() throws IOException {
+        // given, when, then
+        assertThrows(IllegalArgumentException.class,
+            () -> {
+                inFileDatabase.deleteInvoiceById(null);
+            });
+    }
+
+    @Test
     void shouldDeleteByInvoiceId() throws IOException {
         // given
         Invoice invoiceDeleteExpected = createInvoice();

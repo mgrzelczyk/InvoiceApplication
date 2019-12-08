@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 
-@ActiveProfiles("memory")
-class InMemoryDatabaseTest extends DatabaseTests {
+@ActiveProfiles("hibernate")
+class HibernateDatabaseTest extends DatabaseTests {
 
     @Autowired
-    private InMemoryDatabase inMemoryDatabase;
+    private HibernateDatabase hibernateDatabase;
 
     @Override
     InvoiceDatabase getDatabase() {
-        return inMemoryDatabase;
+        return hibernateDatabase;
     }
 }

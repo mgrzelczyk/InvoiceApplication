@@ -1,18 +1,25 @@
-package pl.coderstrust.accounting.model;
+package pl.coderstrust.accounting.model.hibernate;
 
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class Company {
+@Entity
+public class CompanyHib {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String tin;
     private String address;
     private String name;
 
-    public Company() {
+    public CompanyHib() {
     }
 
-    public Company(Long id, String tin, String address, String name) {
+    public CompanyHib(Long id, String tin, String address, String name) {
         this.id = id;
         this.tin = tin;
         this.address = address;
@@ -59,11 +66,11 @@ public class Company {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        Company company = (Company) obj;
-        return Objects.equals(id, company.id)
-            && Objects.equals(tin, company.tin)
-            && Objects.equals(address, company.address)
-            && Objects.equals(name, company.name);
+        CompanyHib companyHib = (CompanyHib) obj;
+        return Objects.equals(id, companyHib.id)
+            && Objects.equals(tin, companyHib.tin)
+            && Objects.equals(address, companyHib.address)
+            && Objects.equals(name, companyHib.name);
     }
 
     @Override

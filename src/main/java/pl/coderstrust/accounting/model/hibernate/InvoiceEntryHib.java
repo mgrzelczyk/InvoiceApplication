@@ -1,26 +1,33 @@
-package pl.coderstrust.accounting.model;
+package pl.coderstrust.accounting.model.hibernate;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class InvoiceEntry {
+@Entity
+public class InvoiceEntryHib {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
     private BigDecimal price;
     private int vatValue;
-    private Vat vatRate;
+    private VatHib vatHibRate;
 
-    public InvoiceEntry() {
+    public InvoiceEntryHib() {
     }
 
-    public InvoiceEntry(Long id, String description, BigDecimal price, int vatValue,
-        Vat vatRate) {
+    public InvoiceEntryHib(Long id, String description, BigDecimal price, int vatValue,
+        VatHib vatHibRate) {
         this.id = id;
         this.description = description;
         this.price = price;
         this.vatValue = vatValue;
-        this.vatRate = vatRate;
+        this.vatHibRate = vatHibRate;
     }
 
     public Long getId() {
@@ -55,12 +62,12 @@ public class InvoiceEntry {
         this.vatValue = vatValue;
     }
 
-    public Vat getVatRate() {
-        return vatRate;
+    public VatHib getVatHibRate() {
+        return vatHibRate;
     }
 
-    public void setVatRate(Vat vatRate) {
-        this.vatRate = vatRate;
+    public void setVatHibRate(VatHib vatHibRate) {
+        this.vatHibRate = vatHibRate;
     }
 
     @Override
@@ -71,17 +78,17 @@ public class InvoiceEntry {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        InvoiceEntry that = (InvoiceEntry) obj;
+        InvoiceEntryHib that = (InvoiceEntryHib) obj;
         return vatValue == that.vatValue
             && Objects.equals(id, that.id)
             && Objects.equals(description, that.description)
             && Objects.equals(price, that.price)
-            && vatRate == that.vatRate;
+            && vatHibRate == that.vatHibRate;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, price, vatValue, vatRate);
+        return Objects.hash(id, description, price, vatValue, vatHibRate);
     }
 
     @Override
@@ -91,7 +98,7 @@ public class InvoiceEntry {
             + ", description='" + description + '\''
             + ", price=" + price
             + ", vatValue=" + vatValue
-            + ", vatRate=" + vatRate
+            + ", vatHibRate=" + vatHibRate
             + '}';
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
-
 @Service
 public class InvoiceBook {
 

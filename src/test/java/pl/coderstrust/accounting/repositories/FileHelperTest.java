@@ -77,7 +77,7 @@ class FileHelperTest {
         String dest = "src/test/resources/temporary/testWriteFile";
         copyFilesUsingStream(source, dest);
         FileHelper fileHelper = new FileHelper(dest);
-        String stringsExpected = "{\"id\":2,\"date\":whatever,\"buyer\":null," +
+        String stringsExpected = "{\"id\":2,\"date\":null,\"buyer\":null," +
             "\"seller\":null,\"entries\":null}";
 
         //when

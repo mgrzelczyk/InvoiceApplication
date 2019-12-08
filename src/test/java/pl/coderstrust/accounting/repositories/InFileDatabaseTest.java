@@ -130,16 +130,28 @@ class InFileDatabaseTest {
 
     @Test
     void shouldFindAllnvoices() throws IOException {
-        // given, when
-        ArrayList<String> readedLinesFromFile = new ArrayList<>();
-        List<Invoice> invoicesExpected = new ArrayList<>();
-        for (String s : readedLinesFromFile) {
-            invoicesExpected.add(objectMapper.readValue(s, InFileInvoice.class));
-        }
-        ArrayList<Invoice> invoicesResult = new ArrayList<>();
+        // given
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        ArrayList<String> invoicesExpected = new ArrayList<>();
+        invoicesExpected.add("{\"id\":10L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
+        invoicesExpected.add("{\"id\":20L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
+        String lineToWrite = "{\"id\":10L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null} " +
+            "\n{\"id\":20L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
+        List<String> readedLines = new ArrayList<>();
+        readedLines.add("{\"id\":10L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
+        readedLines.add("{\"id\":20L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
+        List<Invoice> invoicesExpect = new ArrayList<>();
+        invoicesExpect.add(null);
+        invoicesExpect.add(null);
+
+        // when
+        String json = objectMapper.writeValueAsString(lineToWrite);
+        fileHelper.writeLineToFile(json);
+        when(fileHelper.readLinesFromFile()).thenReturn(readedLines);
+        List<Invoice> invoiceResult = inFileDatabase.findAllInvoices();
 
         // then
-        assertEquals(invoicesExpected, invoicesResult);
+        assertEquals(invoicesExpect, invoiceResult);
     }
 
     @Test

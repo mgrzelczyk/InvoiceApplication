@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -23,7 +24,9 @@ class FileHelperTest {
          Files.createDirectories(Paths.get("src/test/resources/temporary/"));
     }
 
-    private void copyFilesUsingStream(String source, String dest) {
+    private void copyFilesUsingStream(String sourceToCopy, String destCopied) throws IOException {
+        Path source = Paths.get(sourceToCopy);
+        Path dest = Paths.get(destCopied);
         Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
     }
 

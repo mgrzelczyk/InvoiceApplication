@@ -67,20 +67,15 @@ class InFileDatabaseTest {
     @Test
     void shouldInsertInvoice() throws IOException {
         //given
-        Invoice invoiceExpected = createInvoice();
-        invoiceExpected.setId(null);
-        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-        inFileDatabase.saveInvoice(invoiceExpected);
-        invoiceExpected.setId(1L);
-        invoiceExpected = inFileDatabase.saveInvoice(invoiceExpected);
-        Invoice invoiceResult = createInvoice();
-        invoiceResult.setId(1L);
+        Invoice inputInvoice = createInvoice();
+        Invoice expectedInvoice = createInvoice();
+        expectedInvoice.setId(1L);
 
         //when
-        invoiceResult = inFileDatabase.saveInvoice(invoiceResult);
+        Invoice result = inFileDatabase.saveInvoice(inputInvoice);
 
         //then
-        assertEquals(invoiceExpected, invoiceResult);
+        assertEquals(expectedInvoice, result);
     }
 
     @Test

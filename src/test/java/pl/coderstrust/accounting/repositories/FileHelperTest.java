@@ -8,13 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 class FileHelperTest {
@@ -26,21 +23,8 @@ class FileHelperTest {
          Files.createDirectories(Paths.get("src/test/resources/temporary/"));
     }
 
-    private void copyFilesUsingStream(String source, String dest) throws IOException {
-        InputStream is = null;
-        OutputStream os = null;
-        try {
-            is = new FileInputStream(source);
-            os = new FileOutputStream(dest);
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-                os.write(buffer, 0, length);
-            }
-        } finally {
-            is.close();
-            os.close();
-        }
+    private void copyFilesUsingStream(String source, String dest) {
+        Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING);
     }
 
     @AfterEach

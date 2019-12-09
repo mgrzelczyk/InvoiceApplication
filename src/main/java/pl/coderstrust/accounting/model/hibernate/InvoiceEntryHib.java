@@ -3,11 +3,13 @@ package pl.coderstrust.accounting.model.hibernate;
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name = "InvoiceEntry")
 public class InvoiceEntryHib {
 
     @Id
@@ -16,18 +18,18 @@ public class InvoiceEntryHib {
     private String description;
     private BigDecimal price;
     private int vatValue;
-    private VatHib vatHibRate;
+    @Enumerated(EnumType.ORDINAL)
+    private VatHib vatRate;
 
     public InvoiceEntryHib() {
     }
 
-    public InvoiceEntryHib(Long id, String description, BigDecimal price, int vatValue,
-        VatHib vatHibRate) {
-        this.id = id;
+    public InvoiceEntryHib(String description, BigDecimal price, int vatValue,
+        VatHib vatRate) {
         this.description = description;
         this.price = price;
         this.vatValue = vatValue;
-        this.vatHibRate = vatHibRate;
+        this.vatRate = vatRate;
     }
 
     public Long getId() {
@@ -62,43 +64,43 @@ public class InvoiceEntryHib {
         this.vatValue = vatValue;
     }
 
-    public VatHib getVatHibRate() {
-        return vatHibRate;
+    public VatHib getVatRate() {
+        return vatRate;
     }
 
-    public void setVatHibRate(VatHib vatHibRate) {
-        this.vatHibRate = vatHibRate;
+    public void setVatRate(VatHib vatRate) {
+        this.vatRate = vatRate;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        InvoiceEntryHib that = (InvoiceEntryHib) obj;
-        return vatValue == that.vatValue
-            && Objects.equals(id, that.id)
-            && Objects.equals(description, that.description)
-            && Objects.equals(price, that.price)
-            && vatHibRate == that.vatHibRate;
+        InvoiceEntryHib that = (InvoiceEntryHib) o;
+        return vatValue == that.vatValue &&
+            Objects.equals(id, that.id) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(price, that.price) &&
+            vatRate == that.vatRate;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, price, vatValue, vatHibRate);
+        return Objects.hash(id, description, price, vatValue, vatRate);
     }
 
     @Override
     public String toString() {
-        return "InvoiceEntryHib{"
-            + "id=" + id
-            + ", description='" + description + '\''
-            + ", price=" + price
-            + ", vatValue=" + vatValue
-            + ", vatHibRate=" + vatHibRate
-            + '}';
+        return "InvoiceEntry{" +
+            "id=" + id +
+            ", description='" + description + '\'' +
+            ", price=" + price +
+            ", vatValue=" + vatValue +
+            ", vatRate=" + vatRate +
+            '}';
     }
 }

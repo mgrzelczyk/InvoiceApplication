@@ -3,11 +3,13 @@ package pl.coderstrust.accounting.model.hibernate;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 @Entity(name = "Invoice")
 public class InvoiceHib {
@@ -16,11 +18,11 @@ public class InvoiceHib {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate date;
-    @Transient
+    @ManyToOne(cascade = CascadeType.ALL)
     private CompanyHib buyer;
-    @Transient
+    @ManyToOne(cascade = CascadeType.ALL)
     private CompanyHib seller;
-    @Transient
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<InvoiceEntryHib> entries;
 
     public InvoiceHib() {
@@ -106,7 +108,7 @@ public class InvoiceHib {
 
     @Override
     public String toString() {
-        return "InvoiceHib{"
+        return "Invoice{"
             + "id=" + id
             + ", date=" + date
             + ", buyer=" + buyer

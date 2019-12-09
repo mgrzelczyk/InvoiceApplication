@@ -18,9 +18,12 @@ public class HibernateDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {
-        InvoiceHib invoiceHib = InvoiceMapper.INSTANCE.toInvoiceHib(invoice);
-        InvoiceHib saved = hibernateRepository.save(invoiceHib);
-        return InvoiceMapper.INSTANCE.toInvoice(saved);
+        if(invoice != null) {
+            InvoiceHib invoiceHib = InvoiceMapper.INSTANCE.toInvoiceHib(invoice);
+            InvoiceHib saved = hibernateRepository.save(invoiceHib);
+            return InvoiceMapper.INSTANCE.toInvoice(saved);
+        }
+        throw new NullPointerException("There isn't option");
     }
 
     @Override

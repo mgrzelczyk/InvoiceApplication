@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name = "Company")
 public class CompanyHib {
 
     @Id
@@ -80,7 +80,7 @@ public class CompanyHib {
 
     @Override
     public String toString() {
-        return "CompanyHib{"
+        return "Company{"
             + "id=" + id
             + ", tin='" + tin + '\''
             + ", address='" + address + '\''

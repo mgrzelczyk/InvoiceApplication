@@ -1,6 +1,5 @@
 package pl.coderstrust.accounting.model.hibernate;
 
-
 public enum VatHib {
     STANDARD_23(23),
     REDUCED_8(8),

@@ -37,7 +37,6 @@ class InFileDatabaseTest {
     @InjectMocks
     private InFileDatabase inFileDatabase;
 
-
     private Invoice createInvoice() {
         LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
         Company buyer = new Company(1L, "tin#1", "buyer address", "buyer name");
@@ -167,6 +166,7 @@ class InFileDatabaseTest {
     void shouldDeleteByInvoiceId() throws IOException {
         // given
         Invoice invoiceDeleteExpected = createInvoice();
+        invoiceDeleteExpected.setId(1L);
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         invoiceDeleteExpected = inFileDatabase.findInvoiceById(1L);
 
@@ -175,6 +175,23 @@ class InFileDatabaseTest {
 
         // then
         assertEquals(invoiceDeleteExpected, invoiceDeleteResult);
+    }
+
+    @Test
+    void fileDatabaseShouldBeEmptyAfterIntitalize() throws IOException {
+        // given
+        InFileDatabase database = new InFileDatabase(fileHelper, objectMapper);// filehelper should be mocked, objectmapper also but it is not required
+        String lineToWrite = "";
+        String json = objectMapper.writeValueAsString(lineToWrite);
+        fileHelper.writeLineToFile(json);
+        List<String> readedLines = new ArrayList<>();
+
+        // when
+        when(fileHelper.readLinesFromFile()).thenReturn(readedLines);
+        List<Invoice> invoices = database.findAllInvoices();
+
+        // then
+        assertEquals(0, invoices.size());
     }
 
 }

@@ -119,6 +119,7 @@
         <configuration>
           <excludes>
             <exclude>pl/coderstrust/accounting/model/*.class</exclude>
+            <exclude>pl/coderstrust/accounting/model/hibernate/*.class</exclude>
             <exclude>pl/coderstrust/accounting/Application.class</exclude>
           </excludes>
         </configuration>

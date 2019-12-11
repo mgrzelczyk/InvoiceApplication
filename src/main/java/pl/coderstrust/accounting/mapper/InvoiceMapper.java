@@ -14,20 +14,20 @@ public interface InvoiceMapper {
 
     @Mappings({
         @Mapping(target = "id", source = "invoiceHib.id"),
-        @Mapping(target = "date", source = "invoiceHib.date", dateFormat = "yyyy-MM-dd"),
+        @Mapping(target = "date", source = "invoiceHib.date",
+            dateFormat = "yyyy-MM-dd"),
         @Mapping(target = "buyer", source = "invoiceHib.buyer"),
         @Mapping(target = "seller", source = "invoiceHib.seller"),
-        @Mapping(target = "entries", source = "invoiceHib.entries")
-    })
+        @Mapping(target = "entries", source = "invoiceHib.entries")})
     Invoice toInvoice(InvoiceHib invoiceHib);
 
     @Mappings({
         @Mapping(target = "id", source = "invoice.id"),
-        @Mapping(target = "date", source = "invoice.date", dateFormat = "yyyy-MM-dd"),
+        @Mapping(target = "date", source = "invoice.date",
+            dateFormat = "yyyy-MM-dd"),
         @Mapping(target = "buyer", source = "invoice.buyer"),
         @Mapping(target = "seller", source = "invoice.seller"),
-        @Mapping(target = "entries", source = "invoice.entries")
-    })
+        @Mapping(target = "entries", source = "invoice.entries")})
     InvoiceHib toInvoiceHib(Invoice invoice);
 
 }

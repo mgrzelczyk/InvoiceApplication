@@ -73,14 +73,14 @@ public class InvoiceEntryHib {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        InvoiceEntryHib that = (InvoiceEntryHib) o;
+        InvoiceEntryHib that = (InvoiceEntryHib) obj;
         return vatValue == that.vatValue
             && Objects.equals(id, that.id)
             && Objects.equals(description, that.description)

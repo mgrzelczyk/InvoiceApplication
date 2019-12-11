@@ -37,25 +37,25 @@ class InFileDatabaseTest {
     @InjectMocks
     private InFileDatabase inFileDatabase;
 
-    private Invoice createInvoice() {
+    private Invoice createInvoice(Long id) {
         LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
         Company buyer = new Company(1L, "tin#1", "buyer address", "buyer name");
         Company seller = new Company(2L, "tin#2", "seller address", "seller name");
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-        Invoice invoice = new Invoice(1L, date, buyer, seller, invoiceEntries);
+        Invoice invoice = new Invoice(id, date, buyer, seller, invoiceEntries);
         return invoice;
     }
 
     @Test
     void shouldUpdateInvoice() throws IOException {
         // given
-        Invoice invoiceExpected = createInvoice();
+        Invoice invoiceExpected = createInvoice(1L);
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "{\"id\":1,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         // when
         when(objectMapper.writeValueAsString(any())).thenReturn(lineToWrite);
-        Invoice invoiceResult = inFileDatabase.saveInvoice(createInvoice());
+        Invoice invoiceResult = inFileDatabase.saveInvoice(createInvoice(1L));
 
         // then
         verify(fileHelper, atLeast(2)).writeLineToFile(lineToWrite);
@@ -66,9 +66,8 @@ class InFileDatabaseTest {
     @Test
     void shouldInsertInvoice() throws IOException {
         //given
-        Invoice inputInvoice = createInvoice();
-        Invoice expectedInvoice = createInvoice();
-        expectedInvoice.setId(1L);
+        Invoice inputInvoice = createInvoice(1L);
+        Invoice expectedInvoice = createInvoice(1L);
 
         //when
         Invoice result = inFileDatabase.saveInvoice(inputInvoice);
@@ -139,15 +138,25 @@ class InFileDatabaseTest {
         List<String> readedLines = new ArrayList<>();
         readedLines.add("{\"id\":10L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
         readedLines.add("{\"id\":20L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
+
+        Invoice invoice = createInvoice(5L);
+        Invoice invoice1 = createInvoice(6L);
+
         List<Invoice> invoicesExpect = new ArrayList<>();
-        invoicesExpect.add(null);
-        invoicesExpect.add(null);
+        invoicesExpect.add(invoice);
+        invoicesExpect.add(invoice1);
 
         // when
         String json = objectMapper.writeValueAsString(lineToWrite);
         fileHelper.writeLineToFile(json);
         when(fileHelper.readLinesFromFile()).thenReturn(readedLines);
-        List<Invoice> invoiceResult = inFileDatabase.findAllInvoices();
+
+        List<Invoice> invoiceResult = new ArrayList<>();
+        for (String string : readedLines) {
+            invoiceResult.add(objectMapper.readValue(string, Invoice.class));
+        }
+
+        invoiceResult = inFileDatabase.findAllInvoices();
 
         // then
         assertEquals(invoicesExpect, invoiceResult);
@@ -165,8 +174,7 @@ class InFileDatabaseTest {
     @Test
     void shouldDeleteByInvoiceId() throws IOException {
         // given
-        Invoice invoiceDeleteExpected = createInvoice();
-        invoiceDeleteExpected.setId(1L);
+        Invoice invoiceDeleteExpected = createInvoice(1L);
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         invoiceDeleteExpected = inFileDatabase.findInvoiceById(1L);
 

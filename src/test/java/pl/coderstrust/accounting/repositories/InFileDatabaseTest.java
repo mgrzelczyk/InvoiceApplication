@@ -68,6 +68,7 @@ class InFileDatabaseTest {
         //given
         Invoice inputInvoice = createInvoice(1L);
         Invoice expectedInvoice = createInvoice(1L);
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
 
         //when
         Invoice result = inFileDatabase.saveInvoice(inputInvoice);
@@ -81,7 +82,7 @@ class InFileDatabaseTest {
         // given
         Invoice invoiceExpected = new Invoice(null, null, null, null, null);
         Invoice invoice = new Invoice(null, null, null, null, null);
-        inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "{\"id\":null,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
 
         // when
@@ -97,10 +98,10 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldFindInvoiceByIdForNullInvoice() throws IOException {
+    void shouldReturnNullWhenFindInvoiceThatNotExists() throws IOException {
         // given
         Invoice invoiceFindExpected = null;
-        inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
         List<String> readedLinesFromFile = new ArrayList<>();
         when(fileHelper.readLinesFromFile()).thenReturn(readedLinesFromFile);
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
@@ -164,7 +165,9 @@ class InFileDatabaseTest {
 
     @Test
     void shouldThrownExceptionForNullWhenTryDeleteInvoiceWithNullID() throws IOException {
-        // given, when, then
+        // given
+        InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        // when, then
         assertThrows(IllegalArgumentException.class,
             () -> {
                 inFileDatabase.deleteInvoiceById(null);
@@ -174,21 +177,22 @@ class InFileDatabaseTest {
     @Test
     void shouldDeleteByInvoiceId() throws IOException {
         // given
-        Invoice invoiceDeleteExpected = createInvoice(1L);
+        Invoice invoiceDeleteExpected = createInvoice(0L);
         InFileDatabase inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-        invoiceDeleteExpected = inFileDatabase.findInvoiceById(1L);
+        //inFileDatabase.saveInvoice(invoiceDeleteExpected);
+        invoiceDeleteExpected = inFileDatabase.findInvoiceById(0L);
 
         // when
-        Invoice invoiceDeleteResult = inFileDatabase.deleteInvoiceById(1L);
+        Invoice invoiceDeleteResult = inFileDatabase.deleteInvoiceById(0L);
 
         // then
-        assertEquals(invoiceDeleteExpected, invoiceDeleteResult);
+        assertEquals(null, invoiceDeleteResult);
     }
 
     @Test
     void fileDatabaseShouldBeEmptyAfterIntitalize() throws IOException {
         // given
-        InFileDatabase database = new InFileDatabase(fileHelper, objectMapper);// filehelper should be mocked, objectmapper also but it is not required
+        InFileDatabase database = new InFileDatabase(fileHelper, objectMapper);
         String lineToWrite = "";
         String json = objectMapper.writeValueAsString(lineToWrite);
         fileHelper.writeLineToFile(json);

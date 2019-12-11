@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity(name = "InvoiceEntry")
+@Entity
 public class InvoiceEntryHib {
 
     @Id
@@ -81,11 +81,11 @@ public class InvoiceEntryHib {
             return false;
         }
         InvoiceEntryHib that = (InvoiceEntryHib) o;
-        return vatValue == that.vatValue &&
-            Objects.equals(id, that.id) &&
-            Objects.equals(description, that.description) &&
-            Objects.equals(price, that.price) &&
-            vatRate == that.vatRate;
+        return vatValue == that.vatValue
+            && Objects.equals(id, that.id)
+            && Objects.equals(description, that.description)
+            && Objects.equals(price, that.price)
+            && vatRate == that.vatRate;
     }
 
     @Override
@@ -95,12 +95,12 @@ public class InvoiceEntryHib {
 
     @Override
     public String toString() {
-        return "InvoiceEntry{" +
-            "id=" + id +
-            ", description='" + description + '\'' +
-            ", price=" + price +
-            ", vatValue=" + vatValue +
-            ", vatRate=" + vatRate +
-            '}';
+        return "InvoiceEntry{"
+            + "id=" + id
+            + ", description='" + description + '\''
+            + ", price=" + price
+            + ", vatValue=" + vatValue
+            + ", vatRate=" + vatRate
+            + '}';
     }
 }

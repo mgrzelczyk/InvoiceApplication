@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,75 +13,36 @@ import java.util.List;
 import java.util.Random;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
-import pl.coderstrust.accounting.model.Company;
+import pl.coderstrust.accounting.mapper.InvoiceMapper;
 import pl.coderstrust.accounting.model.Invoice;
-import pl.coderstrust.accounting.model.InvoiceEntry;
-import pl.coderstrust.accounting.model.Vat;
+import pl.coderstrust.accounting.model.hibernate.CompanyHib;
+import pl.coderstrust.accounting.model.hibernate.InvoiceEntryHib;
+import pl.coderstrust.accounting.model.hibernate.InvoiceHib;
+import pl.coderstrust.accounting.model.hibernate.VatHib;
 
+@Transactional
 @SpringBootTest
 abstract class DatabaseTests {
 
     abstract InvoiceDatabase getDatabase();
 
-    @Autowired
-    ObjectMapper objectMapper;
-
-    String json = "{\n"
-        + "  \"id\": 0,\n"
-        + "  \"date\": [2018, 11, 21],\n"
-        + "  \"buyer\": {\n"
-        + "    \"id\": 0,\n"
-        + "    \"tin\": \"123123123\",\n"
-        + "    \"address\": \"boss\",\n"
-        + "    \"name\": \"edgar company\"\n"
-        + "  },\n"
-        + "  \"seller\": {\n"
-        + "    \"id\": 0,\n"
-        + "    \"tin\": \"7546543\",\n"
-        + "    \"address\": \"dfgdh45\",\n"
-        + "    \"name\": \"sfgsdg34\"\n"
-        + "  },\n"
-        + "  \"entries\": [{\n"
-        + "    \"id\": 0,\n"
-        + "    \"description\": \"ghfjd45\",\n"
-        + "    \"price\": 54443.00,\n"
-        + "    \"vatValue\": 7,\n"
-        + "    \"vatRate\": \"REDUCED_7\"\n"
-        + "  }, {\n"
-        + "    \"id\": 0,\n"
-        + "    \"description\": \"dfsgfdgsdfgsrsd\",\n"
-        + "    \"price\": 345345.00,\n"
-        + "    \"vatValue\": 0,\n"
-        + "    \"vatRate\": \"REDUCED_0\"\n"
-        + "  }]\n"
-        + "}";
-
-
-
-
-
-
     @Test
     @DisplayName("Save invoice")
-    void shouldSaveInvoiceWithNullId() throws NullPointerException, IOException {
+    void shouldSaveInvoiceWithNullId() throws NullPointerException {
         Invoice expected = prepareInvoice();
-
-        System.out.println(expected);
-
-        //Invoice expected = objectMapper.readValue(json, Invoice.class);
-
-
         Invoice result = getDatabase().saveInvoice(expected);
-        System.out.println(result);
-
         List<Invoice> results = getDatabase().findAllInvoices();
 
-        //assertThat(results.size(), is(1));
-        assertNotNull(result.getId());
-        //assertEquals(expected.getDate(), result.getDate());
+        for (Invoice i : results) {
+            System.out.println(i.toString());
+        }
+
+        assertThat(results.size(), is(1));
+        assertNotNull(results.get(0).getId());
+        assertEquals(expected.getDate(), result.getDate());
     }
 
     @Test
@@ -96,15 +55,14 @@ abstract class DatabaseTests {
     @DisplayName("Update invoice")
     void shouldUpdateExistingInvoice() throws NullPointerException {
         Invoice invoice = prepareInvoice();
-        Invoice expected = getDatabase().saveInvoice(invoice);
         Invoice newInvoice = prepareInvoice();
+
+        Invoice expected = getDatabase().saveInvoice(invoice);
         newInvoice.setId(expected.getId());
+        Invoice edited = getDatabase().saveInvoice(newInvoice);
+        Invoice results = getDatabase().findInvoiceById(edited.getId());
 
-        Invoice result = getDatabase().saveInvoice(newInvoice);
-        List<Invoice> results = getDatabase().findAllInvoices();
-
-        assertThat(results.size(), is(3));
-        assertEquals(expected.getId(), result.getId());
+        assertEquals(expected.getId(), results.getId());
     }
 
     @Test
@@ -130,20 +88,26 @@ abstract class DatabaseTests {
     @Test
     @DisplayName("Find all invoices")
     void shouldFindAllInvoices() throws NullPointerException {
-        List<Invoice> expected = prepareInvoices();
+        List<Invoice> invoices = prepareInvoices();
+        Invoice pieceExpected;
+        List<Invoice> expected = new ArrayList<>();
 
-        for (Invoice invoice : expected) {
-            getDatabase().saveInvoice(invoice);
+        for (Invoice invoice : invoices) {
+            expected.add(getDatabase().saveInvoice(invoice));
         }
+        List<Invoice> result = new ArrayList<>();
+        List<Invoice> inside = getDatabase().findAllInvoices();
+        for (Invoice i : inside) {
+            for (Invoice x : expected) {
+                if (i.equals(x)) {
+                    result.add(i);
+                }
+            }
 
-        expected.get(0).setId(1L);
-        expected.get(1).setId(2L);
-        expected.get(2).setId(3L);
-
-        List<Invoice> result = getDatabase().findAllInvoices();
-
-        assertEquals(expected, result);
-        assertThat(result.size(), is(expected.size()));
+        }
+        assertEquals(expected.get(0), result.get(0));
+        assertEquals(expected.get(1), result.get(1));
+        assertEquals(expected.get(2), result.get(2));
     }
 
     @Test
@@ -155,22 +119,21 @@ abstract class DatabaseTests {
         Invoice result = getDatabase().deleteInvoiceById(expected.getId());
         List<Invoice> invoices = getDatabase().findAllInvoices();
 
-        for (Invoice i: invoices) {
+        for (Invoice i : invoices) {
             System.out.println(i.toString());
         }
 
-        assertThat(invoices.size(), is(0));
         assertEquals(expected, result);
     }
 
-
     private Invoice prepareInvoice() {
         Random random = new Random();
-        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-        invoiceEntries.add(new InvoiceEntry(0L, "cos gdzies kiedys", new BigDecimal("2344"), 0, Vat.TAX_FREE));
-        Company buyer = prepareCompany("Wrocław 66-666", "TurboMarek z.o.o");
-        Company seller = prepareCompany("Gdynia 66-666", "Szczupak z.o.o");
-        Invoice invoice = new Invoice();
+        List<InvoiceEntryHib> invoiceEntries = new ArrayList<>();
+        invoiceEntries.add(
+            new InvoiceEntryHib("cos gdzies kiedys", new BigDecimal("2344"), 0, VatHib.TAX_FREE));
+        CompanyHib buyer = prepareCompany("Wrocław 66-666", "TurboMarek z.o.o");
+        CompanyHib seller = prepareCompany("Gdynia 66-666", "Szczupak z.o.o");
+        InvoiceHib invoice = new InvoiceHib();
         invoice.setDate(LocalDate.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
@@ -178,14 +141,14 @@ abstract class DatabaseTests {
         invoice.setBuyer(buyer);
         invoice.setSeller(seller);
         invoice.setEntries(invoiceEntries);
-        return invoice;
+        Invoice invoice1 = InvoiceMapper.INSTANCE.toInvoice(invoice);
+        return invoice1;
     }
 
-    private Company prepareCompany(String city, String company) {
+    private CompanyHib prepareCompany(String city, String company) {
         Random random = new Random();
-        return new Company(
-            //(long) (random.nextInt(10000) + 1),
-            0L,
+        return new CompanyHib(
+            null,
             (random.nextInt(999999999) + 9999999) + "",
             city,
             company);

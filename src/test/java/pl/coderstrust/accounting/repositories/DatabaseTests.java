@@ -37,15 +37,12 @@ abstract class DatabaseTests {
     @DisplayName("Save invoice")
     void shouldSaveInvoiceWithNullId() throws NullPointerException {
         Invoice expected = prepareInvoice();
+
         Invoice result = getDatabase().saveInvoice(expected);
         List<Invoice> results = getDatabase().findAllInvoices();
 
-        for (Invoice i : results) {
-            System.out.println(i.toString());
-        }
-
         assertThat(results.size(), is(1));
-        assertNotNull(results.get(0).getId());
+        assertNotNull(result.getId());
         assertEquals(expected.getDate(), result.getDate());
     }
 
@@ -59,14 +56,15 @@ abstract class DatabaseTests {
     @DisplayName("Update invoice")
     void shouldUpdateExistingInvoice() throws NullPointerException {
         Invoice invoice = prepareInvoice();
-        Invoice newInvoice = prepareInvoice();
-
         Invoice expected = getDatabase().saveInvoice(invoice);
+        Invoice newInvoice = prepareInvoice();
         newInvoice.setId(expected.getId());
-        Invoice edited = getDatabase().saveInvoice(newInvoice);
-        Invoice results = getDatabase().findInvoiceById(edited.getId());
 
-        assertEquals(expected.getId(), results.getId());
+        Invoice result = getDatabase().saveInvoice(newInvoice);
+        List<Invoice> results = getDatabase().findAllInvoices();
+
+        assertThat(results.size(), is(1));
+        assertEquals(expected.getId(), result.getId());
     }
 
     @Test
@@ -93,24 +91,16 @@ abstract class DatabaseTests {
     @DisplayName("Find all invoices")
     void shouldFindAllInvoices() throws NullPointerException {
         List<Invoice> invoices = prepareInvoices();
-        Invoice pieceExpected;
         List<Invoice> expected = new ArrayList<>();
 
         for (Invoice invoice : invoices) {
             expected.add(getDatabase().saveInvoice(invoice));
         }
-        //List<Invoice> result = new ArrayList<>();
-        List<Invoice> inside = getDatabase().findAllInvoices();
-//        for (Invoice i : inside) {
-//            for (Invoice x : expected) {
-//                if (i.equals(x)) {
-//                    result.add(i);
-//                }
-//            }
-//        }
-        assertEquals(expected.get(0), inside.get(0));
-        assertEquals(expected.get(1), inside.get(1));
-        assertEquals(expected.get(2), inside.get(2));
+
+        List<Invoice> result = getDatabase().findAllInvoices();
+
+        assertEquals(expected, result);
+        assertThat(result.size(), is(expected.size()));
     }
 
     @Test
@@ -120,11 +110,6 @@ abstract class DatabaseTests {
         Invoice expected = getDatabase().saveInvoice(invoice);
 
         Invoice result = getDatabase().deleteInvoiceById(expected.getId());
-        List<Invoice> invoices = getDatabase().findAllInvoices();
-
-        for (Invoice i : invoices) {
-            System.out.println(i.toString());
-        }
 
         assertEquals(expected, result);
     }

@@ -14,6 +14,9 @@ import java.util.Random;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.mapper.InvoiceMapper;
@@ -25,6 +28,7 @@ import pl.coderstrust.accounting.model.hibernate.VatHib;
 
 @Transactional
 @SpringBootTest
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 abstract class DatabaseTests {
 
     abstract InvoiceDatabase getDatabase();
@@ -95,19 +99,18 @@ abstract class DatabaseTests {
         for (Invoice invoice : invoices) {
             expected.add(getDatabase().saveInvoice(invoice));
         }
-        List<Invoice> result = new ArrayList<>();
+        //List<Invoice> result = new ArrayList<>();
         List<Invoice> inside = getDatabase().findAllInvoices();
-        for (Invoice i : inside) {
-            for (Invoice x : expected) {
-                if (i.equals(x)) {
-                    result.add(i);
-                }
-            }
-
-        }
-        assertEquals(expected.get(0), result.get(0));
-        assertEquals(expected.get(1), result.get(1));
-        assertEquals(expected.get(2), result.get(2));
+//        for (Invoice i : inside) {
+//            for (Invoice x : expected) {
+//                if (i.equals(x)) {
+//                    result.add(i);
+//                }
+//            }
+//        }
+        assertEquals(expected.get(0), inside.get(0));
+        assertEquals(expected.get(1), inside.get(1));
+        assertEquals(expected.get(2), inside.get(2));
     }
 
     @Test

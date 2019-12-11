@@ -14,4 +14,5 @@ class InMemoryDatabaseTest extends DatabaseTests {
     InvoiceDatabase getDatabase() {
         return inMemoryDatabase;
     }
+
 }

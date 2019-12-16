@@ -1,6 +1,7 @@
 package pl.coderstrust.accounting.controllers;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
@@ -27,10 +28,10 @@ import java.util.List;
 public class InvoiceController {
 
     private final InvoiceBook invoiceBook;
-    private final static Logger LOGGER = Logger.getLogger(InvoiceController.class);
+    private final static Logger log = LoggerFactory.getLogger(InvoiceController.class);
 
     public InvoiceController(InvoiceBook invoiceBook) {
-        LOGGER.info("Invoice controller run");
+        log.info("Invoice controller run");
         this.invoiceBook = invoiceBook;
     }
 

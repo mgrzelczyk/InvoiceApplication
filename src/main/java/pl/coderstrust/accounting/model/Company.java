@@ -1,7 +1,5 @@
 package pl.coderstrust.accounting.model;
 
-import org.apache.log4j.Logger;
-
 import java.util.Objects;
 
 public class Company {
@@ -10,10 +8,8 @@ public class Company {
     private String tin;
     private String address;
     private String name;
-    private final static Logger LOGGER = Logger.getLogger(Company.class);
 
     public Company() {
-        LOGGER.info("Company created");
     }
 
     public Company(Long id, String tin, String address, String name) {
@@ -24,42 +20,34 @@ public class Company {
     }
 
     public Long getId() {
-        LOGGER.info("Company get ID");
         return id;
     }
 
     public void setId(Long id) {
-        LOGGER.info("Company set ID");
         this.id = id;
     }
 
     public String getTin() {
-        LOGGER.info("Company get tin");
         return tin;
     }
 
     public void setTin(String tin) {
-        LOGGER.info("Company set tin");
         this.tin = tin;
     }
 
     public String getAddress() {
-        LOGGER.info("Company get address");
         return address;
     }
 
     public void setAddress(String address) {
-        LOGGER.info("Company set address");
         this.address = address;
     }
 
     public String getName() {
-        LOGGER.info("Company get name");
         return name;
     }
 
     public void setName(String name) {
-        LOGGER.info("Company set name");
         this.name = name;
     }
 

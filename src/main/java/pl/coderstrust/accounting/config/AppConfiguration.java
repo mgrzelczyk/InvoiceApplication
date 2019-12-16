@@ -2,7 +2,8 @@ package pl.coderstrust.accounting.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,7 @@ import java.util.Locale;
 @Configuration
 public class AppConfiguration {
 
-    private final static Logger LOGGER = Logger.getLogger(AppConfiguration.class);
+    private final static Logger log = LoggerFactory.getLogger(AppConfiguration.class);
 
     @Bean
     @ConditionalOnProperty(name = "database", havingValue = "in-memory")

@@ -3,14 +3,11 @@ package pl.coderstrust.accounting.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.model.hibernate.InvoiceHib;
 
-@Mapper()
+@Mapper
 public interface InvoiceMapper {
-
-    InvoiceMapper INSTANCE = Mappers.getMapper(InvoiceMapper.class);
 
     @Mappings({
         @Mapping(target = "id", source = "invoiceHib.id"),

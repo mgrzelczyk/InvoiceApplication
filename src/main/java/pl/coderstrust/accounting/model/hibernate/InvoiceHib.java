@@ -1,16 +1,17 @@
 package pl.coderstrust.accounting.model.hibernate;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+
 
 @Entity
 public class InvoiceHib {
@@ -19,9 +20,9 @@ public class InvoiceHib {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate date;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private CompanyHib buyer;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private CompanyHib seller;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<InvoiceEntryHib> entries;
@@ -109,7 +110,7 @@ public class InvoiceHib {
 
     @Override
     public String toString() {
-        return "Invoice{"
+        return "InvoiceHib{"
             + "id=" + id
             + ", date=" + date
             + ", buyer=" + buyer

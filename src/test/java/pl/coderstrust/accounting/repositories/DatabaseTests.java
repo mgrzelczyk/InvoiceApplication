@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Random;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.mapper.InvoiceMapper;
@@ -30,6 +30,9 @@ import pl.coderstrust.accounting.model.hibernate.VatHib;
 @SpringBootTest
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 abstract class DatabaseTests {
+
+    @Autowired
+    private InvoiceMapper invoiceMapper;
 
     abstract InvoiceDatabase getDatabase();
 
@@ -129,8 +132,7 @@ abstract class DatabaseTests {
         invoice.setBuyer(buyer);
         invoice.setSeller(seller);
         invoice.setEntries(invoiceEntries);
-        Invoice invoice1 = InvoiceMapper.INSTANCE.toInvoice(invoice);
-        return invoice1;
+        return invoiceMapper.toInvoice(invoice);
     }
 
     private CompanyHib prepareCompany(String city, String company) {

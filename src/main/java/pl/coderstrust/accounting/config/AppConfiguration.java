@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import org.mapstruct.factory.Mappers;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,6 +55,11 @@ public class AppConfiguration {
                 return DateTimeFormatter.ISO_DATE.format(object);
             }
         };
+    }
+
+    @Bean
+    public InvoiceMapper invoiceMapper() {
+        return Mappers.getMapper(InvoiceMapper.class);
     }
 
 }

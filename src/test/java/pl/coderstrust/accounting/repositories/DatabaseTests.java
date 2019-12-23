@@ -21,10 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.mapper.InvoiceMapper;
 import pl.coderstrust.accounting.model.Invoice;
-import pl.coderstrust.accounting.model.hibernate.CompanyHib;
-import pl.coderstrust.accounting.model.hibernate.InvoiceEntryHib;
-import pl.coderstrust.accounting.model.hibernate.InvoiceHib;
-import pl.coderstrust.accounting.model.hibernate.VatHib;
+import pl.coderstrust.accounting.model.hibernate.CompanyHibernate;
+import pl.coderstrust.accounting.model.hibernate.InvoiceEntryHibernate;
+import pl.coderstrust.accounting.model.hibernate.InvoiceHibernate;
+import pl.coderstrust.accounting.model.hibernate.VatHibernate;
 
 @Transactional
 @SpringBootTest
@@ -107,7 +107,7 @@ abstract class DatabaseTests {
     }
 
     @Test
-    @DisplayName("Should delete InvoiceHib by id")
+    @DisplayName("Should delete InvoiceHibernate by id")
     void shouldDeleteInvoiceByInvoice() {
         Invoice invoice = prepareInvoice();
         Invoice expected = getDatabase().saveInvoice(invoice);
@@ -119,12 +119,12 @@ abstract class DatabaseTests {
 
     private Invoice prepareInvoice() {
         Random random = new Random();
-        List<InvoiceEntryHib> invoiceEntries = new ArrayList<>();
+        List<InvoiceEntryHibernate> invoiceEntries = new ArrayList<>();
         invoiceEntries.add(
-            new InvoiceEntryHib("cos gdzies kiedys", new BigDecimal("2344"), 0, VatHib.TAX_FREE));
-        CompanyHib buyer = prepareCompany("Wrocław 66-666", "TurboMarek z.o.o");
-        CompanyHib seller = prepareCompany("Gdynia 66-666", "Szczupak z.o.o");
-        InvoiceHib invoice = new InvoiceHib();
+            new InvoiceEntryHibernate("cos gdzies kiedys", new BigDecimal("2344"), 0, VatHibernate.TAX_FREE));
+        CompanyHibernate buyer = prepareCompany("Wrocław 66-666", "TurboMarek z.o.o");
+        CompanyHibernate seller = prepareCompany("Gdynia 66-666", "Szczupak z.o.o");
+        InvoiceHibernate invoice = new InvoiceHibernate();
         invoice.setDate(LocalDate.of(
             random.nextInt(120) + 1900,
             random.nextInt(12) + 1,
@@ -135,9 +135,9 @@ abstract class DatabaseTests {
         return invoiceMapper.toInvoice(invoice);
     }
 
-    private CompanyHib prepareCompany(String city, String company) {
+    private CompanyHibernate prepareCompany(String city, String company) {
         Random random = new Random();
-        return new CompanyHib(
+        return new CompanyHibernate(
             null,
             (random.nextInt(999999999) + 9999999) + "",
             city,

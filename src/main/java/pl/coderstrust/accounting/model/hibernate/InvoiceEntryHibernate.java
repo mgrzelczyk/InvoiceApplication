@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class InvoiceEntryHib {
+public class InvoiceEntryHibernate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,13 +19,20 @@ public class InvoiceEntryHib {
     private BigDecimal price;
     private int vatValue;
     @Enumerated(EnumType.ORDINAL)
-    private VatHib vatRate;
+    private VatHibernate vatRate;
 
-    public InvoiceEntryHib() {
+    public InvoiceEntryHibernate() {
     }
 
-    public InvoiceEntryHib(String description, BigDecimal price, int vatValue,
-        VatHib vatRate) {
+    public InvoiceEntryHibernate(String description, BigDecimal price, int vatValue, VatHibernate vatRate) {
+        this.description = description;
+        this.price = price;
+        this.vatValue = vatValue;
+        this.vatRate = vatRate;
+    }
+
+    public InvoiceEntryHibernate(Long id, String description, BigDecimal price, int vatValue, VatHibernate vatRate) {
+        this.id = id;
         this.description = description;
         this.price = price;
         this.vatValue = vatValue;
@@ -64,28 +71,24 @@ public class InvoiceEntryHib {
         this.vatValue = vatValue;
     }
 
-    public VatHib getVatRate() {
+    public VatHibernate getVatRate() {
         return vatRate;
     }
 
-    public void setVatRate(VatHib vatRate) {
+    public void setVatRate(VatHibernate vatRate) {
         this.vatRate = vatRate;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        InvoiceEntryHib that = (InvoiceEntryHib) obj;
-        return vatValue == that.vatValue
-            && Objects.equals(id, that.id)
-            && Objects.equals(description, that.description)
-            && Objects.equals(price, that.price)
-            && vatRate == that.vatRate;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InvoiceEntryHibernate that = (InvoiceEntryHibernate) o;
+        return vatValue == that.vatValue &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(price, that.price) &&
+                vatRate == that.vatRate;
     }
 
     @Override
@@ -95,12 +98,12 @@ public class InvoiceEntryHib {
 
     @Override
     public String toString() {
-        return "InvoiceEntry{"
-            + "id=" + id
-            + ", description='" + description + '\''
-            + ", price=" + price
-            + ", vatValue=" + vatValue
-            + ", vatRate=" + vatRate
-            + '}';
+        return "InvoiceEntryHibernate{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", vatValue=" + vatValue +
+                ", vatRate=" + vatRate +
+                '}';
     }
 }

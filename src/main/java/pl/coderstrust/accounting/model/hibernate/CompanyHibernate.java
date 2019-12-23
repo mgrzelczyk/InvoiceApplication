@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class CompanyHib {
+public class CompanyHibernate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,10 +16,16 @@ public class CompanyHib {
     private String address;
     private String name;
 
-    public CompanyHib() {
+    public CompanyHibernate() {
     }
 
-    public CompanyHib(Long id, String tin, String address, String name) {
+    public CompanyHibernate(String tin, String address, String name) {
+        this.tin = tin;
+        this.address = address;
+        this.name = name;
+    }
+
+    public CompanyHibernate(Long id, String tin, String address, String name) {
         this.id = id;
         this.tin = tin;
         this.address = address;
@@ -59,18 +65,14 @@ public class CompanyHib {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        CompanyHib companyHib = (CompanyHib) obj;
-        return Objects.equals(id, companyHib.id)
-            && Objects.equals(tin, companyHib.tin)
-            && Objects.equals(address, companyHib.address)
-            && Objects.equals(name, companyHib.name);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CompanyHibernate that = (CompanyHibernate) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(tin, that.tin) &&
+                Objects.equals(address, that.address) &&
+                Objects.equals(name, that.name);
     }
 
     @Override
@@ -80,11 +82,11 @@ public class CompanyHib {
 
     @Override
     public String toString() {
-        return "Company{"
-            + "id=" + id
-            + ", tin='" + tin + '\''
-            + ", address='" + address + '\''
-            + ", name='" + name + '\''
-            + '}';
+        return "CompanyHibernate{" +
+                "id=" + id +
+                ", tin='" + tin + '\'' +
+                ", address='" + address + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

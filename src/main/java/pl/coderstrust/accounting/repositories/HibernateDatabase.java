@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.mapper.InvoiceMapper;
 import pl.coderstrust.accounting.model.Invoice;
-import pl.coderstrust.accounting.model.hibernate.InvoiceHib;
+import pl.coderstrust.accounting.model.hibernate.InvoiceHibernate;
 import pl.coderstrust.accounting.repositories.hibernate.HibernateRepository;
 
 import java.util.List;
@@ -28,30 +28,27 @@ public class HibernateDatabase implements InvoiceDatabase {
     public Invoice saveInvoice(Invoice invoice) {
         Invoice copiedInvoice = invoice;
         if (copiedInvoice.getId() == null && copiedInvoice.getDate() == null) {
-            log.warn("save - Empty invoice");
+            log.warn("[save] Empty invoice");
             throw new NullPointerException();
         } else if (copiedInvoice.getId() != null && copiedInvoice.getDate() == null) {
-            log.warn("save - Bad invoice fields");
+            log.warn("[save] Invalid invoice fields");
             throw new NullPointerException();
         } else {
-            InvoiceHib invoiceHib = invoiceMapper.toInvoiceHib(invoice);
-            InvoiceHib saved = hibernateRepository.save(invoiceHib);
-            log.info("save - Invoice saved");
+            InvoiceHibernate invoiceHibernate = invoiceMapper.toInvoiceHib(invoice);
+            InvoiceHibernate saved = hibernateRepository.save(invoiceHibernate);
             return invoiceMapper.toInvoice(saved);
         }
     }
 
     @Override
     public Invoice findInvoiceById(Long id) {
-        Optional<InvoiceHib> object = hibernateRepository.findById(id);
-        log.info("Find invoice by id");
+        Optional<InvoiceHibernate> object = hibernateRepository.findById(id);
         return object.map(invoiceMapper::toInvoice).orElse(null);
     }
 
     @Override
     public List<Invoice> findAllInvoices() {
-        Iterable<InvoiceHib> invoices = hibernateRepository.findAll();
-        log.info("Find all invoices");
+        Iterable<InvoiceHibernate> invoices = hibernateRepository.findAll();
         return StreamSupport
                 .stream(invoices.spliterator(), false)
                 .map(invoiceMapper::toInvoice)
@@ -60,13 +57,11 @@ public class HibernateDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice deleteInvoiceById(Long id) {
-        Optional<InvoiceHib> object = hibernateRepository.findById(id);
+        Optional<InvoiceHibernate> object = hibernateRepository.findById(id);
         if (object.isPresent()) {
             hibernateRepository.deleteById(id);
-            log.info("delete - Invoice deleted");
             return invoiceMapper.toInvoice(object.get());
         }
-        log.warn("delete - Invoice doesn't exist");
         return null;
     }
 

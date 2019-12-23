@@ -14,27 +14,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.format.Formatter;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.mapper.InvoiceMapper;
-import pl.coderstrust.accounting.repositories.HibernateDatabase;
-import pl.coderstrust.accounting.repositories.InMemoryDatabase;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+import pl.coderstrust.accounting.repositories.hibernate.HibernateDatabase;
+import pl.coderstrust.accounting.repositories.inMemory.InMemoryDatabase;
 
 @Configuration
 public class AppConfiguration {
-
-    @Bean
-    @ConditionalOnProperty(name = "database", havingValue = "in-memory")
-    public InvoiceDatabase inMemoryDatabase() {
-        return new InMemoryDatabase();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "database", havingValue = "in-hibernate")
-    public InvoiceDatabase inHibernateDatabase() {
-        return new HibernateDatabase();
-    }
 
     @Bean
     public ObjectMapper objectMapper() {

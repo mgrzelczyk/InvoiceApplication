@@ -1,4 +1,4 @@
-package pl.coderstrust.accounting.repositories;
+package pl.coderstrust.accounting.repositories.hibernate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +7,7 @@ import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.mapper.InvoiceMapper;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.model.hibernate.InvoiceHibernate;
-import pl.coderstrust.accounting.repositories.hibernate.HibernateRepository;
+import pl.coderstrust.accounting.repositories.hibernate.repository.HibernateRepository;
 
 import java.util.List;
 import java.util.Optional;

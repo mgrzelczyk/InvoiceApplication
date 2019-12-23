@@ -20,39 +20,33 @@ public class InMemoryDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {
-        log.info("Save invoice in Memory Database");
         Invoice copiedInvoice = new Invoice(invoice);
         if (copiedInvoice.getId() == null) {
-            log.info("Save invoice with null Id in Memory Database");
             Long id = counter.incrementAndGet();
             invoiceMap.put(id, copiedInvoice);
-            log.info("ID is set");
             copiedInvoice.setId(id);
             return copiedInvoice;
         } else if (invoiceMap.containsKey(copiedInvoice.getId())) {
-            log.info("Save invoice with Id in Memory Database");
             invoiceMap.put(copiedInvoice.getId(), copiedInvoice);
             return copiedInvoice;
         }
-        throw new NullPointerException("There isn't option");
+        log.warn("[save] Empty invoice");
+        throw new NullPointerException();
     }
 
     @Override
     public Invoice findInvoiceById(Long id) {
-        log.info("Find Invoice by Id in Memory Database");
         return invoiceMap.get(id);
     }
 
     @Override
     public List<Invoice> findAllInvoices() {
-        log.info("Find All Invoices by Id in Memory Database");
         Collection<Invoice> values = invoiceMap.values();
         return new ArrayList<>(values);
     }
 
     @Override
     public Invoice deleteInvoiceById(Long id) {
-        log.info("Delete Invoice by Id in Memory Database");
         return invoiceMap.remove(id);
     }
 

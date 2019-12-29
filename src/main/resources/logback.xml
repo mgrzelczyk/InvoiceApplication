@@ -1,15 +1,17 @@
 <configuration debug="true">
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
+    <property resource="application.properties"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender" target="SYSTEM_OUT">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
-                %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+                %d{HH:mm:ss:SSS} [%t] %-5level %logger{36} - %msg%n
             </Pattern>
-        </layout>
+        </encoder>
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${HOME_LOG}</file>
+        <file>${logback.FILE_NAME}</file>
         <append>true</append>
         <immediateFlush>true</immediateFlush>
         <encoder>
@@ -25,6 +27,15 @@
     <root level="error">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
+    </root>
+
+    <root level="warning">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
     </root>
 
 </configuration>

@@ -14,6 +14,7 @@ import java.util.List;
 public class InvoiceBook {
 
     private final InvoiceDatabase invoiceDatabase;
+
     private final static Logger log = LoggerFactory.getLogger(InvoiceBook.class);
 
     public InvoiceBook(InvoiceDatabase invoiceDatabase) {
@@ -22,20 +23,20 @@ public class InvoiceBook {
 
     public Invoice saveInvoice(Invoice invoice) {
         if (invoice != null) {
-            log.info("Save invoice in InvoiceBook services");
+            log.info("[save] Invoice saved");
             return invoiceDatabase.saveInvoice(invoice);
         }
-        log.info("Null save invoice in InvoiceBook services");
+        log.warn("[save] Incorrect data");
         return null;
     }
 
     public Invoice findInvoiceById(Long id) {
         Invoice invoiceFound = invoiceDatabase.findInvoiceById(id);
         if (invoiceFound != null) {
-            log.info("Find Invoice by ID in InvoiceBook services");
+            log.info("[findId] Invoice found");
             return invoiceFound;
         }
-        log.info("Find Invoice by ID is null in InvoiceBook services");
+        log.warn("[findId] Incorrect data or invoice doesn't exist");
         return null;
     }
 
@@ -43,37 +44,36 @@ public class InvoiceBook {
         List<Invoice> invoices;
         invoices = new ArrayList<>(invoiceDatabase.findAllInvoices());
         if (!invoices.isEmpty()) {
-            log.info("Find all Invoices in InvoiceBook services");
+            log.info("[findAll] Invoices found");
             return invoices;
         }
-        log.info("Null invoices finded in InvoiceBook services");
+        log.warn("[findAll] Invoices don't exist");
         return null;
     }
 
     public List<Invoice> findAllInvoiceByDateRange(LocalDate from, LocalDate to) {
         List<Invoice> invoices = new ArrayList<>();
         for (Invoice invoice : invoiceDatabase.findAllInvoices()) {
-            log.info("Find all Invoice by data range in InvoiceBook services");
             if (invoice.getDate().isAfter(from) && invoice.getDate().isBefore(to)
                 || invoice.getDate().isEqual(from) || invoice.getDate().isEqual(to)) {
                 invoices.add(invoice);
             }
         }
         if (!invoices.isEmpty()) {
-            log.info("Finded Invoice by data range in InvoiceBook services");
+            log.info("[findRange] Invoices found");
             return invoices;
         }
-        log.info("Null finded Invoice by data range in InvoiceBook services");
+        log.info("[findRange] Invoices don't exist");
         return null;
     }
 
     public Invoice deleteInvoiceById(Long id) {
         Invoice invoiceFound = invoiceDatabase.findInvoiceById(id);
         if (invoiceFound != null) {
-            log.info("Delete Invoice by ID in InvoiceBook services");
+            log.info("[delete] Invoice deleted");
             return invoiceDatabase.deleteInvoiceById(id);
         }
-        log.info("Null deleted Invoice by ID in InvoiceBook services");
+        log.warn("[delete] Invoice doesn't exist");
         return null;
     }
 

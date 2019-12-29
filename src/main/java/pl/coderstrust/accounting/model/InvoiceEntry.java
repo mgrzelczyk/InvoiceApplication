@@ -15,7 +15,7 @@ public class InvoiceEntry {
     }
 
     public InvoiceEntry(Long id, String description, BigDecimal price, int vatValue,
-        Vat vatRate) {
+                        Vat vatRate) {
         this.id = id;
         this.description = description;
         this.price = price;
@@ -73,10 +73,10 @@ public class InvoiceEntry {
         }
         InvoiceEntry that = (InvoiceEntry) obj;
         return vatValue == that.vatValue
-            && Objects.equals(id, that.id)
-            && Objects.equals(description, that.description)
-            && Objects.equals(price, that.price)
-            && vatRate == that.vatRate;
+                && Objects.equals(id, that.id)
+                && Objects.equals(description, that.description)
+                && Objects.equals(price, that.price)
+                && vatRate == that.vatRate;
     }
 
     @Override
@@ -87,11 +87,11 @@ public class InvoiceEntry {
     @Override
     public String toString() {
         return "InvoiceEntry{"
-            + "id=" + id
-            + ", description='" + description + '\''
-            + ", price=" + price
-            + ", vatValue=" + vatValue
-            + ", vatRate=" + vatRate
-            + '}';
+                + "id=" + id
+                + ", description='" + description + '\''
+                + ", price=" + price
+                + ", vatValue=" + vatValue
+                + ", vatRate=" + vatRate
+                + '}';
     }
 }

@@ -61,9 +61,9 @@ public class Company {
         }
         Company company = (Company) obj;
         return Objects.equals(id, company.id)
-            && Objects.equals(tin, company.tin)
-            && Objects.equals(address, company.address)
-            && Objects.equals(name, company.name);
+                && Objects.equals(tin, company.tin)
+                && Objects.equals(address, company.address)
+                && Objects.equals(name, company.name);
     }
 
     @Override
@@ -74,10 +74,10 @@ public class Company {
     @Override
     public String toString() {
         return "Company{"
-            + "id=" + id
-            + ", tin='" + tin + '\''
-            + ", address='" + address + '\''
-            + ", name='" + name + '\''
-            + '}';
+                + "id=" + id
+                + ", tin='" + tin + '\''
+                + ", address='" + address + '\''
+                + ", name='" + name + '\''
+                + '}';
     }
 }

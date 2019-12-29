@@ -15,7 +15,7 @@ public class InvoiceBook {
 
     private final InvoiceDatabase invoiceDatabase;
 
-    private final static Logger log = LoggerFactory.getLogger(InvoiceBook.class);
+    private final Logger log = LoggerFactory.getLogger(InvoiceBook.class);
 
     public InvoiceBook(InvoiceDatabase invoiceDatabase) {
         this.invoiceDatabase = invoiceDatabase;

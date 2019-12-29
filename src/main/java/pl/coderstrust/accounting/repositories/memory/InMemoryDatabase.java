@@ -1,4 +1,4 @@
-package pl.coderstrust.accounting.repositories.inMemory;
+package pl.coderstrust.accounting.repositories.memory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ public class InMemoryDatabase implements InvoiceDatabase {
 
     private Map<Long, Invoice> invoiceMap = new ConcurrentHashMap<>();
     private AtomicLong counter = new AtomicLong(0);
-    private final static Logger log = LoggerFactory.getLogger(InMemoryDatabase.class);
+    private final Logger log = LoggerFactory.getLogger(InMemoryDatabase.class);
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {

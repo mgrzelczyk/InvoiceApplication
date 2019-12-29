@@ -22,7 +22,7 @@ public class HibernateDatabase implements InvoiceDatabase {
     @Autowired
     private InvoiceMapper invoiceMapper;
 
-    private final static Logger log = LoggerFactory.getLogger(HibernateDatabase.class);
+    private final Logger log = LoggerFactory.getLogger(HibernateDatabase.class);
 
     @Override
     public Invoice saveInvoice(Invoice invoice) {

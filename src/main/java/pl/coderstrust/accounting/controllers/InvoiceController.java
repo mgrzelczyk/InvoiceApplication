@@ -28,10 +28,8 @@ import java.util.List;
 public class InvoiceController {
 
     private final InvoiceBook invoiceBook;
-    private final static Logger log = LoggerFactory.getLogger(InvoiceController.class);
 
     public InvoiceController(InvoiceBook invoiceBook) {
-        log.info("Invoice controller run");
         this.invoiceBook = invoiceBook;
     }
 

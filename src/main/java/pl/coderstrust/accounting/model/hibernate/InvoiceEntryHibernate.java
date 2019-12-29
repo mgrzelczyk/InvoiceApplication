@@ -24,14 +24,16 @@ public class InvoiceEntryHibernate {
     public InvoiceEntryHibernate() {
     }
 
-    public InvoiceEntryHibernate(String description, BigDecimal price, int vatValue, VatHibernate vatRate) {
+    public InvoiceEntryHibernate(String description, BigDecimal price,
+                                 int vatValue, VatHibernate vatRate) {
         this.description = description;
         this.price = price;
         this.vatValue = vatValue;
         this.vatRate = vatRate;
     }
 
-    public InvoiceEntryHibernate(Long id, String description, BigDecimal price, int vatValue, VatHibernate vatRate) {
+    public InvoiceEntryHibernate(Long id, String description, BigDecimal price,
+                                 int vatValue, VatHibernate vatRate) {
         this.id = id;
         this.description = description;
         this.price = price;
@@ -80,15 +82,19 @@ public class InvoiceEntryHibernate {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InvoiceEntryHibernate that = (InvoiceEntryHibernate) o;
-        return vatValue == that.vatValue &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(price, that.price) &&
-                vatRate == that.vatRate;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        InvoiceEntryHibernate that = (InvoiceEntryHibernate) obj;
+        return vatValue == that.vatValue
+                && Objects.equals(id, that.id)
+                && Objects.equals(description, that.description)
+                && Objects.equals(price, that.price)
+                && vatRate == that.vatRate;
     }
 
     @Override
@@ -98,12 +104,12 @@ public class InvoiceEntryHibernate {
 
     @Override
     public String toString() {
-        return "InvoiceEntryHibernate{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", vatValue=" + vatValue +
-                ", vatRate=" + vatRate +
-                '}';
+        return "InvoiceEntryHibernate{"
+                + "id=" + id
+                + ", description='" + description + '\''
+                + ", price=" + price
+                + ", vatValue=" + vatValue
+                + ", vatRate=" + vatRate
+                + '}';
     }
 }

@@ -96,15 +96,19 @@ public class InvoiceHibernate {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InvoiceHibernate that = (InvoiceHibernate) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(date, that.date) &&
-                Objects.equals(buyer, that.buyer) &&
-                Objects.equals(seller, that.seller) &&
-                Objects.equals(entries, that.entries);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        InvoiceHibernate that = (InvoiceHibernate) obj;
+        return Objects.equals(id, that.id)
+                && Objects.equals(date, that.date)
+                && Objects.equals(buyer, that.buyer)
+                && Objects.equals(seller, that.seller)
+                && Objects.equals(entries, that.entries);
     }
 
     @Override
@@ -114,12 +118,12 @@ public class InvoiceHibernate {
 
     @Override
     public String toString() {
-        return "InvoiceHibernate{" +
-                "id=" + id +
-                ", date=" + date +
-                ", buyer=" + buyer +
-                ", seller=" + seller +
-                ", entries=" + entries +
-                '}';
+        return "InvoiceHibernate{"
+                + "id=" + id
+                + ", date=" + date
+                + ", buyer=" + buyer
+                + ", seller=" + seller
+                + ", entries=" + entries
+                + '}';
     }
 }

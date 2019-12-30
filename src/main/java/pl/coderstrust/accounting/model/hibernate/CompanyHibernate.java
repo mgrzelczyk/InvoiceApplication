@@ -65,14 +65,18 @@ public class CompanyHibernate {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CompanyHibernate that = (CompanyHibernate) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(tin, that.tin) &&
-                Objects.equals(address, that.address) &&
-                Objects.equals(name, that.name);
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        CompanyHibernate that = (CompanyHibernate) obj;
+        return Objects.equals(id, that.id)
+                && Objects.equals(tin, that.tin)
+                && Objects.equals(address, that.address)
+                && Objects.equals(name, that.name);
     }
 
     @Override
@@ -82,11 +86,11 @@ public class CompanyHibernate {
 
     @Override
     public String toString() {
-        return "CompanyHibernate{" +
-                "id=" + id +
-                ", tin='" + tin + '\'' +
-                ", address='" + address + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+        return "CompanyHibernate{"
+                + "id=" + id
+                + ", tin='" + tin + '\''
+                + ", address='" + address + '\''
+                + ", name='" + name + '\''
+                + '}';
     }
 }

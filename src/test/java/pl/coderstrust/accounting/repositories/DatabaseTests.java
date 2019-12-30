@@ -121,7 +121,8 @@ abstract class DatabaseTests {
         Random random = new Random();
         List<InvoiceEntryHibernate> invoiceEntries = new ArrayList<>();
         invoiceEntries.add(
-            new InvoiceEntryHibernate("cos gdzies kiedys", new BigDecimal("2344"), 0, VatHibernate.TAX_FREE));
+            new InvoiceEntryHibernate("cos gdzies kiedys", new BigDecimal("2344"),
+                    0, VatHibernate.TAX_FREE));
         CompanyHibernate buyer = prepareCompany("Wrocław 66-666", "TurboMarek z.o.o");
         CompanyHibernate seller = prepareCompany("Gdynia 66-666", "Szczupak z.o.o");
         InvoiceHibernate invoice = new InvoiceHibernate();

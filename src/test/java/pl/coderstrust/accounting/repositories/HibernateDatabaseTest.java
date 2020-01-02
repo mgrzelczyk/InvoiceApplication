@@ -3,17 +3,16 @@ package pl.coderstrust.accounting.repositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
-import pl.coderstrust.accounting.repositories.memory.InMemoryDatabase;
+import pl.coderstrust.accounting.repositories.hibernate.HibernateDatabase;
 
-@ActiveProfiles("memory")
-class InMemoryDatabaseTest extends DatabaseTests {
+@ActiveProfiles("hibernate")
+class HibernateDatabaseTest extends DatabaseTests {
 
     @Autowired
-    private InMemoryDatabase inMemoryDatabase;
+    private HibernateDatabase hibernateDatabase;
 
     @Override
     InvoiceDatabase getDatabase() {
-        return inMemoryDatabase;
+        return hibernateDatabase;
     }
-
 }

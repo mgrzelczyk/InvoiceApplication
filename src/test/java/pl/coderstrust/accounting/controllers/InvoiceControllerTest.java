@@ -218,7 +218,6 @@ class InvoiceControllerTest {
         Invoice edited = prepareInvoice();
         edited.setId(1L);
 
-
         when(service.findInvoiceById(1L)).thenReturn(invoice);
         when(service.saveInvoice(invoice)).thenReturn(edited);
 

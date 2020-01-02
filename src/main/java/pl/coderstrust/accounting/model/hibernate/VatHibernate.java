@@ -1,7 +1,6 @@
-package pl.coderstrust.accounting.model;
+package pl.coderstrust.accounting.model.hibernate;
 
-
-public enum Vat {
+public enum VatHibernate {
     STANDARD_23(23),
     REDUCED_8(8),
     REDUCED_7(7),
@@ -12,7 +11,7 @@ public enum Vat {
 
     private final int value;
 
-    Vat(int value) {
+    VatHibernate(int value) {
         this.value = value;
     }
 

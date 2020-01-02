@@ -1,21 +1,39 @@
-package pl.coderstrust.accounting.model;
+package pl.coderstrust.accounting.model.hibernate;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class InvoiceEntry {
+@Entity
+public class InvoiceEntryHibernate {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
     private BigDecimal price;
     private int vatValue;
-    private Vat vatRate;
+    @Enumerated(EnumType.ORDINAL)
+    private VatHibernate vatRate;
 
-    public InvoiceEntry() {
+    public InvoiceEntryHibernate() {
     }
 
-    public InvoiceEntry(Long id, String description, BigDecimal price, int vatValue,
-                        Vat vatRate) {
+    public InvoiceEntryHibernate(String description, BigDecimal price,
+                                 int vatValue, VatHibernate vatRate) {
+        this.description = description;
+        this.price = price;
+        this.vatValue = vatValue;
+        this.vatRate = vatRate;
+    }
+
+    public InvoiceEntryHibernate(Long id, String description, BigDecimal price,
+                                 int vatValue, VatHibernate vatRate) {
         this.id = id;
         this.description = description;
         this.price = price;
@@ -55,11 +73,11 @@ public class InvoiceEntry {
         this.vatValue = vatValue;
     }
 
-    public Vat getVatRate() {
+    public VatHibernate getVatRate() {
         return vatRate;
     }
 
-    public void setVatRate(Vat vatRate) {
+    public void setVatRate(VatHibernate vatRate) {
         this.vatRate = vatRate;
     }
 
@@ -71,7 +89,7 @@ public class InvoiceEntry {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        InvoiceEntry that = (InvoiceEntry) obj;
+        InvoiceEntryHibernate that = (InvoiceEntryHibernate) obj;
         return vatValue == that.vatValue
                 && Objects.equals(id, that.id)
                 && Objects.equals(description, that.description)
@@ -86,7 +104,7 @@ public class InvoiceEntry {
 
     @Override
     public String toString() {
-        return "InvoiceEntry{"
+        return "InvoiceEntryHibernate{"
                 + "id=" + id
                 + ", description='" + description + '\''
                 + ", price=" + price

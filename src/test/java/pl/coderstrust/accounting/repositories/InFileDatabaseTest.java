@@ -18,7 +18,7 @@ import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.model.InvoiceEntry;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,11 +37,12 @@ class InFileDatabaseTest {
     private InFileDatabase inFileDatabase;
 
     private Invoice createInvoice(Long id) {
-        LocalDateTime date = LocalDateTime.of(2019,11,20,20,20,19);
+        Invoice invoice;
+        LocalDate date = LocalDate.of(2019, 12, 10);
         Company buyer = new Company(1L, "tin#1", "buyer address", "buyer name");
         Company seller = new Company(2L, "tin#2", "seller address", "seller name");
         List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-        Invoice invoice = new Invoice(id, date, buyer, seller, invoiceEntries);
+        invoice = new Invoice(id, date, buyer, seller, invoiceEntries);
         return invoice;
     }
 
@@ -178,10 +179,10 @@ class InFileDatabaseTest {
     @Test
     void shouldDeleteByInvoiceId() throws IOException {
         // given
-//        inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-//        Invoice invoiceDeleteExpected = createInvoice(0L);
-//        inFileDatabase.saveInvoice(invoiceDeleteExpected);
-//        invoiceDeleteExpected = inFileDatabase.findInvoiceById(0L);
+        inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        Invoice invoiceDeleteExpected = createInvoice(0L);
+        inFileDatabase.saveInvoice(invoiceDeleteExpected);
+        invoiceDeleteExpected = inFileDatabase.findInvoiceById(0L);
 
         //Mockito.doReturn(List.of("abc")).when(fileHelper).readLinesFromFile();
         when(fileHelper.readLinesFromFile()).thenReturn(List.of("abc"));

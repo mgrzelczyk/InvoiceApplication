@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.services.InvoiceBook;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -42,7 +43,7 @@ public class InvoiceController {
             LocalDate from,
         @RequestParam(value = "to", required = false)
         @DateTimeFormat(iso = ISO.DATE)
-            LocalDate to) {
+            LocalDate to) throws IOException {
         List<Invoice> invoices;
         if (from != null && to != null) {
             invoices = invoiceBook.findAllInvoiceByDateRange(from, to);
@@ -56,7 +57,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/invoice/{id}")
-    public ResponseEntity<Invoice> findInvoiceById(@PathVariable("id") Long id) {
+    public ResponseEntity<Invoice> findInvoiceById(@PathVariable("id") Long id) throws IOException {
         Invoice foundInvoice = invoiceBook.findInvoiceById(id);
         if (foundInvoice == null) {
             return ResponseEntity.notFound().build();
@@ -66,7 +67,7 @@ public class InvoiceController {
     }
 
     @PostMapping("/invoice")
-    public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice invoice) {
+    public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice invoice) throws IOException {
         Invoice createdInvoice = invoiceBook.saveInvoice(invoice);
         if (createdInvoice == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -79,7 +80,7 @@ public class InvoiceController {
     }
 
     @PutMapping("/invoice")
-    public ResponseEntity<Invoice> editInvoice(@RequestBody Invoice invoice) {
+    public ResponseEntity<Invoice> editInvoice(@RequestBody Invoice invoice) throws IOException {
         if (invoiceBook.findInvoiceById(invoice.getId()) != null) {
             Invoice editedInvoice = invoiceBook.saveInvoice(invoice);
             if (editedInvoice != null) {
@@ -92,7 +93,7 @@ public class InvoiceController {
     }
 
     @DeleteMapping("/invoice/{id}")
-    public ResponseEntity<Object> deleteInvoiceById(@PathVariable("id") Long id) {
+    public ResponseEntity<Object> deleteInvoiceById(@PathVariable("id") Long id) throws IOException {
         Invoice deletedInvoice = invoiceBook.deleteInvoiceById(id);
         if (deletedInvoice == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

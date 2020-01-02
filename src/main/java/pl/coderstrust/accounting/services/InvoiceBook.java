@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class InvoiceBook {
         this.invoiceDatabase = invoiceDatabase;
     }
 
-    public Invoice saveInvoice(Invoice invoice) {
+    public Invoice saveInvoice(Invoice invoice) throws IOException {
         if (invoice != null) {
             log.info("Save invoice in InvoiceBook services");
             return invoiceDatabase.saveInvoice(invoice);
@@ -29,7 +30,7 @@ public class InvoiceBook {
         return null;
     }
 
-    public Invoice findInvoiceById(Long id) {
+    public Invoice findInvoiceById(Long id) throws IOException {
         Invoice invoiceFound = invoiceDatabase.findInvoiceById(id);
         if (invoiceFound != null) {
             log.info("Find Invoice by ID in InvoiceBook services");
@@ -39,7 +40,7 @@ public class InvoiceBook {
         return null;
     }
 
-    public List<Invoice> findAllInvoices() {
+    public List<Invoice> findAllInvoices() throws IOException {
         List<Invoice> invoices;
         invoices = new ArrayList<>(invoiceDatabase.findAllInvoices());
         if (!invoices.isEmpty()) {
@@ -50,7 +51,7 @@ public class InvoiceBook {
         return null;
     }
 
-    public List<Invoice> findAllInvoiceByDateRange(LocalDate from, LocalDate to) {
+    public List<Invoice> findAllInvoiceByDateRange(LocalDate from, LocalDate to) throws IOException {
         List<Invoice> invoices = new ArrayList<>();
         for (Invoice invoice : invoiceDatabase.findAllInvoices()) {
             log.info("Find all Invoice by data range in InvoiceBook services");
@@ -67,7 +68,7 @@ public class InvoiceBook {
         return null;
     }
 
-    public Invoice deleteInvoiceById(Long id) {
+    public Invoice deleteInvoiceById(Long id) throws IOException {
         Invoice invoiceFound = invoiceDatabase.findInvoiceById(id);
         if (invoiceFound != null) {
             log.info("Delete Invoice by ID in InvoiceBook services");

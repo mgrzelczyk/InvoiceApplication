@@ -4,7 +4,7 @@ import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.model.InvoiceEntry;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 class InFileInvoice extends Invoice {
@@ -19,7 +19,7 @@ class InFileInvoice extends Invoice {
     }
 
     private InFileInvoice(Long id,
-                          LocalDateTime date,
+                          LocalDate date,
                           Company buyer,
                           Company seller,
                           List<InvoiceEntry> entries,

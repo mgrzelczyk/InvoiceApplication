@@ -133,9 +133,9 @@ class InFileDatabaseTest {
     void shouldFindAllnvoices() throws IOException {
         // given
         inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-        ArrayList<String> invoicesExpected = new ArrayList<>();
-        invoicesExpected.add("{\"id\":10L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
-        invoicesExpected.add("{\"id\":20L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
+//        ArrayList<String> invoicesExpected = new ArrayList<>();
+//        invoicesExpected.add("{\"id\":10L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
+//        invoicesExpected.add("{\"id\":20L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
         String lineToWrite = "{\"id\":10L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null} " +
             "\n{\"id\":20L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
         List<String> readedLines = new ArrayList<>();

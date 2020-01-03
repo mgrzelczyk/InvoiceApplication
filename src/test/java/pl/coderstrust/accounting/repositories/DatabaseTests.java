@@ -5,12 +5,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +20,13 @@ import pl.coderstrust.accounting.model.hibernate.InvoiceEntryHibernate;
 import pl.coderstrust.accounting.model.hibernate.InvoiceHibernate;
 import pl.coderstrust.accounting.model.hibernate.VatHibernate;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 @Transactional
 @SpringBootTest
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
@@ -38,7 +39,7 @@ abstract class DatabaseTests {
 
     @Test
     @DisplayName("Save invoice")
-    void shouldSaveInvoiceWithNullId() throws NullPointerException {
+    void shouldSaveInvoiceWithNullId() throws NullPointerException, IOException {
         Invoice expected = prepareInvoice();
 
         Invoice result = getDatabase().saveInvoice(expected);
@@ -57,7 +58,7 @@ abstract class DatabaseTests {
 
     @Test
     @DisplayName("Update invoice")
-    void shouldUpdateExistingInvoice() throws NullPointerException {
+    void shouldUpdateExistingInvoice() throws NullPointerException, IOException {
         Invoice invoice = prepareInvoice();
         Invoice expected = getDatabase().saveInvoice(invoice);
         Invoice newInvoice = prepareInvoice();
@@ -81,7 +82,7 @@ abstract class DatabaseTests {
 
     @Test
     @DisplayName("Find invoice by id")
-    void shouldFindInvoiceById() throws NullPointerException {
+    void shouldFindInvoiceById() throws NullPointerException, IOException {
         Invoice invoice = prepareInvoice();
 
         Invoice expected = getDatabase().saveInvoice(invoice);
@@ -92,7 +93,7 @@ abstract class DatabaseTests {
 
     @Test
     @DisplayName("Find all invoices")
-    void shouldFindAllInvoices() throws NullPointerException {
+    void shouldFindAllInvoices() throws NullPointerException, IOException {
         List<Invoice> invoices = prepareInvoices();
         List<Invoice> expected = new ArrayList<>();
 
@@ -108,7 +109,7 @@ abstract class DatabaseTests {
 
     @Test
     @DisplayName("Should delete InvoiceHibernate by id")
-    void shouldDeleteInvoiceByInvoice() {
+    void shouldDeleteInvoiceByInvoice() throws IOException {
         Invoice invoice = prepareInvoice();
         Invoice expected = getDatabase().saveInvoice(invoice);
 

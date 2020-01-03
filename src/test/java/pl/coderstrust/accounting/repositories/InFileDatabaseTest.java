@@ -1,5 +1,6 @@
 package pl.coderstrust.accounting.repositories;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class InFileDatabaseTest {
 
     @Mock
@@ -35,16 +37,6 @@ class InFileDatabaseTest {
 
     @InjectMocks
     private InFileDatabase inFileDatabase;
-
-    private Invoice createInvoice(Long id) {
-        Invoice invoice;
-        LocalDate date = LocalDate.of(2019, 12, 10);
-        Company buyer = new Company(1L, "tin#1", "buyer address", "buyer name");
-        Company seller = new Company(2L, "tin#2", "seller address", "seller name");
-        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
-        invoice = new Invoice(id, date, buyer, seller, invoiceEntries);
-        return invoice;
-    }
 
     @Test
     void shouldUpdateInvoice() throws IOException {
@@ -100,8 +92,8 @@ class InFileDatabaseTest {
     @Test
     void shouldReturnNullWhenFindInvoiceThatNotExists() throws IOException {
         // given
-        Invoice invoiceFindExpected = null;
         inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
+        Invoice invoiceFindExpected = null;
         List<String> readedLinesFromFile = new ArrayList<>();
         when(fileHelper.readLinesFromFile()).thenReturn(readedLinesFromFile);
         ArrayList<InFileInvoice> inFileInvoices = new ArrayList<>();
@@ -133,17 +125,15 @@ class InFileDatabaseTest {
     void shouldFindAllnvoices() throws IOException {
         // given
         inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-//        ArrayList<String> invoicesExpected = new ArrayList<>();
-//        invoicesExpected.add("{\"id\":10L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
-//        invoicesExpected.add("{\"id\":20L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
-        String lineToWrite = "{\"id\":10L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null} " +
-            "\n{\"id\":20L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}";
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        String lineToWrite = "{\"id\":10L,\"date\":2019-12-10,\"buyer\":null,\"seller\":null,\"entries\":null} " +
+            "\n{\"id\":20L,\"date\":2019-12-10,\"buyer\":null,\"seller\":null,\"entries\":null}";
         List<String> readedLines = new ArrayList<>();
         readedLines.add("{\"id\":10L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
         readedLines.add("{\"id\":20L,\"date\":null,\"buyer\":null,\"seller\":null,\"entries\":null}");
 
-        Invoice invoice = createInvoice(5L);
-        Invoice invoice1 = createInvoice(6L);
+        Invoice invoice = createInvoice(10L);
+        Invoice invoice1 = createInvoice(20L);
 
         List<Invoice> invoicesExpect = new ArrayList<>();
         invoicesExpect.add(invoice);
@@ -154,12 +144,7 @@ class InFileDatabaseTest {
         fileHelper.writeLineToFile(json);
         when(fileHelper.readLinesFromFile()).thenReturn(readedLines);
 
-        List<Invoice> invoiceResult = new ArrayList<>();
-        for (String string : readedLines) {
-            invoiceResult.add(objectMapper.readValue(string, Invoice.class));
-        }
-
-        invoiceResult = inFileDatabase.findAllInvoices();
+        List<Invoice> invoiceResult = inFileDatabase.findAllInvoices();
 
         // then
         assertEquals(invoicesExpect, invoiceResult);
@@ -180,18 +165,19 @@ class InFileDatabaseTest {
     void shouldDeleteByInvoiceId() throws IOException {
         // given
         inFileDatabase = new InFileDatabase(fileHelper, objectMapper);
-        Invoice invoiceDeleteExpected = createInvoice(0L);
+        Invoice invoiceDeleteExpected = createInvoice(1L);
+
         inFileDatabase.saveInvoice(invoiceDeleteExpected);
-        invoiceDeleteExpected = inFileDatabase.findInvoiceById(0L);
+        invoiceDeleteExpected = inFileDatabase.findInvoiceById(1L);
 
         //Mockito.doReturn(List.of("abc")).when(fileHelper).readLinesFromFile();
         when(fileHelper.readLinesFromFile()).thenReturn(List.of("abc"));
         // when
         Invoice invoiceDeleteResult = inFileDatabase.deleteInvoiceById(0L);
-        Mockito.verify(inFileDatabase).deleteInvoiceById(0L);
+        Mockito.verify(inFileDatabase).deleteInvoiceById(1L);
 
         // then
-        assertEquals(null, invoiceDeleteResult);
+        assertEquals(invoiceDeleteExpected, invoiceDeleteResult);
     }
 
     @Test
@@ -209,6 +195,16 @@ class InFileDatabaseTest {
 
         // then
         assertEquals(0, invoices.size());
+    }
+
+    private Invoice createInvoice(Long id) {
+        Invoice invoice;
+        LocalDate date = LocalDate.of(2019, 12, 10);
+        Company buyer = new Company(1L, "tin#1", "buyer address", "buyer name");
+        Company seller = new Company(2L, "tin#2", "seller address", "seller name");
+        List<InvoiceEntry> invoiceEntries = new ArrayList<>();
+        invoice = new Invoice(id, date, buyer, seller, invoiceEntries);
+        return invoice;
     }
 
 }

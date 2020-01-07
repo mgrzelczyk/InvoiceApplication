@@ -7,12 +7,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 class FileHelperTest {
@@ -50,6 +53,17 @@ class FileHelperTest {
         //given
         String source = "src/test/resources/testFile";
         String dest = "src/test/resources/temporary/testFile";
+        File sourceFile = new File("src/test/resources/testFile");
+        sourceFile.createNewFile();
+        List<String> lines = new ArrayList<>();
+        lines.add("abc\n");
+        lines.add("def");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(source, true))) {
+            for (String str : lines) {
+                bw.append(str);
+            }
+        }
+
         copyFilesUsingStream(source, dest);
         FileHelper fileHelper = new FileHelper(dest);
         List<String> stringsExpected = List.of("abc", "def");
@@ -75,6 +89,9 @@ class FileHelperTest {
         //given
         String source = "src/test/resources/testWriteFile";
         String dest = "src/test/resources/temporary/testWriteFile";
+        File sourceFile = new File("src/test/resources/testWriteFile");
+        sourceFile.createNewFile();
+
         copyFilesUsingStream(source, dest);
         FileHelper fileHelper = new FileHelper(dest);
         String stringsExpected = "{\"id\":2,\"date\":null,\"buyer\":null," +
@@ -93,9 +110,18 @@ class FileHelperTest {
         //given
         String source = "src/test/resources/testWriteFile2";
         String dest = "src/test/resources/temporary/testWriteFile2";
+        File sourceFile = new File("src/test/resources/testWriteFile2");
+        sourceFile.createNewFile();
+        List<String> lines = new ArrayList<>();
+        lines.add("abc");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(source, true))) {
+            for (String str : lines) {
+                bw.append(str);
+            }
+        }
         copyFilesUsingStream(source, dest);
         FileHelper fileHelper = new FileHelper(dest);
-        String stringsNewLine = "def";
+        String stringsNewLine = "\ndef";
 
         //when
         fileHelper.writeLineToFile(stringsNewLine);

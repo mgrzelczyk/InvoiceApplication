@@ -52,7 +52,7 @@ public class AppConfiguration {
     @Bean
     @ConditionalOnProperty(name = "database", havingValue = "in-file")
     public InFileDatabase inFileDatabase() throws IOException {
-        FileHelper fileHelper = new FileHelper("resources/abc.txt");
+        FileHelper fileHelper = new FileHelper("database.db");
         return new InFileDatabase(fileHelper, objectMapper);
     }
 

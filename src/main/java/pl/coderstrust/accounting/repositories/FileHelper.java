@@ -19,12 +19,17 @@ public class FileHelper {
 
     public List<String> readLinesFromFile() throws IOException {
         List<String> result = new ArrayList<>();
+        File file = new File(filePath);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
         try (Scanner scanner = new Scanner(new File(filePath))) {
             while (scanner.hasNext()) {
                 result.add(scanner.nextLine());
             }
         }
         return result;
+
     }
 
     public void writeLinesToFile(List<String> lines) throws IOException {

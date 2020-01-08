@@ -2,9 +2,11 @@ package pl.coderstrust.accounting.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 
 @ActiveProfiles("in-file")
+@ContextConfiguration(locations = "classpath:application-in-file.properties")
 //@ExtendWith(MockitoExtension.class)
 //@JsonInclude(JsonInclude.Include.NON_NULL)
 class InFileDatabaseTest extends DatabaseTests {
@@ -16,13 +18,14 @@ class InFileDatabaseTest extends DatabaseTests {
     InvoiceDatabase getDatabase() {
         return inFileDatabase;
     }
+}
 //
 //    @Mock
 //    private FileHelper fileHelper;
 //
 //    @Mock
 //    private ObjectMapper objectMapper;
-//
+
 //    @InjectMocks
 //    private InFileDatabase inFileDatabase;
 //
@@ -194,5 +197,5 @@ class InFileDatabaseTest extends DatabaseTests {
 //        invoice = new Invoice(id, date, buyer, seller, invoiceEntries);
 //        return invoice;
 //    }
-
-}
+//
+//}

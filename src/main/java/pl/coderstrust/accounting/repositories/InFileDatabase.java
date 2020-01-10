@@ -49,7 +49,8 @@ public class InFileDatabase implements InvoiceDatabase {
             throw new IllegalArgumentException("ID is null.");
         }
         log.info("Finded invoice with ID");
-        return loadInvoices().get(id);
+        InFileInvoice f = loadInvoices().get(id);
+        return new Invoice(f.getId(), f.getDate(), f.getBuyer(), f.getSeller(), f.getEntries());
     }
 
     @Override

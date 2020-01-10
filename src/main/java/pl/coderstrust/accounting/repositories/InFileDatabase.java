@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
+import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
+import pl.coderstrust.accounting.model.InvoiceEntry;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -110,7 +113,21 @@ public class InFileDatabase implements InvoiceDatabase {
 
     private Invoice createInvoice(InFileInvoice inFileInvoice) {
         log.info("Create new Invoice");
-        return new Invoice();
+
+        Long id = inFileInvoice.getId();
+        LocalDate date = inFileInvoice.getDate();
+        Company buyer = inFileInvoice.getBuyer();
+        Company seller = inFileInvoice.getSeller();
+        List<InvoiceEntry> entries = inFileInvoice.getEntries();
+
+        Invoice invoice = new Invoice();
+        invoice.setId(id);
+        invoice.setDate(date);
+        invoice.setBuyer(buyer);
+        invoice.setSeller(seller);
+        invoice.setEntries(entries);
+
+        return invoice;
     }
 
     private Invoice updateInvoice(Invoice invoice) throws IOException {
@@ -126,8 +143,6 @@ public class InFileDatabase implements InvoiceDatabase {
 
     private InFileInvoice createInFileInvoice(Invoice invoice, boolean deleted) throws IOException {
         InFileInvoice inFileInvoice = new InFileInvoice(invoice, true);
-        String inFilenvoiceJson = objectMapper.writeValueAsString(inFileInvoice);
-        fileHelper.writeLineToFile(inFilenvoiceJson);
         log.info("Create in File Invoice");
         return inFileInvoice;
     }

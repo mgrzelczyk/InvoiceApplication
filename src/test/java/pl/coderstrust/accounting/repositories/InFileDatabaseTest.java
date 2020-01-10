@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 import pl.coderstrust.accounting.model.Invoice;
+import pl.coderstrust.accounting.repositories.file.InFileDatabase;
 
 import java.io.File;
 import java.io.IOException;

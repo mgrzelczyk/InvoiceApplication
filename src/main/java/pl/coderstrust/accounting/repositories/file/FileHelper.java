@@ -1,4 +1,4 @@
-package pl.coderstrust.accounting.repositories;
+package pl.coderstrust.accounting.repositories.file;
 
 import java.io.BufferedWriter;
 import java.io.File;

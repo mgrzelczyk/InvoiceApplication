@@ -1,4 +1,4 @@
-package pl.coderstrust.accounting.repositories;
+package pl.coderstrust.accounting.repositories.file;
 
 import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;

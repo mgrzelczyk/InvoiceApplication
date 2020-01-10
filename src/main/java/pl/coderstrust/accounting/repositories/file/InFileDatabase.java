@@ -1,4 +1,4 @@
-package pl.coderstrust.accounting.repositories;
+package pl.coderstrust.accounting.repositories.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;

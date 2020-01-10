@@ -18,10 +18,10 @@ public class Company {
             return false;
         }
         Company company = (Company) o;
-        return Objects.equals(id, company.id) &&
-            Objects.equals(tin, company.tin) &&
-            Objects.equals(address, company.address) &&
-            Objects.equals(name, company.name);
+        return Objects.equals(id, company.id)
+            && Objects.equals(tin, company.tin)
+            && Objects.equals(address, company.address)
+            && Objects.equals(name, company.name);
     }
 
     @Override

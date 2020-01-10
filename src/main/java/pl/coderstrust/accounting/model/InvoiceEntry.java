@@ -75,19 +75,19 @@ public class InvoiceEntry {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        InvoiceEntry that = (InvoiceEntry) o;
-        return vatValue == that.vatValue &&
-            Objects.equals(id, that.id) &&
-            Objects.equals(description, that.description) &&
-            Objects.equals(price, that.price) &&
-            vatRate == that.vatRate;
+        InvoiceEntry that = (InvoiceEntry) object;
+        return vatValue == that.vatValue
+            && Objects.equals(id, that.id)
+            && Objects.equals(description, that.description)
+            && Objects.equals(price, that.price)
+            && vatRate == that.vatRate;
     }
 
     @Override

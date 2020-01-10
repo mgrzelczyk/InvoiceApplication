@@ -22,6 +22,9 @@ class InFileDatabaseTest extends DatabaseTests {
     @Autowired
     private InFileDatabase inFileDatabase;
 
+    @Autowired
+    ObjectMapper mapper;
+
     @Override
     InvoiceDatabase getDatabase() {
         return inFileDatabase;
@@ -32,8 +35,6 @@ class InFileDatabaseTest extends DatabaseTests {
         FileUtils.forceDelete(new File("database.db"));
     }
 
-    @Autowired
-    ObjectMapper mapper;
     @Test
     void test() throws IOException {
         Invoice invoice = new Invoice();

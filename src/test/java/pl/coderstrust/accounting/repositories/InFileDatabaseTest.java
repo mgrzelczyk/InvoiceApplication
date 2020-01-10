@@ -1,10 +1,14 @@
 package pl.coderstrust.accounting.repositories;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
+import pl.coderstrust.accounting.model.Invoice;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +30,16 @@ class InFileDatabaseTest extends DatabaseTests {
     @AfterEach
     public void clean() throws IOException {
         FileUtils.forceDelete(new File("database.db"));
+    }
+
+    @Autowired
+    ObjectMapper mapper;
+    @Test
+    void test() throws IOException {
+        Invoice invoice = new Invoice();
+        String json = mapper.writeValueAsString(invoice);
+        Invoice result = mapper.readValue(json, Invoice.class);
+        assertEquals(invoice, result);
     }
 }
 

@@ -1,12 +1,16 @@
 package pl.coderstrust.accounting.repositories;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import pl.coderstrust.accounting.infrastructure.InvoiceDatabase;
 
-@ActiveProfiles("in-file")
-@ContextConfiguration(locations = "classpath:application-in-file.properties")
+import java.io.File;
+import java.io.IOException;
+
+@ActiveProfiles("file")
+//@ContextConfiguration(locations = "classpath:application-in-file.properties")
 //@ExtendWith(MockitoExtension.class)
 //@JsonInclude(JsonInclude.Include.NON_NULL)
 class InFileDatabaseTest extends DatabaseTests {
@@ -18,7 +22,13 @@ class InFileDatabaseTest extends DatabaseTests {
     InvoiceDatabase getDatabase() {
         return inFileDatabase;
     }
+
+    @AfterEach
+    public void clean() throws IOException {
+        FileUtils.forceDelete(new File("database.db"));
+    }
 }
+
 //
 //    @Mock
 //    private FileHelper fileHelper;

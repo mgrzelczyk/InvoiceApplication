@@ -11,12 +11,14 @@ import pl.coderstrust.accounting.model.InvoiceEntry;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public class InFileDatabase implements InvoiceDatabase {
 
@@ -132,7 +134,7 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     private Invoice updateInvoice(Invoice invoice) throws IOException {
-        if(this.findInvoiceById(invoice.getId()) == null){
+        if (this.findInvoiceById(invoice.getId()) == null) {
             throw new NullPointerException("Update invoice failed, unable to find invoice to update");
         }
         InFileInvoice inFileInvoice = createInFileInvoice(invoice, false);
@@ -149,14 +151,10 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     private List<Invoice> getInvoices() throws IOException {
-        List<String> strings = fileHelper.readLinesFromFile();
-        List<Invoice> stringsConvertedToList = new ArrayList<>();
-
-        for (String string : strings) {
-            stringsConvertedToList.add(objectMapper.readValue(string, Invoice.class));
-        }
-        log.info("Get Invoices");
-        return stringsConvertedToList;
+        Map<Long, InFileInvoice> longInFileInvoiceMap = loadInvoices();
+        Collection<InFileInvoice> values = longInFileInvoiceMap.values();
+        return values.stream().map(f ->
+             new Invoice(f.getId(), f.getDate(), f.getBuyer(), f.getSeller(), f.getEntries())
+        ).collect(Collectors.toList());
     }
-
 }

@@ -114,6 +114,9 @@ public class InFileDatabase implements InvoiceDatabase {
     }
 
     private Invoice updateInvoice(Invoice invoice) throws IOException {
+        if(this.findInvoiceById(invoice.getId()) == null){
+            throw new NullPointerException("Update invoice failed, unable to find invoice to update");
+        }
         InFileInvoice inFileInvoice = createInFileInvoice(invoice, false);
         String json = objectMapper.writeValueAsString(inFileInvoice);
         fileHelper.writeLineToFile(json);

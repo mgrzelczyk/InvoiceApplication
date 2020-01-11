@@ -10,14 +10,14 @@ public class Company {
     private String name;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        Company company = (Company) o;
+        Company company = (Company) object;
         return Objects.equals(id, company.id)
             && Objects.equals(tin, company.tin)
             && Objects.equals(address, company.address)

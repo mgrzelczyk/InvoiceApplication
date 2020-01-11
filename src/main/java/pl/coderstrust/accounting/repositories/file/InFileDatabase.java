@@ -25,7 +25,7 @@ public class InFileDatabase implements InvoiceDatabase {
     private final AtomicLong counter;
     private final FileHelper fileHelper;
     private final ObjectMapper objectMapper;
-    private final static Logger log = LoggerFactory.getLogger(InFileDatabase.class);
+    private static final Logger log = LoggerFactory.getLogger(InFileDatabase.class);
 
     public InFileDatabase(FileHelper fileHelper, ObjectMapper objectMapper) throws IOException {
         this.fileHelper = fileHelper;
@@ -80,7 +80,7 @@ public class InFileDatabase implements InvoiceDatabase {
         try {
             log.info("Get last ID");
             return Collections.max(loadInvoices().keySet());
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException exception) {
             log.info("No such element, last ID equal zero");
             return 0L;
         }

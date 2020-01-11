@@ -2,8 +2,10 @@ package pl.coderstrust.accounting.repositories;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.jupiter.api.AfterEach;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.coderstrust.accounting.repositories.file.FileHelper;
@@ -25,7 +27,7 @@ class FileHelperTest {
 
     @BeforeEach
     private void createTemporaryFolder() throws IOException {
-         Files.createDirectories(Paths.get("src/test/resources/temporary/"));
+        Files.createDirectories(Paths.get("src/test/resources/temporary/"));
     }
 
     private void copyFilesUsingStream(String sourceToCopy, String destCopied) throws IOException {
@@ -55,7 +57,6 @@ class FileHelperTest {
     void shouldReadLinesFromFile() throws IOException {
         //given
         String source = "src/test/resources/testFile";
-        String dest = "src/test/resources/temporary/testFile";
         File sourceFile = new File("src/test/resources/testFile");
         sourceFile.createNewFile();
         List<String> lines = new ArrayList<>();
@@ -67,6 +68,7 @@ class FileHelperTest {
             }
         }
 
+        String dest = "src/test/resources/temporary/testFile";
         copyFilesUsingStream(source, dest);
         FileHelper fileHelper = new FileHelper(dest);
         List<String> stringsExpected = List.of("abc", "def");
@@ -97,8 +99,8 @@ class FileHelperTest {
 
         copyFilesUsingStream(source, dest);
         FileHelper fileHelper = new FileHelper(dest);
-        String stringsExpected = "{\"id\":2,\"date\":null,\"buyer\":null," +
-            "\"seller\":null,\"entries\":null}";
+        String stringsExpected = "{\"id\":2,\"date\":null,\"buyer\":null,"
+            + "\"seller\":null,\"entries\":null}";
 
         //when
         fileHelper.writeLineToFile(stringsExpected);
@@ -112,7 +114,6 @@ class FileHelperTest {
     void shouldAppendLineToExistingFile() throws IOException {
         //given
         String source = "src/test/resources/testWriteFile2";
-        String dest = "src/test/resources/temporary/testWriteFile2";
         File sourceFile = new File("src/test/resources/testWriteFile2");
         sourceFile.createNewFile();
         List<String> lines = new ArrayList<>();
@@ -122,6 +123,8 @@ class FileHelperTest {
                 bw.append(str);
             }
         }
+
+        String dest = "src/test/resources/temporary/testWriteFile2";
         copyFilesUsingStream(source, dest);
         FileHelper fileHelper = new FileHelper(dest);
         String stringsNewLine = "\ndef";

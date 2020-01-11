@@ -44,5 +44,5 @@ class InFileDatabaseTest extends DatabaseTests {
         Invoice result = mapper.readValue(json, Invoice.class);
         assertEquals(invoice, result);
     }
-    
+
 }

@@ -13,8 +13,9 @@ public class FileHelper {
 
     private final String filePath;
 
-    public FileHelper(String databaseFileName) {
+    public FileHelper(String databaseFileName) throws IOException {
         this.filePath = databaseFileName;
+
     }
 
     public List<String> readLinesFromFile() throws IOException {

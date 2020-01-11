@@ -37,7 +37,9 @@ class FileHelperTest {
     @AfterEach
     public void clean() throws IOException {
         File dir = new File("src/test/resources/temporary/");
+        File resourcesDir = new File("src/test/resources/");
         FileUtils.forceDelete(dir);
+        FileUtils.forceDelete(resourcesDir);
     }
 
     @Test

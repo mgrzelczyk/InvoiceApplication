@@ -6,21 +6,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.coderstrust.accounting.model.Company;
 import pl.coderstrust.accounting.model.Invoice;
 import pl.coderstrust.accounting.model.InvoiceEntry;
 import pl.coderstrust.accounting.repositories.memory.InMemoryDatabase;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @ExtendWith(MockitoExtension.class)
 class InvoiceBookTest {
@@ -33,7 +35,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Save invoice")
-    void shouldSaveInvoice() throws NullPointerException {
+    void shouldSaveInvoice() throws NullPointerException, IOException {
         Invoice invoice = prepareInvoice();
         Invoice expected = prepareInvoice();
         expected.setId(1L);
@@ -47,7 +49,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Save invoice with id but not exist in db")
-    void shouldThrowExceptionWhenSavedInvoiceDoesntExistInDatabase() throws NullPointerException {
+    void shouldThrowExceptionWhenSavedInvoiceDoesntExistInDatabase() throws NullPointerException, IOException {
         Invoice invoice = prepareInvoice();
         invoice.setId(1L);
 
@@ -64,13 +66,13 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Save invoice as null")
-    void shouldReturnNullForInvoiceAsNull() throws NullPointerException {
+    void shouldReturnNullForInvoiceAsNull() throws NullPointerException, IOException {
         assertNull(invoiceBook.saveInvoice(null));
     }
 
     @Test
     @DisplayName("Find invoice by id")
-    void shouldFindInvoiceById() throws NullPointerException {
+    void shouldFindInvoiceById() throws NullPointerException, IOException {
         Invoice expected = prepareInvoice();
         Invoice invoice = prepareInvoice();
         invoice.setId(1L);
@@ -85,7 +87,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Not Find invoice by id")
-    void shouldNotFindInvoiceById() throws NullPointerException {
+    void shouldNotFindInvoiceById() throws NullPointerException, IOException {
         Invoice invoice = prepareInvoice();
 
         when(inMemoryDatabase.findInvoiceById(invoice.getId())).thenReturn(null);
@@ -97,7 +99,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Find id invoice")
-    void shouldFindInvoiceId() throws NullPointerException {
+    void shouldFindInvoiceId() throws NullPointerException, IOException {
         Invoice invoice = prepareInvoice();
         Invoice expected = prepareInvoice();
 
@@ -110,7 +112,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Find 3 invoices")
-    void shouldFindAllInvoicesListSize3() throws NullPointerException {
+    void shouldFindAllInvoicesListSize3() throws NullPointerException, IOException {
         List<Invoice> invoices = prepareInvoices();
 
         when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
@@ -122,7 +124,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Find invoices by date range")
-    void shouldFindAllInvoicesByDataRange() throws NullPointerException {
+    void shouldFindAllInvoicesByDataRange() throws NullPointerException, IOException {
         Invoice invoice1 = prepareInvoice();
         Invoice invoice2 = prepareInvoice();
         Invoice invoice3 = prepareInvoice();
@@ -147,7 +149,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Not find invoices by date range")
-    void shouldNotFindAllInvoicesByDataRange() throws NullPointerException {
+    void shouldNotFindAllInvoicesByDataRange() throws NullPointerException, IOException {
         Invoice invoice1 = prepareInvoice();
         Invoice invoice2 = prepareInvoice();
         Invoice invoice3 = prepareInvoice();
@@ -170,7 +172,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Find all invoices")
-    void shouldFindAllInvoiceInRepository() throws NullPointerException {
+    void shouldFindAllInvoiceInRepository() throws NullPointerException, IOException {
         List<Invoice> invoices = prepareInvoices();
         List<Invoice> invoicesExpected = new ArrayList<>(invoices);
 
@@ -183,7 +185,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Not find all invoices")
-    void shouldNotFindAllInvoiceInRepository() throws NullPointerException {
+    void shouldNotFindAllInvoiceInRepository() throws NullPointerException, IOException {
         List<Invoice> invoices = new ArrayList<>();
 
         when(inMemoryDatabase.findAllInvoices()).thenReturn(invoices);
@@ -193,7 +195,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Delete by id")
-    void shouldDeleteById() throws NullPointerException {
+    void shouldDeleteById() throws NullPointerException, IOException {
         Invoice invoice = prepareInvoice();
         Invoice expected = prepareInvoice();
 
@@ -208,7 +210,7 @@ class InvoiceBookTest {
 
     @Test
     @DisplayName("Delete by id, not find invoice")
-    void shouldNotFindObjectForDeleteById() throws NullPointerException {
+    void shouldNotFindObjectForDeleteById() throws NullPointerException, IOException {
         Invoice invoice = prepareInvoice();
 
         when(inMemoryDatabase.findInvoiceById(invoice.getId())).thenReturn(null);

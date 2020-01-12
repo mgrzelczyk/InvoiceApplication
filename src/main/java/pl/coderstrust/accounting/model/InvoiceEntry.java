@@ -64,27 +64,6 @@ public class InvoiceEntry {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        InvoiceEntry that = (InvoiceEntry) obj;
-        return vatValue == that.vatValue
-                && Objects.equals(id, that.id)
-                && Objects.equals(description, that.description)
-                && Objects.equals(price, that.price)
-                && vatRate == that.vatRate;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, description, price, vatValue, vatRate);
-    }
-
-    @Override
     public String toString() {
         return "InvoiceEntry{"
                 + "id=" + id
@@ -93,5 +72,26 @@ public class InvoiceEntry {
                 + ", vatValue=" + vatValue
                 + ", vatRate=" + vatRate
                 + '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        InvoiceEntry that = (InvoiceEntry) object;
+        return vatValue == that.vatValue
+            && Objects.equals(id, that.id)
+            && Objects.equals(description, that.description)
+            && Objects.equals(price, that.price)
+            && vatRate == that.vatRate;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, price, vatValue, vatRate);
     }
 }

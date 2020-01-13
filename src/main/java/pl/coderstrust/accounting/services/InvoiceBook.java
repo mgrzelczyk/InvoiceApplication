@@ -44,7 +44,7 @@ public class InvoiceBook {
     public List<Invoice> findAllInvoices() throws IOException {
         List<Invoice> invoices;
         invoices = new ArrayList<>(invoiceDatabase.findAllInvoices());
-        if (!invoices.isEmpty()) {
+        if (invoices.size() >= 1) {
             log.info("[findAll] Invoices found");
             return invoices;
         }

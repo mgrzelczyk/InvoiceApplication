@@ -35,7 +35,7 @@ public class InFileDatabase implements InvoiceDatabase {
 
     @Override
     public Invoice saveInvoice(Invoice invoice) throws IOException {
-        if (invoice.getId() == null) {
+        if (invoice.getId() == 0) {
             log.info("Save invoice as insert");
             return insertInvoice(invoice);
         } else {

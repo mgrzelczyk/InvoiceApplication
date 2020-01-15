@@ -21,12 +21,13 @@ public class InMemoryDatabase implements InvoiceDatabase {
     @Override
     public Invoice saveInvoice(Invoice invoice) {
         Invoice copiedInvoice = new Invoice(invoice);
-        if (copiedInvoice.getId() == null) {
+        if (copiedInvoice.getId() == 0) {
             Long id = counter.incrementAndGet();
             invoiceMap.put(id, copiedInvoice);
             copiedInvoice.setId(id);
             return copiedInvoice;
-        } else if (invoiceMap.containsKey(copiedInvoice.getId())) {
+        } else if (invoiceMap.containsKey(copiedInvoice.getId())
+            && copiedInvoice.getId() != 0) {
             invoiceMap.put(copiedInvoice.getId(), copiedInvoice);
             return copiedInvoice;
         }

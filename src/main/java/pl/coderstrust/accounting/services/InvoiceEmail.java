@@ -11,11 +11,11 @@ public class InvoiceEmail {
     private JavaMailSender emailSender;
     private MailProperties mailProperties;
     private InvoicePdfService invoicePdfService;
-    
+
     @Autowired
-    public InvoiceEmailImpl(JavaMailSender emailSender,
-                            MailProperties mailProperties,
-                            InvoicePdfService invoicePdfService){
+    public void InvoiceEmailImpl(JavaMailSender emailSender,
+                                 MailProperties mailProperties,
+                                 InvoicePdfService invoicePdfService){
         this.emailSender = emailSender;
         this.mailProperties = mailProperties;
         this.invoicePdfService = invoicePdfService;
